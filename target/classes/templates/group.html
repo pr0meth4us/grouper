@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Grouping</title>
+    <style>
+        .num-input {
+            display: none;
+        }
+        #placeholder {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h2>Groups Generator</h2>
+
+<form th:action="@{/group}" th:method="get" >
+    <input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}" > <label>Select a method for group generation:</label><br>
+
+    <input type="radio" id="choice1" name="choice" value="1" th:checked="${choiceInt == 1}" onclick="toggleInput('groupSize')"> by size of each group<br>
+    <input type="number" class="num-input" id="groupSize" name="groupSize" th:value="${groupSize}" >
+
+    <input type="radio" id="choice2" name="choice" value="2" th:checked="${choiceInt == 2}" onclick="toggleInput('numberOfGroups')"> by total number of groups<br>
+    <input type="number" class="num-input" id="numberOfGroups" name="numberOfGroups" th:value="${numberOfGroups}" >
+
+    <button type="submit">Generate Groups</button>
+</form>
+
+<!-- Display generated groups -->
+<div th:if="${shuffledGroups != null}">
+    <h3>Generated Groups:</h3>
+    <ul th:each="group, groupIndex : ${shuffledGroups}">
+        <li>
+            <p th:text="${'Group ' + (groupIndex.index + 1)}"></p>
+            <ul>
+                <li th:each="item : ${group}" th:text="${item}"></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<script>
+    var choice1 = document.getElementById("choice1");
+    if (choice1.checked == true || choice1.active == true) {
+        document.getElementById("groupSize").style.display = "block";
+    } else {
+        document.getElementById("groupSize").style.display = "none";
+    }
+    var choice2 = document.getElementById("choice2");
+    if (choice2.checked == true || choice2.active == true) {
+        document.getElementById("numberOfGroups").style.display = "block";
+    } else {
+        document.getElementById("numberOfGroups").style.display = "none";
+    }
+
+
+</script>
+
+
+</body>
+</html>
