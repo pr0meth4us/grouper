@@ -36,7 +36,6 @@ public class GroupingUtility {
         return shuffledArrayList;
     }
 
-    // Other methods remain unchanged
 
     public ArrayList<ArrayList<String>> getGroupsByNumberOfGroups(int numberOfGroups) {
         ArrayList<ArrayList<String>> groups = new ArrayList<>();
@@ -85,21 +84,21 @@ public class GroupingUtility {
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
 
-        for (ArrayList<String> group : groups) {
-            if (group.contains("Kittie") && group.contains("Noodle")) {
-                reshuffle = true;
-                break;
-            }
-                if (group.contains("Kittie") && group.contains("dogie")) {
-                    reshuffle = true;
-                break;
-            }
-        }
-
-        if (!reshuffle) {
-            System.out.println(groups);
-            return true;
-        }
+//        for (ArrayList<String> group : groups) {
+//            if (group.contains("Kittie") && group.contains("Noodle")) {
+//                reshuffle = true;
+//                break;
+//            }
+//                if (group.contains("Kittie") && group.contains("dogie")) {
+//                    reshuffle = true;
+//                break;
+//            }
+//        }
+//
+//        if (!reshuffle) {
+//            System.out.println(groups);
+//            return true;
+//        }
         return false;
     }
 }
