@@ -94,11 +94,11 @@ public class GroupingUtility {
 //                break;
 //            }
 //        }
-//
-//        if (!reshuffle) {
-//            System.out.println(groups);
-//            return true;
-//        }
+
+        if (!reshuffle) {
+            System.out.println(groups);
+            return true;
+        }
         return false;
     }
 }
