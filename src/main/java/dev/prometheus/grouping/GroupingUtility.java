@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 public class GroupingUtility {
-    private List<String> classList;
+    private ArrayList<ArrayList<String>> classList;
     private static Repository repository;
 
     @Autowired
@@ -22,83 +22,94 @@ public class GroupingUtility {
         this.classList = convertStudentListToStringList(repository.findAll());
     }
 
-    private List<String> convertStudentListToStringList(List<Student> students) {
-        List<String> stringList = new ArrayList<>();
+    private ArrayList<ArrayList<String>> convertStudentListToStringList(List<Student> students) {
+        ArrayList<ArrayList<String>> classList = new ArrayList<>();
         for (Student student : students) {
-            stringList.add(student.getName());
+            ArrayList<String> studentInfo = new ArrayList<>();
+            studentInfo.add(student.getId());
+            studentInfo.add(student.getName());
+            classList.add(studentInfo);
         }
-        return stringList;
+        return classList;
     }
 
-    public ArrayList<String> getShuffledList() {
-        ArrayList<String> shuffledArrayList = new ArrayList<>(classList);
+    public ArrayList<ArrayList<String>> getShuffledList() {
+        ArrayList<ArrayList<String>> shuffledArrayList = new ArrayList<>(classList);
         Collections.shuffle(shuffledArrayList);
         return shuffledArrayList;
     }
 
 
-    public ArrayList<ArrayList<String>> getGroupsByNumberOfGroups(int numberOfGroups) {
-        ArrayList<ArrayList<String>> groups = new ArrayList<>();
-        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList());
+    public ArrayList<ArrayList<ArrayList<String>>> getGroupsByNumberOfGroups(int numberOfGroups) {
+        ArrayList<ArrayList<ArrayList<String>>> groups = new ArrayList<>();
+        ArrayList<ArrayList<String>> shuffledArrayList = getShuffledList();
 
         for (int i = 0; i < numberOfGroups; i++) {
             groups.add(new ArrayList<>());
         }
 
-        for (int i = 0; i < ShuffleList.size(); i++) {
-            groups.get(i % numberOfGroups).add(ShuffleList.get(i));
+        for (ArrayList<String> studentInfo : shuffledArrayList) {
+            for (int i = 0; i < numberOfGroups; i++) {
+                groups.get(i).add(studentInfo);
+            }
         }
 
         return groups;
     }
 
-    public ArrayList<ArrayList<String>> getGroupByGroupSize(int groupSize) {
-        ArrayList<ArrayList<String>> groups = new ArrayList<>();
-        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList());
+    public ArrayList<ArrayList<ArrayList<String>>> getGroupByGroupSize(int groupSize) {
+        ArrayList<ArrayList<ArrayList<String>>> groups = new ArrayList<>();
+        ArrayList<ArrayList<String>> shuffledArrayList = getShuffledList();
 
-        int remainder = ShuffleList.size() % groupSize;
-
-        if (remainder == 0){
-            for (int i = 0; i < ShuffleList.size(); i += groupSize) {
-                groups.add(new ArrayList<>(ShuffleList.subList(i, i + groupSize)));
-            }
-        } else {
-            if (remainder > groupSize/2){
-                for (int i = 0; i < ShuffleList.size() - remainder; i += groupSize) {
-                    groups.add(new ArrayList<>(ShuffleList.subList(i, i + groupSize)));
-                }
-                groups.add(new ArrayList<>(ShuffleList.subList(ShuffleList.size() - remainder, ShuffleList.size())));
-            } else {
-                for (int i = 0; i < ShuffleList.size() - remainder; i += groupSize) {
-                    groups.add(new ArrayList<>(ShuffleList.subList(i, i + groupSize)));
-                }
-                for (int i = ShuffleList.size() - remainder; i < ShuffleList.size(); i++) {
-                    groups.get(i - (ShuffleList.size() - remainder)).add(ShuffleList.get(i));
-                }
-            }
-
+        for (int i = 0; i < shuffledArrayList.size(); i += groupSize) {
+            ArrayList<ArrayList<String>> group = new ArrayList<>(
+                    shuffledArrayList.subList(i, Math.min(i + groupSize, shuffledArrayList.size())));
+            groups.add(group);
         }
+
         return groups;
     }
 
-    public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
-        boolean reshuffle = false;
+    public static boolean reshuffle(ArrayList<ArrayList<ArrayList<String>>> groups) {
 
-//        for (ArrayList<String> group : groups) {
-//            if (group.contains("Kittie") && group.contains("Noodle")) {
-//                reshuffle = true;
-//                break;
-//            }
-//                if (group.contains("Kittie") && group.contains("dogie")) {
-//                    reshuffle = true;
-//                break;
+        boolean reshuffle = true;
+        for (ArrayList<ArrayList<String>> group : groups) {
+            for (ArrayList<String> ids : group) {
+                if (ids.contains("ee008eca-69c0-4033-a1a3-e9d3f7f66983")) {
+                    for (ArrayList<String> ids2 : group) {
+                        if (ids2.contains("122420b7-3336-4213-8112-45daebd6d7b4") && ids != ids2) {
+                            reshuffle = false;
+                            break;
+                        }
+                    }
+                }
+                if (ids.contains("a74a2535-f394-4861-8153-4ef1bf14499e")) {
+                    for (ArrayList<String> ids2 : group) {
+                        if (ids2.contains("87f80f9a-f623-4041-9f2c-6b2f0ce65bc6") && ids != ids2) {
+                            reshuffle = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+//        for (ArrayList<ArrayList<String>> group : groups) {
+//            for (ArrayList<String> ids : group) {
+//                if (ids.contains("a74a2535-f394-4861-8153-4ef1bf14499e")) {
+//                    for (ArrayList<String> ids2 : group) {
+//                        if (ids2.contains("87f80f9a-f623-4041-9f2c-6b2f0ce65bc6") && ids != ids2) {
+//                            reshuffle = false;
+//                            break;
+//                        }
+//                    }
+//                }
 //            }
 //        }
-
         if (!reshuffle) {
             System.out.println(groups);
             return true;
         }
         return false;
     }
+
 }

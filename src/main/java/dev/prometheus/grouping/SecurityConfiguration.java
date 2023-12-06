@@ -16,6 +16,13 @@ public class SecurityConfiguration {
     private String username;
     @Value("${PASSWORD}")
     private String password;
+    @Value("${ADMIN}")
+    private String admin;
+    @Value("${ADMINPW}")
+    private String PW;
+
+
+
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
@@ -28,18 +35,26 @@ public class SecurityConfiguration {
                 .password("1234")
                 .roles("USER")
                 .build();
+        UserDetails dev = User.withDefaultPasswordEncoder()
+                .username(admin)
+                .password(PW)
+                .roles("DEV")
+                .build();
 
-        return new InMemoryUserDetailsManager(user, guest);
+        return new InMemoryUserDetailsManager(user, guest, dev);
     }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain2(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/list/**").hasRole("ADMIN")
+                        .requestMatchers( "/admin/**").hasRole("DEV")
+                        .requestMatchers( "/list/**").hasAnyRole("ADMIN" , "DEV")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
+
 
 }

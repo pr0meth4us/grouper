@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class Controller {
@@ -39,7 +36,7 @@ public class Controller {
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<?> getStudentByID(@PathVariable("id") UUID id) {
+    public ResponseEntity<?> getStudentByID(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
         if (student.isPresent()) {
             return new ResponseEntity<>(student.get(), HttpStatus.OK);
@@ -49,7 +46,7 @@ public class Controller {
     }
 
     @GetMapping("/list/delete/{id}")
-    public ModelAndView deleteStudentByID(@PathVariable("id") UUID id) {
+    public ModelAndView deleteStudentByID(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
         if (student.isPresent()) {
             repository.deleteById(id);
@@ -72,9 +69,8 @@ public class Controller {
         return new ModelAndView("redirect:/list");
     }
 
-
     @GetMapping("/list/edit/{id}")
-    public ModelAndView editStudentForm(@PathVariable("id") UUID id) {
+    public ModelAndView editStudentForm(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
         ModelAndView modelAndView = new ModelAndView("edit");
         modelAndView.addObject("student", student);
@@ -82,7 +78,7 @@ public class Controller {
     }
 
     @PostMapping("/list/{id}")
-    public ModelAndView updateStudent(@PathVariable("id") UUID id, @ModelAttribute("student") Student student) {
+    public ModelAndView updateStudent(@PathVariable("id") String id, @ModelAttribute("student") Student student) {
         Student existingStudent = repository.findById(id).orElse(null);
         if (existingStudent != null) {
             existingStudent.setName(student.getName());
@@ -98,16 +94,16 @@ public class Controller {
             @RequestParam(name = "groupSize", required = false) Integer groupSize,
             @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
     ) {
-        ArrayList<ArrayList<String>> groups = new ArrayList<>();
+        ArrayList<ArrayList<ArrayList<String>>> groups = new ArrayList<>();
 
         if (choiceInt == 1 && groupSize != null) {
             do {
                 groups = groupingUtility.getGroupByGroupSize(groupSize);
-            } while (!GroupingUtility.reshuffle(groups));
+            } while (GroupingUtility.reshuffle(groups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
                 groups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
-            } while (!GroupingUtility.reshuffle(groups));
+            } while (GroupingUtility.reshuffle(groups));
         }
 
         ModelAndView modelAndView = new ModelAndView("group");

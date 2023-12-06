@@ -37,7 +37,7 @@
         <li>
             <p th:text="${'Group ' + (groupIndex.index + 1)}"></p>
             <ul>
-                <li th:each="item : ${group}" th:text="${item}"></li>
+                <li th:each="studentInfo : ${group}" th:text="${studentInfo}"></li>
             </ul>
         </li>
     </ul>
