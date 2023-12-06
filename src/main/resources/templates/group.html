@@ -8,14 +8,17 @@
             display: none;
         }
         #placeholder {
-            display: none;
+            display: block;
+            right: 10000px;
+            position: fixed;
+
         }
     </style>
 </head>
 <body>
 <h2>Groups Generator</h2>
 
-<form th:action="@{/group}" th:method="get" >
+<form th:action="@{/group}" th:method="get" th:default="3">
     <input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}" > <label>Select a method for group generation:</label><br>
 
     <input type="radio" id="choice1" name="choice" value="1" th:checked="${choiceInt == 1}" onclick="toggleInput('groupSize')"> by size of each group<br>
@@ -41,21 +44,25 @@
 </div>
 
 <script>
-    var choice1 = document.getElementById("choice1");
-    if (choice1.checked == true || choice1.active == true) {
-        document.getElementById("groupSize").style.display = "block";
-    } else {
-        document.getElementById("groupSize").style.display = "none";
-    }
-    var choice2 = document.getElementById("choice2");
-    if (choice2.checked == true || choice2.active == true) {
-        document.getElementById("numberOfGroups").style.display = "block";
-    } else {
-        document.getElementById("numberOfGroups").style.display = "none";
-    }
+    function toggleInput(inputId) {
+        var inputElement = document.getElementById(inputId);
 
+        var choice1 = document.getElementById("choice1");
+        var choice2 = document.getElementById("choice2");
 
+        if (choice1.checked || choice1.active) {
+            document.getElementById("groupSize").style.display = "block";
+            document.getElementById("numberOfGroups").style.display = "none";
+        } else if (choice2.checked || choice2.active) {
+            document.getElementById("numberOfGroups").style.display = "block";
+            document.getElementById("groupSize").style.display = "none";
+        } else {
+            document.getElementById("groupSize").style.display = "none";
+            document.getElementById("numberOfGroups").style.display = "none";
+        }
+    }
 </script>
+
 
 
 </body>
