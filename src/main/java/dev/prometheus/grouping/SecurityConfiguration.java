@@ -21,15 +21,21 @@ public class SecurityConfiguration {
         UserDetails user = User.withDefaultPasswordEncoder()
                 .username(username)
                 .password(password)
+                .roles("ADMIN")
+                .build();
+        UserDetails guest = User.withDefaultPasswordEncoder()
+                .username("guest")
+                .password("1234")
                 .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(user);
+
+        return new InMemoryUserDetailsManager(user, guest);
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/list/**").hasRole("USER")
+                        .requestMatchers("/list/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
