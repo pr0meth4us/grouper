@@ -18,6 +18,9 @@ class UUIDGenerator {
 public class Student {
     private String id = UUIDGenerator.generateUUID();
     private String name;
+    public Student(String name) {
+        this.name = name;
+    }
 
 
 }

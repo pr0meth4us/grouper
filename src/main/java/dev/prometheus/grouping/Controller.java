@@ -1,24 +1,19 @@
 package dev.prometheus.grouping;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class Controller {
-    private GroupingUtility groupingUtility;
-    private Repository repository;
+    private final GroupingUtility groupingUtility;
+    private final Repository repository;
 
     @Autowired
     public Controller(Repository repository, GroupingUtility groupingUtility) {
@@ -77,20 +72,26 @@ public class Controller {
     }
 
     @GetMapping("/addlist/form")
-    public ModelAndView addListStudentForm(@ModelAttribute("students") List<Student> students) {
+    public ModelAndView addListStudentForm() {
         ModelAndView modelAndView = new ModelAndView("addlist");
-        modelAndView.addObject("students", students);
 
         return modelAndView;
 
     }
 
     @PostMapping("/addlist")
-    public ModelAndView saveAllStudent(@ModelAttribute("students") @RequestBody List<Student> students) {
+    public ModelAndView saveAllStudent(@RequestBody List<Student> NewStudents) {
+        for (Student student : NewStudents) {
+            if (repository.existsByName(student.getName())) {
 
-        repository.saveAll(students);
+            }
+            else {
+                repository.save(student);
+            }
+        }
 
-        return new ModelAndView("redirect:/list");
+
+        return new ModelAndView("/list");
     }
 
 
@@ -125,11 +126,11 @@ public class Controller {
         if (choiceInt == 1 && groupSize != null) {
             do {
                 groups = groupingUtility.getGroupByGroupSize(groupSize);
-            } while (!GroupingUtility.reshuffle(groups));
+            } while (GroupingUtility.reshuffle(groups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
                 groups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
-            } while (!GroupingUtility.reshuffle(groups));
+            } while (GroupingUtility.reshuffle(groups));
         }
 
         ModelAndView modelAndView = new ModelAndView("group");
