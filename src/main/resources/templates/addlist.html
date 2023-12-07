@@ -1,24 +1,23 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>List of Names</title>
+    <title>List of Models</title>
 </head>
 <body>
+<div>
+    <div>
+        <h1>Add New Student</h1>
+        <div>
+            <form th:action="@{/addlist}" th:object="${students}" method="post">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" th:field="*{name}" id="name" placeholder="Enter name" name="name">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
 
-<form method="post" th:action="@{/list}">
-    <textarea name="names" rows="50" cols="50"></textarea>
-    <button type="submit">Submit</button>
-</form>
-
-<div th:if="${not #lists.isEmpty(names)}">
-    <h2>List of Names</h2>
-    <table>
-        <tr>
-            <th>Name</th>
-        </tr>
-        <tr th:each="name : ${names}">
-            <td th:text="${name}"></td>
-        </tr>
-    </table>
+            </form>
+        </div>
+    </div>
 </div>
 
 </body>

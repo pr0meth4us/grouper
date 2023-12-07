@@ -1,15 +1,19 @@
 package dev.prometheus.grouping;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class Controller {
@@ -32,14 +36,14 @@ public class Controller {
     public ModelAndView showList() {
         List<Student> students = repository.findAll();
 
-        ModelAndView modelAndView = new ModelAndView("list"); // Use the correct template name
+        ModelAndView modelAndView = new ModelAndView("list");
         modelAndView.addObject("students", students);
 
         return modelAndView;
     }
 
     @GetMapping("/list/{id}")
-    public ResponseEntity<?> getStudentByID(@PathVariable("id") UUID id) {
+    public ResponseEntity<?> getStudentByID(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
         if (student.isPresent()) {
             return new ResponseEntity<>(student.get(), HttpStatus.OK);
@@ -49,7 +53,7 @@ public class Controller {
     }
 
     @GetMapping("/list/delete/{id}")
-    public ModelAndView deleteStudentByID(@PathVariable("id") UUID id) {
+    public ModelAndView deleteStudentByID(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
         if (student.isPresent()) {
             repository.deleteById(id);
@@ -72,9 +76,27 @@ public class Controller {
         return new ModelAndView("redirect:/list");
     }
 
+    @GetMapping("/addlist/form")
+    public ModelAndView addListStudentForm(@ModelAttribute("students") List<Student> students) {
+        ModelAndView modelAndView = new ModelAndView("addlist");
+        modelAndView.addObject("students", students);
+
+        return modelAndView;
+
+    }
+
+    @PostMapping("/addlist")
+    public ModelAndView saveAllStudent(@ModelAttribute("students") @RequestBody List<Student> students) {
+
+        repository.saveAll(students);
+
+        return new ModelAndView("redirect:/list");
+    }
+
+
 
     @GetMapping("/list/edit/{id}")
-    public ModelAndView editStudentForm(@PathVariable("id") UUID id) {
+    public ModelAndView editStudentForm(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
         ModelAndView modelAndView = new ModelAndView("edit");
         modelAndView.addObject("student", student);
@@ -82,7 +104,7 @@ public class Controller {
     }
 
     @PostMapping("/list/{id}")
-    public ModelAndView updateStudent(@PathVariable("id") UUID id, @ModelAttribute("student") Student student) {
+    public ModelAndView updateStudent(@PathVariable("id") String id, @ModelAttribute("student") Student student) {
         Student existingStudent = repository.findById(id).orElse(null);
         if (existingStudent != null) {
             existingStudent.setName(student.getName());
