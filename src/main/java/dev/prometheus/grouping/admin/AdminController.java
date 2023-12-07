@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -39,7 +41,6 @@ public class AdminController {
                 .orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + id));
         studentRepository.delete(existingStudent);
 
-        // Update the student's ID and name
         existingStudent.setId(updatedStudent.getId());
         existingStudent.setName(updatedStudent.getName());
 
@@ -80,12 +81,25 @@ public class AdminController {
         }
     }
 
-    // ... (other methods)
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
         ModelAndView modelAndView = new ModelAndView("error"); // Specify the view name for error handling
         modelAndView.addObject("errorMessage", "An error occurred: " + e.getMessage());
         return modelAndView;
+    }
+    @GetMapping("/list/addlist")
+    public ModelAndView addStudentListForm() {
+        return new ModelAndView("addlist");
+    }
+    @PostMapping("/list/save")
+    public ModelAndView saveStudents(@RequestParam("studentList") String studentList) {
+        List<Student> students = Arrays.stream(studentList.split("\\r?\\n"))
+                .map(name -> new Student(name))
+                .collect(Collectors.toList());
+
+        studentRepository.saveAll(students);
+
+        return new ModelAndView("redirect:/list");
     }
 }

@@ -1,25 +1,17 @@
+<!-- Add this HTML form to your templates folder with the name addlistform.html -->
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>List of Names</title>
+    <meta charset="UTF-8">
+    <title>Add Students</title>
 </head>
 <body>
-
-<form method="post" th:action="@{/list}">
-    <textarea name="names" rows="50" cols="50"></textarea>
-    <button type="submit">Submit</button>
+<h2>Add Students</h2>
+<form action="/list/save" method="post">
+    <textarea name="studentList" rows="5" cols="30" required></textarea><br>
+    <input type="submit" value="Save">
 </form>
-
-<div th:if="${not #lists.isEmpty(names)}">
-    <h2>List of Names</h2>
-    <table>
-        <tr>
-            <th>Name</th>
-        </tr>
-        <tr th:each="name : ${names}">
-            <td th:text="${name}"></td>
-        </tr>
-    </table>
-</div>
-
+<br>
+<a th:href="@{/list}">Back to List</a>
 </body>
 </html>
