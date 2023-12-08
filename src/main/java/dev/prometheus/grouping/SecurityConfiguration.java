@@ -47,11 +47,10 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/list/**").hasRole("USER")
+                        .requestMatchers("/list/**", "/exclude/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
-                .formLogin().disable();
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 

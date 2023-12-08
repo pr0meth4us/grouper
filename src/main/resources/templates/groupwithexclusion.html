@@ -16,12 +16,9 @@
     </style>
 </head>
 <body>
-<a th:href="@{/exclude}">Need to exclude someone?</a>
-
-
 <h2>Groups Generator</h2>
 
-<form th:action="@{/group}" th:method="get" th:default="3">
+<form th:action="@{/groupwithexclusion}" th:method="get" th:default="3">
     <input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}" > <label>Select a method for group generation:</label><br>
 
     <input type="radio" id="choice1" name="choice" value="1" th:checked="${choiceInt == 1}" onclick="toggleInput('groupSize')"> by size of each group<br>

@@ -1,5 +1,4 @@
-package dev.prometheus.grouping;
-
+package dev.prometheus.grouping.exclude;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,11 +13,13 @@ class UUIDGenerator {
 }
 @Getter
 @Setter
-@Document(collection = "e#3_2")
-public class Student {
+@Document(collection = "exclude")
+public class Exclude {
     private String id = UUIDGenerator.generateUUID();
     private String name;
 
+    public Exclude() {
+    }
     public String getId() {
         return id;
     }
@@ -26,5 +27,14 @@ public class Student {
     public String getName() {
         return name;
     }
+
+
+
+    public void setId(String id) {
+    }
+
+
+
+    // Implement methods from Entity interface
 
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Autocomplete component</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" media="screen">
+    <script th:src="@{/js/script.js}"></script>
+    <style>
+        .value {
+            display: none;
+        }
+
+        .name {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<form onsubmit="submitExcludeForm()">
+    <select multiple class="exclude">
+        <option th:each="exclude : ${excludees}" th:value="${exclude.name}" th:attr="data-id=${exclude.id}">
+            <span th:text="${exclude.name}" class="name"></span>
+        </option>
+    </select>
+    <button type="submit" >Submit</button>
+</form>
+
+<script>
+    function submitExcludeForm() {
+        var selectedOptions = document.getElementsByTagName("option");
+        var excludees = [];
+        for (var i = 0; i < selectedOptions.length; i++) {
+            if (selectedOptions[i].selected) {
+                excludees.push(selectedOptions[i].getAttribute("data-id"));
+                console.log(selectedOptions[i].getAttribute("data-id"));
+            }
+        }
+        console.log(excludees);
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("delete", "/exclude/process", true);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+
+        console.log("json" + JSON.stringify(excludees));
+        console.log("normal" + excludees);
+
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState === 4) {
+                window.location.href = '/groupwithexclusion';
+
+            }
+        };
+
+        xhttp.send(JSON.stringify(excludees));
+
+
+
+
+        return false;
+    }
+</script>
+</body>
+
+</html>

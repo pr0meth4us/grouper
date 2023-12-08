@@ -35,14 +35,13 @@
         });
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "/addlist", true);
+        xhttp.open("Delete", "/addlist", true);
         xhttp.setRequestHeader("Content-type", "application/json");
 
         // Handle the state change event
         xhttp.onreadystatechange = function () {
             if (xhttp.readyState === 4) {
                 if (xhttp.status === 200) {
-                    // Redirect upon successful response
                     window.location.href = '/list';
                 }
             }
