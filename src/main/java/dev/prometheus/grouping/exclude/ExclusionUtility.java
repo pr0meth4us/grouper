@@ -87,7 +87,7 @@ public class ExclusionUtility {
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
-//        for (ArrayList<String> group : groups) {
+//        for (ArrayList<String> group: groups) {
 //            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
 //            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
 //            if (conflict1 || conflict2) {

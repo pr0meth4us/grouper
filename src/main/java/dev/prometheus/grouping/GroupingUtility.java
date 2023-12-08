@@ -85,19 +85,25 @@ public class GroupingUtility {
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
+        Human human = new Human();
+        String kittie = human.getKittie();
+        String dogie = human.getDogie();
+        String noodle = human.getNoodle();
 
 
-//        System.out.println(kittie);
-//
-//        for (ArrayList<String> group : groups) {
-//            System.out.println("Contains kittie: " + group.contains(kittie));
-//            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
-//            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
-//            if (conflict1 || conflict2) {
-//                reshuffle = true;
-//                break;
-//            }
-//        }
+        System.out.println(kittie);
+        System.out.println(dogie);
+        System.out.println(noodle);
+
+        for (ArrayList<String> group : groups) {
+            System.out.println("Contains kittie: " + group.contains(kittie));
+            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
+            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
+            if (conflict1 || conflict2) {
+                reshuffle = true;
+                break;
+            }
+        }
 
         return reshuffle;
     }
