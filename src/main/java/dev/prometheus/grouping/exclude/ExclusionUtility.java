@@ -1,7 +1,8 @@
-package dev.prometheus.grouping;
+package dev.prometheus.grouping.exclude;
+
+import dev.prometheus.grouping.Student;
 import io.github.cdimascio.dotenv.Dotenv;
 
-// ...
 
 
 
@@ -17,11 +18,11 @@ import java.util.List;
 @RestController
 @Setter
 @Getter
-public class GroupingUtility {
+public class ExclusionUtility {
     private List<String> classList;
-    private static Repository repository;
+    private static TempoRepo repository;
 
-//    @Value("${KITTIE}")
+    //    @Value("${KITTIE}")
 //    private static String kittie;
 //    @Value("${NOODLE}")
 //    private static String noodle;
@@ -34,14 +35,14 @@ public class GroupingUtility {
 
 
     @Autowired
-    public GroupingUtility(Repository repository) {
+    public ExclusionUtility(TempoRepo repository) {
         this.repository = repository;
         this.classList = convertStudentListToStringList(repository.findAll());
     }
 
-    private List<String> convertStudentListToStringList(List<Student> students) {
+    private List<String> convertStudentListToStringList(List<Exclude> students) {
         List<String> stringList = new ArrayList<>();
-        for (Student student : students) {
+        for (Exclude student : students) {
             stringList.add(student.getName());
         }
         return stringList;

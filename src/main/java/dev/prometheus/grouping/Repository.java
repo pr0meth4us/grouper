@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface Repository extends MongoRepository<Student, String> {
+    public interface Repository extends MongoRepository<Student, String> {
 
     Optional<Student> findById(UUID id);
 
