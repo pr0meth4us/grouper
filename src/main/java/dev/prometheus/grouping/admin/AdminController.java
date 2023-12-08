@@ -18,7 +18,7 @@ public class AdminController {
 
     @GetMapping
     public ModelAndView showAll() {
-        List<Student> students = studentRepository.findAll();
+        List < Student > students = studentRepository.findAll();
         ModelAndView modelAndView = new ModelAndView("showAll"); // Specify the view name (showAll.html) without extension
         modelAndView.addObject("students", students);
         return modelAndView;
@@ -44,7 +44,7 @@ public class AdminController {
 
         studentRepository.save(existingStudent);
 
-        ModelAndView modelAndView = new ModelAndView("/"); // Specify the view name (updateSuccess.html) without extension
+        ModelAndView modelAndView = new ModelAndView("/");
         return modelAndView;
     }
 }

@@ -18,8 +18,7 @@ public class Exclude {
     private String id = UUIDGenerator.generateUUID();
     private String name;
 
-    public Exclude() {
-    }
+    public Exclude() {}
     public String getId() {
         return id;
     }
@@ -28,12 +27,6 @@ public class Exclude {
         return name;
     }
 
-
-
-    public void setId(String id) {
-    }
-
-
-
+    public void setId(String id) {}
 
 }

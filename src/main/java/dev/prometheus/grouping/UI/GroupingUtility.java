@@ -80,8 +80,7 @@ public class GroupingUtility {
         for (int i = 0; i < ShuffleList.size(); i++) {
             groups.get(i % numberOfGroups).add(ShuffleList.get(i));
         }
-
-        return replaceIdsWithNames(groups);
+        return groups;
     }
 
     public ArrayList<ArrayList<String>> getGroupByGroupSize(int groupSize) {
@@ -110,11 +109,8 @@ public class GroupingUtility {
             }
 
         }
-        System.out.println("1" +groups);
-        ArrayList<ArrayList<String>> NameList = replaceIdsWithNames(groups);
-        System.out.println(NameList);
 
-        return NameList;
+        return groups;
     }
     public ArrayList<ArrayList<String>> replaceIdsWithNames(ArrayList<ArrayList<String>> groups) {
         ArrayList<ArrayList<String>> modifiedGroups = new ArrayList<>();
@@ -149,6 +145,7 @@ public class GroupingUtility {
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
         for (ArrayList<String> group : groups) {
+
             boolean conflict1 = group.contains("kittie") && group.contains("dogie");
             boolean conflict2 = group.contains("kittie") && group.contains("noodle");
             if (conflict1 || conflict2) {

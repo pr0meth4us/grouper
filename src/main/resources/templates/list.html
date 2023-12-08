@@ -26,12 +26,10 @@
     <tr th:each="student, iterStat : ${students}">
         <td th:text="${iterStat.count}">1</td>
         <td th:text="${student.name}">Name</td>
-            <td>
-                <a th:href="@{/list/edit/{id}(id=${student.id})}" class="button">Edit</a>
-                <a th:href="@{/list/delete/{id}(id=${student.id})}" class="button">Delete</a>
-            </td>
-
-
+        <td>
+            <a th:href="@{/list/edit/{id}(id=${student.id})}" class="button">Edit</a>
+            <a th:href="@{/list/delete/{id}(id=${student.id})}" class="button">Delete</a>
+        </td>
     </tr>
     </tbody>
 </table>

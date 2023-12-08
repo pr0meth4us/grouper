@@ -1,6 +1,8 @@
 package dev.prometheus.grouping.exclude;
 
 
+
+import dev.prometheus.grouping.UI.Student;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +16,49 @@ import java.util.List;
 @Setter
 @Getter
 public class ExclusionUtility {
-    private List<String> classList;
+    private List<String> NameList;
+    private List<String> IdList;
     private static TempoRepo repository;
+    private static ArrayList<ArrayList<String>> studentInfo;
+
     @Autowired
     public ExclusionUtility(TempoRepo repository) {
         this.repository = repository;
-        this.classList = convertStudentListToStringList(repository.findAll());
+        this.NameList = convertStudentListToNameList(repository.findAll());
+        this.IdList = convertStudentListToIdList(repository.findAll());
+        this.studentInfo = createStudentList();
     }
-
-    private List<String> convertStudentListToStringList(List<Exclude> students) {
-        List<String> stringList = new ArrayList<>();
+    private List<String> convertStudentListToIdList(List<Exclude> students) {
+        List<String> idList = new ArrayList<>();
         for (Exclude student : students) {
-            stringList.add(student.getName());
+            idList.add(student.getId());
         }
-        return stringList;
+        return idList;
+    }
+    private List<String> convertStudentListToNameList(List<Exclude> students) {
+        List<String> nameList = new ArrayList<>();
+        for (Exclude student : students) {
+            nameList.add(student.getName());
+        }
+        return nameList;
+    }
+    public ArrayList<ArrayList<String>> createStudentList() {
+        ArrayList<ArrayList<String>> students = new ArrayList<>();
+        for (int i = 0; i < NameList.size(); i++) {
+            String name = NameList.get(i);
+            String id = IdList.get(i);
+
+            ArrayList<String> studentInfo = new ArrayList<>();
+            studentInfo.add(id);
+            studentInfo.add(name);
+
+            students.add(studentInfo);
+        }
+        return students;
     }
 
     public ArrayList<String> getShuffledList() {
-        ArrayList<String> shuffledArrayList = new ArrayList<>(classList);
+        ArrayList<String> shuffledArrayList = new ArrayList<>(IdList);
         Collections.shuffle(shuffledArrayList);
         return shuffledArrayList;
     }
@@ -48,7 +75,6 @@ public class ExclusionUtility {
         for (int i = 0; i < ShuffleList.size(); i++) {
             groups.get(i % numberOfGroups).add(ShuffleList.get(i));
         }
-
         return groups;
     }
 
@@ -78,24 +104,48 @@ public class ExclusionUtility {
             }
 
         }
+
         return groups;
+    }
+    public static ArrayList<ArrayList<String>> replaceIdsWithNames(ArrayList<ArrayList<String>> groups) {
+        ArrayList<ArrayList<String>> modifiedGroups = new ArrayList<>();
+
+        for (ArrayList<String> ids : groups) {
+            ArrayList<String> modifiedIds = new ArrayList<>();
+
+            for (String id : ids) {
+                boolean found = false;
+
+                for (ArrayList<String> info : studentInfo) {
+                    if (id.equals(info.get(0))) {
+                        modifiedIds.add(info.get(1));
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    modifiedIds.add(id);
+                }
+            }
+
+            modifiedGroups.add(modifiedIds);
+        }
+
+        return modifiedGroups;
     }
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
-//        for (ArrayList<String> group: groups) {
-//            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
-//            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
-//            if (conflict1 || conflict2) {
-//                reshuffle = true;
-//                break;
-//            }
-//        }
+        for (ArrayList<String> group : groups) {
+
+            boolean conflict1 = group.contains("kittie") && group.contains("dogie");
+            boolean conflict2 = group.contains("kittie") && group.contains("noodle");
+            if (conflict1 || conflict2) {
+                reshuffle = true;
+                break;
+            }
+        }
 
         return reshuffle;
-    }
-
-
-    public static class getShuffledList extends ArrayList<String> {
     }
 }

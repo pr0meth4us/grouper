@@ -1,4 +1,4 @@
-package dev.prometheus.grouping.UI;
+package dev.prometheus.grouping;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,9 +67,9 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/list/**", "/exclude/**").hasRole("USER")
-                        .requestMatchers("/list/", "/exclude/**").hasRole("GUEST")
-                        .requestMatchers("/list/**", "/exclude/**", "/admin/**").hasRole("DEV")
+                        .requestMatchers("/list/**").hasRole("USER")
+                        .requestMatchers("/list/").hasRole("GUEST")
+                        .requestMatchers("/list/**", "/admin/**").hasRole("DEV")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
@@ -79,7 +79,7 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

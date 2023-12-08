@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +33,8 @@ public class Controller {
     @GetMapping("/list")
     public ModelAndView showList() {
         List<Student> students = repository.findAll();
-
         ModelAndView modelAndView = new ModelAndView("list");
+        Collections.shuffle(students);
         modelAndView.addObject("students", students);
 
         return modelAndView;
@@ -84,10 +85,7 @@ public class Controller {
     @PostMapping("/addlist")
     public ModelAndView saveAllStudent(@RequestBody List<Student> NewStudents) {
         for (Student student : NewStudents) {
-            if (repository.existsByName(student.getName())) {
-
-            }
-            else {
+            if (!repository.existsByName(student.getName())) {
                 repository.save(student);
             }
         }
@@ -121,18 +119,18 @@ public class Controller {
             @RequestParam(name = "groupSize", required = false) Integer groupSize,
             @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
     ) {
-        ArrayList<ArrayList<String>> groups = new ArrayList<>();
+        ArrayList<ArrayList<String>> idgroups = new ArrayList<>();
 
         if (choiceInt == 1 && groupSize != null) {
             do {
-                groups = groupingUtility.getGroupByGroupSize(groupSize);
-            } while (GroupingUtility.reshuffle(groups));
+                idgroups = groupingUtility.getGroupByGroupSize(groupSize);
+            } while (!GroupingUtility.reshuffle(idgroups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
-                groups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
-            } while (GroupingUtility.reshuffle(groups));
+                idgroups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
+            } while (!GroupingUtility.reshuffle(idgroups));
         }
-        System.out.println(groups);
+        ArrayList<ArrayList<String>> groups = groupingUtility.replaceIdsWithNames(idgroups);
 
         ModelAndView modelAndView = new ModelAndView("group");
         modelAndView.addObject("shuffledGroups", groups);

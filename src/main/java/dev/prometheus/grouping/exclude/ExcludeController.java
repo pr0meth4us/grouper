@@ -1,5 +1,6 @@
 package dev.prometheus.grouping.exclude;
 
+
 import dev.prometheus.grouping.UI.Repository;
 import dev.prometheus.grouping.UI.Student;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,18 +64,18 @@ public class ExcludeController {
             @RequestParam(name = "groupSize", required = false) Integer groupSize,
             @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
     ) {
-        ArrayList<ArrayList<String>> groups = new ArrayList<>();
+        ArrayList<ArrayList<String>> idgroups = new ArrayList<>();
 
         if (choiceInt == 1 && groupSize != null) {
             do {
-                groups = groupingUtility.getGroupByGroupSize(groupSize);
-            } while (ExclusionUtility.reshuffle(groups));
+                idgroups = groupingUtility.getGroupByGroupSize(groupSize);
+            } while (ExclusionUtility.reshuffle(idgroups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
-                groups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
-            } while (ExclusionUtility.reshuffle(groups));
+                idgroups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
+            } while (ExclusionUtility.reshuffle(idgroups));
         }
-
+        ArrayList<ArrayList<String>> groups = ExclusionUtility.replaceIdsWithNames(idgroups);
         ModelAndView modelAndView = new ModelAndView("groupwithexclusion");
         modelAndView.addObject("shuffledGroups", groups);
         modelAndView.addObject("choiceInt", choiceInt);

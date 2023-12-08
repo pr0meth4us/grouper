@@ -11,8 +11,7 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <th>Action</th> <!-- Add a new column for the update button -->
-        <!-- Add more columns if needed -->
+        <th>Action</th>
     </tr>
     <tr th:each="student : ${students}">
         <td th:text="${student.id}"></td>
