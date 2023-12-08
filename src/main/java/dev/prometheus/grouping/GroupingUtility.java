@@ -1,13 +1,11 @@
 package dev.prometheus.grouping;
 import io.github.cdimascio.dotenv.Dotenv;
-
-// ...
-
-
-
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -20,18 +18,6 @@ import java.util.List;
 public class GroupingUtility {
     private List<String> classList;
     private static Repository repository;
-
-//    @Value("${KITTIE}")
-//    private static String kittie;
-//    @Value("${NOODLE}")
-//    private static String noodle;
-//    @Value("${DOGIE}")
-//    private static String dogie;
-    static Dotenv dotenv = Dotenv.load();
-    static String kittie = dotenv.get("KITTIE");
-    static String noodle = dotenv.get("NOODLE");
-    static String dogie = dotenv.get("DOGIE");
-
 
     @Autowired
     public GroupingUtility(Repository repository) {
@@ -100,14 +86,19 @@ public class GroupingUtility {
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
-        for (ArrayList<String> group : groups) {
-            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
-            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
-            if (conflict1 || conflict2) {
-                reshuffle = true;
-                break;
-            }
-        }
+
+
+//        System.out.println(kittie);
+//
+//        for (ArrayList<String> group : groups) {
+//            System.out.println("Contains kittie: " + group.contains(kittie));
+//            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
+//            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
+//            if (conflict1 || conflict2) {
+//                reshuffle = true;
+//                break;
+//            }
+//        }
 
         return reshuffle;
     }
