@@ -1,25 +1,56 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>List of Names</title>
+    <title>Add Students</title>
 </head>
 <body>
 
-<form method="post" th:action="@{/list}">
-    <textarea name="names" rows="50" cols="50"></textarea>
-    <button type="submit">Submit</button>
+<h2>Add Students</h2>
+
+<form th:object="${NewStudents}" onsubmit="return addStudent()" method="post">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <textarea cols="50" rows="5" id="name" placeholder="Enter names (one per line)" name="name"></textarea>
+    </div>
+    <button type="submit">Save</button>
 </form>
 
-<div th:if="${not #lists.isEmpty(names)}">
-    <h2>List of Names</h2>
-    <table>
-        <tr>
-            <th>Name</th>
-        </tr>
-        <tr th:each="name : ${names}">
-            <td th:text="${name}"></td>
-        </tr>
-    </table>
-</div>
+<script>
+    function addStudent() {
+        var namesInput = document.getElementById("name").value;
+        var students = namesInput.split(/\r?\n/);
+
+        students = students.filter(function (student) {
+            return student.trim() !== "";
+        });
+
+        // Process and transform the input
+        students = students.map(function (student) {
+            var parts = student.split(/\s+/);
+            // Capitalize the first letter of each part
+            parts = parts.map(function (part) {
+                return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+            });
+            return parts.join(" ");
+        });
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("Delete", "/addlist", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+
+        // Handle the state change event
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState === 4) {
+                if (xhttp.status === 200) {
+                    window.location.href = '/list';
+                }
+            }
+        };
+
+        xhttp.send(JSON.stringify(students));
+        return false; // Prevents the form from submitting traditionally
+    }
+</script>
 
 </body>
 </html>

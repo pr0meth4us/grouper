@@ -1,7 +1,7 @@
 package dev.prometheus.grouping;
-
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,103 +13,157 @@ import java.util.List;
 @Setter
 @Getter
 public class GroupingUtility {
-    private ArrayList<ArrayList<String>> classList;
+    private List<String> NameList;
+    private List<String> IdList;
+    private ArrayList<ArrayList<String>> studentInfo;
     private static Repository repository;
 
     @Autowired
     public GroupingUtility(Repository repository) {
         this.repository = repository;
-        this.classList = convertStudentListToStringList(repository.findAll());
+        this.NameList = convertStudentListToNameList(repository.findAll());
+        this.IdList = convertStudentListToIdList(repository.findAll());
+        this.studentInfo = createStudentList();
     }
 
-    private ArrayList<ArrayList<String>> convertStudentListToStringList(List<Student> students) {
-        ArrayList<ArrayList<String>> classList = new ArrayList<>();
+
+    private List<String> convertStudentListToIdList(List<Student> students) {
+        List<String> idList = new ArrayList<>();
         for (Student student : students) {
-            ArrayList<String> studentInfo = new ArrayList<>();
-            studentInfo.add(student.getId());
-            studentInfo.add(student.getName());
-            classList.add(studentInfo);
+            idList.add(student.getId());
         }
-        return classList;
+        return idList;
+    }
+    private List<String> convertStudentListToNameList(List<Student> students) {
+        List<String> nameList = new ArrayList<>();
+        for (Student student : students) {
+            nameList.add(student.getName());
+        }
+        return nameList;
     }
 
-    public ArrayList<ArrayList<String>> getShuffledList() {
-        ArrayList<ArrayList<String>> shuffledArrayList = new ArrayList<>(classList);
+     public ArrayList<ArrayList<String>> createStudentList() {
+        ArrayList<ArrayList<String>> students = new ArrayList<>();
+        for (int i = 0; i < NameList.size(); i++) {
+            String name = NameList.get(i);
+            String id = IdList.get(i);
+
+            ArrayList<String> studentInfo = new ArrayList<>();
+            studentInfo.add(id);
+            studentInfo.add(name);
+
+            students.add(studentInfo);
+        }
+        return students;
+    }
+
+
+
+
+
+
+    public ArrayList<String> getShuffledList() {
+        ArrayList<String> shuffledArrayList = new ArrayList<>(IdList);
         Collections.shuffle(shuffledArrayList);
         return shuffledArrayList;
     }
 
 
-    public ArrayList<ArrayList<ArrayList<String>>> getGroupsByNumberOfGroups(int numberOfGroups) {
-        ArrayList<ArrayList<ArrayList<String>>> groups = new ArrayList<>();
-        ArrayList<ArrayList<String>> shuffledArrayList = getShuffledList();
+    public ArrayList<ArrayList<String>> getGroupsByNumberOfGroups(int numberOfGroups) {
+        ArrayList<ArrayList<String>> groups = new ArrayList<>();
+        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList());
 
         for (int i = 0; i < numberOfGroups; i++) {
             groups.add(new ArrayList<>());
         }
 
-        for (ArrayList<String> studentInfo : shuffledArrayList) {
-            for (int i = 0; i < numberOfGroups; i++) {
-                groups.get(i).add(studentInfo);
+        for (int i = 0; i < ShuffleList.size(); i++) {
+            groups.get(i % numberOfGroups).add(ShuffleList.get(i));
+        }
+
+        return replaceIdsWithNames(groups);
+    }
+
+    public ArrayList<ArrayList<String>> getGroupByGroupSize(int groupSize) {
+        ArrayList<ArrayList<String>> groups = new ArrayList<>();
+        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList());
+
+        int remainder = ShuffleList.size() % groupSize;
+
+        if (remainder == 0){
+            for (int i = 0; i < ShuffleList.size(); i += groupSize) {
+                groups.add(new ArrayList<>(ShuffleList.subList(i, i + groupSize)));
+            }
+        } else {
+            if (remainder > groupSize/2){
+                for (int i = 0; i < ShuffleList.size() - remainder; i += groupSize) {
+                    groups.add(new ArrayList<>(ShuffleList.subList(i, i + groupSize)));
+                }
+                groups.add(new ArrayList<>(ShuffleList.subList(ShuffleList.size() - remainder, ShuffleList.size())));
+            } else {
+                for (int i = 0; i < ShuffleList.size() - remainder; i += groupSize) {
+                    groups.add(new ArrayList<>(ShuffleList.subList(i, i + groupSize)));
+                }
+                for (int i = ShuffleList.size() - remainder; i < ShuffleList.size(); i++) {
+                    groups.get(i - (ShuffleList.size() - remainder)).add(ShuffleList.get(i));
+                }
+            }
+
+        }
+
+        return replaceIdsWithNames(groups);
+    }
+    public ArrayList<ArrayList<String>> replaceIdsWithNames(ArrayList<ArrayList<String>> groups) {
+        ArrayList<ArrayList<String>> modifiedGroups = new ArrayList<>();
+
+        for (ArrayList<String> ids : groups) {
+            ArrayList<String> modifiedIds = new ArrayList<>();
+
+            for (String id : ids) {
+                boolean found = false;
+
+                for (ArrayList<String> info : studentInfo) {
+                    if (id.equals(info.get(0))) {
+                        modifiedIds.add(info.get(1));
+                        found = true;
+                        break;
+                    }
+                }
+
+                // If the id was not found in studentInfo, keep the original id
+                if (!found) {
+                    modifiedIds.add(id);
+                }
+            }
+
+            modifiedGroups.add(modifiedIds);
+        }
+
+        return modifiedGroups;
+    }
+
+
+
+    public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
+        boolean reshuffle = false;
+        Human human = new Human();
+        String kittie = human.getKittie();
+        String dogie = human.getDogie();
+        String noodle = human.getNoodle();
+        System.out.println(kittie);
+        System.out.println(dogie);
+        System.out.println(noodle);
+
+        for (ArrayList<String> group : groups) {
+            System.out.println("Contains kittie: " + group.contains(kittie));
+            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
+            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
+            if (conflict1 || conflict2) {
+                reshuffle = true;
+                break;
             }
         }
 
-        return groups;
+        return reshuffle;
     }
-
-    public ArrayList<ArrayList<ArrayList<String>>> getGroupByGroupSize(int groupSize) {
-        ArrayList<ArrayList<ArrayList<String>>> groups = new ArrayList<>();
-        ArrayList<ArrayList<String>> shuffledArrayList = getShuffledList();
-
-        for (int i = 0; i < shuffledArrayList.size(); i += groupSize) {
-            ArrayList<ArrayList<String>> group = new ArrayList<>(
-                    shuffledArrayList.subList(i, Math.min(i + groupSize, shuffledArrayList.size())));
-            groups.add(group);
-        }
-
-        return groups;
-    }
-
-    public static boolean reshuffle(ArrayList<ArrayList<ArrayList<String>>> groups) {
-
-        boolean reshuffle = true;
-        for (ArrayList<ArrayList<String>> group : groups) {
-            for (ArrayList<String> ids : group) {
-                if (ids.contains("ee008eca-69c0-4033-a1a3-e9d3f7f66983")) {
-                    for (ArrayList<String> ids2 : group) {
-                        if (ids2.contains("122420b7-3336-4213-8112-45daebd6d7b4") && ids != ids2) {
-                            reshuffle = false;
-                            break;
-                        }
-                    }
-                }
-                if (ids.contains("a74a2535-f394-4861-8153-4ef1bf14499e")) {
-                    for (ArrayList<String> ids2 : group) {
-                        if (ids2.contains("87f80f9a-f623-4041-9f2c-6b2f0ce65bc6") && ids != ids2) {
-                            reshuffle = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-//        for (ArrayList<ArrayList<String>> group : groups) {
-//            for (ArrayList<String> ids : group) {
-//                if (ids.contains("a74a2535-f394-4861-8153-4ef1bf14499e")) {
-//                    for (ArrayList<String> ids2 : group) {
-//                        if (ids2.contains("87f80f9a-f623-4041-9f2c-6b2f0ce65bc6") && ids != ids2) {
-//                            reshuffle = false;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        if (!reshuffle) {
-            System.out.println(groups);
-            return true;
-        }
-        return false;
-    }
-
 }

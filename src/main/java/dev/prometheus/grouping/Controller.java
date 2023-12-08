@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.*;
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class Controller {
-    private GroupingUtility groupingUtility;
-    private Repository repository;
+    private final GroupingUtility groupingUtility;
+    private final Repository repository;
 
     @Autowired
     public Controller(Repository repository, GroupingUtility groupingUtility) {
@@ -21,6 +24,8 @@ public class Controller {
 
     @GetMapping("/")
     public ModelAndView homepage() {
+        System.out.println(groupingUtility.createStudentList());
+
         return new ModelAndView("index");
     }
 
@@ -29,7 +34,7 @@ public class Controller {
     public ModelAndView showList() {
         List<Student> students = repository.findAll();
 
-        ModelAndView modelAndView = new ModelAndView("list"); // Use the correct template name
+        ModelAndView modelAndView = new ModelAndView("list");
         modelAndView.addObject("students", students);
 
         return modelAndView;
@@ -69,6 +74,29 @@ public class Controller {
         return new ModelAndView("redirect:/list");
     }
 
+    @GetMapping("/addlist/form")
+    public ModelAndView addListStudentForm() {
+        ModelAndView modelAndView = new ModelAndView("addlist");
+
+        return modelAndView;
+
+    }
+
+    @PostMapping("/addlist")
+    public ModelAndView saveAllStudent(@RequestBody List<Student> NewStudents) {
+        for (Student student : NewStudents) {
+            if (repository.existsByName(student.getName())) {
+
+            }
+            else {
+                repository.save(student);
+            }
+        }
+        return new ModelAndView("/list");
+    }
+
+
+
     @GetMapping("/list/edit/{id}")
     public ModelAndView editStudentForm(@PathVariable("id") String id) {
         Optional<Student> student = repository.findById(id);
@@ -94,7 +122,7 @@ public class Controller {
             @RequestParam(name = "groupSize", required = false) Integer groupSize,
             @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
     ) {
-        ArrayList<ArrayList<ArrayList<String>>> groups = new ArrayList<>();
+        ArrayList<ArrayList<String>> groups = new ArrayList<>();
 
         if (choiceInt == 1 && groupSize != null) {
             do {
@@ -105,6 +133,7 @@ public class Controller {
                 groups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
             } while (GroupingUtility.reshuffle(groups));
         }
+        System.out.println(groups);
 
         ModelAndView modelAndView = new ModelAndView("group");
         modelAndView.addObject("shuffledGroups", groups);
