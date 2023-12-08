@@ -130,7 +130,6 @@ public class GroupingUtility {
                     }
                 }
 
-                // If the id was not found in studentInfo, keep the original id
                 if (!found) {
                     modifiedIds.add(id);
                 }
