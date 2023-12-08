@@ -1,5 +1,4 @@
 package dev.prometheus.grouping;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,7 +1,6 @@
 package dev.prometheus.grouping.exclude;
 
 import dev.prometheus.grouping.Student;
-import io.github.cdimascio.dotenv.Dotenv;
 
 
 
@@ -21,19 +20,6 @@ import java.util.List;
 public class ExclusionUtility {
     private List<String> classList;
     private static TempoRepo repository;
-
-    //    @Value("${KITTIE}")
-//    private static String kittie;
-//    @Value("${NOODLE}")
-//    private static String noodle;
-//    @Value("${DOGIE}")
-//    private static String dogie;
-    static Dotenv dotenv = Dotenv.load();
-    static String kittie = dotenv.get("KITTIE");
-    static String noodle = dotenv.get("NOODLE");
-    static String dogie = dotenv.get("DOGIE");
-
-
     @Autowired
     public ExclusionUtility(TempoRepo repository) {
         this.repository = repository;
@@ -101,14 +87,14 @@ public class ExclusionUtility {
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
-        for (ArrayList<String> group : groups) {
-            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
-            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
-            if (conflict1 || conflict2) {
-                reshuffle = true;
-                break;
-            }
-        }
+//        for (ArrayList<String> group : groups) {
+//            boolean conflict1 = group.contains(kittie) && group.contains(dogie);
+//            boolean conflict2 = group.contains(kittie) && group.contains(noodle);
+//            if (conflict1 || conflict2) {
+//                reshuffle = true;
+//                break;
+//            }
+//        }
 
         return reshuffle;
     }
