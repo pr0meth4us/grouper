@@ -1,8 +1,7 @@
 package dev.prometheus.grouping.exclude;
 
-import dev.prometheus.grouping.GroupingUtility;
-import dev.prometheus.grouping.Repository;
-import dev.prometheus.grouping.Student;
+import dev.prometheus.grouping.UI.Repository;
+import dev.prometheus.grouping.UI.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

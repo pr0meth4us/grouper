@@ -1,7 +1,7 @@
 package dev.prometheus.grouping.admin;
 
-import dev.prometheus.grouping.Repository;
-import dev.prometheus.grouping.Student;
+import dev.prometheus.grouping.UI.Repository;
+import dev.prometheus.grouping.UI.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +44,7 @@ public class AdminController {
 
         studentRepository.save(existingStudent);
 
-        ModelAndView modelAndView = new ModelAndView("updateSuccess"); // Specify the view name (updateSuccess.html) without extension
+        ModelAndView modelAndView = new ModelAndView("/"); // Specify the view name (updateSuccess.html) without extension
         return modelAndView;
     }
 }

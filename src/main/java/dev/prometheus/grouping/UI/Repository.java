@@ -1,5 +1,6 @@
-package dev.prometheus.grouping;
+package dev.prometheus.grouping.UI;
 
+import dev.prometheus.grouping.UI.Student;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package dev.prometheus.grouping;
+package dev.prometheus.grouping.UI;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +26,14 @@ public class SecurityConfiguration {
     private String username;
     @Value("${PASSWORD}")
     private String password;
+    @Value("${GUEST_USERNAME}")
+    private String guestUsername;
+    @Value("${GUEST_PASSWORD}")
+    private String guestPassword;
+    @Value("${DEV_USERNAME}")
+    private String devUsername;
+    @Value("${DEV_PASSWORD}")
+    private String devPassword;
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
@@ -34,7 +42,18 @@ public class SecurityConfiguration {
                 .password(password)
                 .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(user);
+        UserDetails guest = User.withDefaultPasswordEncoder()
+                .username(guestUsername)
+                .password(guestPassword)
+                .roles("GUEST")
+                .build();
+        UserDetails dev = User.withDefaultPasswordEncoder()
+                .username(devUsername)
+                .password(devPassword)
+                .roles("DEV")
+                .build();
+        return new InMemoryUserDetailsManager(user, guest, dev);
+
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,6 +68,8 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/list/**", "/exclude/**").hasRole("USER")
+                        .requestMatchers("/list/", "/exclude/**").hasRole("GUEST")
+                        .requestMatchers("/list/**", "/exclude/**", "/admin/**").hasRole("DEV")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

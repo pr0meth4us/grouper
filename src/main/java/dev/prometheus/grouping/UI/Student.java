@@ -1,4 +1,4 @@
-package dev.prometheus.grouping;
+package dev.prometheus.grouping.UI;
 
 
 import lombok.Getter;
