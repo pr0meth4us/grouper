@@ -3,8 +3,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -15,25 +13,57 @@ import java.util.List;
 @Setter
 @Getter
 public class GroupingUtility {
-    private List<String> classList;
+    private List<String> NameList;
+    private List<String> IdList;
+    private ArrayList<ArrayList<String>> studentInfo;
     private static Repository repository;
 
     @Autowired
     public GroupingUtility(Repository repository) {
         this.repository = repository;
-        this.classList = convertStudentListToStringList(repository.findAll());
+        this.NameList = convertStudentListToNameList(repository.findAll());
+        this.IdList = convertStudentListToIdList(repository.findAll());
+        this.studentInfo = createStudentList();
     }
 
-    private List<String> convertStudentListToStringList(List<Student> students) {
-        List<String> stringList = new ArrayList<>();
+
+    private List<String> convertStudentListToIdList(List<Student> students) {
+        List<String> idList = new ArrayList<>();
         for (Student student : students) {
-            stringList.add(student.getName());
+            idList.add(student.getId());
         }
-        return stringList;
+        return idList;
     }
+    private List<String> convertStudentListToNameList(List<Student> students) {
+        List<String> nameList = new ArrayList<>();
+        for (Student student : students) {
+            nameList.add(student.getName());
+        }
+        return nameList;
+    }
+
+     public ArrayList<ArrayList<String>> createStudentList() {
+        ArrayList<ArrayList<String>> students = new ArrayList<>();
+        for (int i = 0; i < NameList.size(); i++) {
+            String name = NameList.get(i);
+            String id = IdList.get(i);
+
+            ArrayList<String> studentInfo = new ArrayList<>();
+            studentInfo.add(id);
+            studentInfo.add(name);
+
+            students.add(studentInfo);
+        }
+        return students;
+    }
+
+
+
+
+
 
     public ArrayList<String> getShuffledList() {
-        ArrayList<String> shuffledArrayList = new ArrayList<>(classList);
+        ArrayList<String> shuffledArrayList = new ArrayList<>(IdList);
         Collections.shuffle(shuffledArrayList);
         return shuffledArrayList;
     }
@@ -51,7 +81,7 @@ public class GroupingUtility {
             groups.get(i % numberOfGroups).add(ShuffleList.get(i));
         }
 
-        return groups;
+        return replaceIdsWithNames(groups);
     }
 
     public ArrayList<ArrayList<String>> getGroupByGroupSize(int groupSize) {
@@ -80,8 +110,39 @@ public class GroupingUtility {
             }
 
         }
-        return groups;
+
+        return replaceIdsWithNames(groups);
     }
+    public ArrayList<ArrayList<String>> replaceIdsWithNames(ArrayList<ArrayList<String>> groups) {
+        ArrayList<ArrayList<String>> modifiedGroups = new ArrayList<>();
+
+        for (ArrayList<String> ids : groups) {
+            ArrayList<String> modifiedIds = new ArrayList<>();
+
+            for (String id : ids) {
+                boolean found = false;
+
+                for (ArrayList<String> info : studentInfo) {
+                    if (id.equals(info.get(0))) {
+                        modifiedIds.add(info.get(1));
+                        found = true;
+                        break;
+                    }
+                }
+
+                // If the id was not found in studentInfo, keep the original id
+                if (!found) {
+                    modifiedIds.add(id);
+                }
+            }
+
+            modifiedGroups.add(modifiedIds);
+        }
+
+        return modifiedGroups;
+    }
+
+
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
@@ -89,8 +150,6 @@ public class GroupingUtility {
         String kittie = human.getKittie();
         String dogie = human.getDogie();
         String noodle = human.getNoodle();
-
-
         System.out.println(kittie);
         System.out.println(dogie);
         System.out.println(noodle);
@@ -106,9 +165,5 @@ public class GroupingUtility {
         }
 
         return reshuffle;
-    }
-
-
-    public static class getShuffledList extends ArrayList<String> {
     }
 }

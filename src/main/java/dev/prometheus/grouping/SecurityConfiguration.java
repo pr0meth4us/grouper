@@ -26,6 +26,7 @@ public class SecurityConfiguration {
     private String username;
     @Value("${PASSWORD}")
     private String password;
+
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
@@ -62,5 +63,6 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 }

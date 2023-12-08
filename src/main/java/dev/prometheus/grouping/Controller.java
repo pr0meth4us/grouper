@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,8 @@ public class Controller {
 
     @GetMapping("/")
     public ModelAndView homepage() {
+        System.out.println(groupingUtility.createStudentList());
+
         return new ModelAndView("index");
     }
 
@@ -89,8 +92,6 @@ public class Controller {
                 repository.save(student);
             }
         }
-
-
         return new ModelAndView("/list");
     }
 
@@ -132,6 +133,7 @@ public class Controller {
                 groups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
             } while (GroupingUtility.reshuffle(groups));
         }
+        System.out.println(groups);
 
         ModelAndView modelAndView = new ModelAndView("group");
         modelAndView.addObject("shuffledGroups", groups);

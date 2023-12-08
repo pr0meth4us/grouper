@@ -19,12 +19,4 @@ public class Student {
     private String id = UUIDGenerator.generateUUID();
     private String name;
 
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
 }
