@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -34,6 +35,8 @@ public class SecurityConfiguration {
     private String devUsername;
     @Value("${DEV_PASSWORD}")
     private String devPassword;
+    @Value("${client.origin}")
+    private String clientOrigin;
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
@@ -77,15 +80,16 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:63342")); // Add your client origin
-        configuration.setAllowCredentials(true); // Allow credentials
+        configuration.setAllowedOrigins(Collections.singletonList(clientOrigin));
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
 
 }
