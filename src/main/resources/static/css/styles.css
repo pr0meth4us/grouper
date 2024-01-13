@@ -1,6 +1,4 @@
-* {
-    box-sizing: border-box;
-}
+
 
 body {
     font-family: "Roboto";
@@ -202,3 +200,5 @@ select {
     max-height: 130px;
     overflow-y: auto;
 }
+
+

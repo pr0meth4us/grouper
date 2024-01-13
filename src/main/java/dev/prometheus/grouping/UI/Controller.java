@@ -1,5 +1,6 @@
 package dev.prometheus.grouping.UI;
 
+import dev.prometheus.grouping.encryption.Encryption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,24 +17,38 @@ public class Controller {
     private final GroupingUtility groupingUtility;
     private final Repository repository;
 
+    private List<Student> students;
+
     @Autowired
     public Controller(Repository repository, GroupingUtility groupingUtility) {
         this.repository = repository;
         this.groupingUtility = groupingUtility;
+        this.students = fetchAndEncryptStudents();
     }
+
+    private List<Student> fetchAndEncryptStudents() {
+        List<Student> studentsFromRepository = repository.findAll();
+
+        for (Student student : studentsFromRepository) {
+            String encryptedId = Encryption.encrypt(student.getId());
+            student.setId(encryptedId);
+        }
+
+        return studentsFromRepository;
+    }
+
 
     @GetMapping("/")
     public ModelAndView homepage() {
         System.out.println(groupingUtility.createStudentList());
-
         return new ModelAndView("index");
     }
 
 
     @GetMapping("/list")
     public ModelAndView showList() {
-        List<Student> students = repository.findAll();
         ModelAndView modelAndView = new ModelAndView("list");
+        System.out.println(students);
         Collections.shuffle(students);
         modelAndView.addObject("students", students);
 
@@ -124,11 +139,11 @@ public class Controller {
         if (choiceInt == 1 && groupSize != null) {
             do {
                 idgroups = groupingUtility.getGroupByGroupSize(groupSize);
-            } while (!GroupingUtility.reshuffle(idgroups));
+            } while (GroupingUtility.reshuffle(idgroups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
                 idgroups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
-            } while (!GroupingUtility.reshuffle(idgroups));
+            } while (GroupingUtility.reshuffle(idgroups));
         }
         ArrayList<ArrayList<String>> groups = groupingUtility.replaceIdsWithNames(idgroups);
 

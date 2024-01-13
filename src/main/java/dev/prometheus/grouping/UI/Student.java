@@ -19,4 +19,5 @@ public class Student {
     private String id = UUIDGenerator.generateUUID();
     private String name;
 
+
 }
