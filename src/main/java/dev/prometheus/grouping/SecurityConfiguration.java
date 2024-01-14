@@ -67,9 +67,9 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/list/**", "/exclude/**", "/excluding/").hasRole("USER")
+                        .requestMatchers("/list/**", "/exclude/**").hasRole("USER")
                         .requestMatchers("/list/").hasRole("GUEST")
-                        .requestMatchers("/list/**","/exclude/**", "/excluding/", "/admin/**").hasRole("DEV")
+                        .requestMatchers("/list/**","/exclude/**", "/admin/**").hasRole("DEV")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
