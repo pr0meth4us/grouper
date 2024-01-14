@@ -3,6 +3,8 @@ function init(element) {
     const wrapper = document.createElement("div");
     wrapper.addEventListener("click", clickOnWrapper);
     wrapper.classList.add("multi-select-component");
+    wrapper.classList.add("form-control");
+
 
     // Create elements of search
     const search_div = document.createElement("div");
@@ -18,6 +20,7 @@ function init(element) {
     const dropdown_icon = document.createElement("a");
     dropdown_icon.setAttribute("href", "#");
     dropdown_icon.classList.add("dropdown-icon");
+    dropdown_icon.setAttribute("style", "display: none; ");
 
     dropdown_icon.addEventListener("click", clickDropdown);
     const autocomplete_list = document.createElement("ul");
@@ -45,7 +48,7 @@ function addPlaceholder(wrapper) {
     const input_search = wrapper.querySelector(".selected-input");
     const tokens = wrapper.querySelectorAll(".selected-wrapper");
     if (!tokens.length && !(document.activeElement === input_search))
-        input_search.setAttribute("placeholder", "---------");
+        input_search.setAttribute("placeholder", "");
 }
 
 

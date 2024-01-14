@@ -30,27 +30,12 @@ public class ExcludeController {
         }
         tempoRepo.saveAll(excludes);
     }
-
-    @GetMapping("/exclude")
-    public ModelAndView exclude() {
-        List<Exclude> excludees = tempoRepo.findAll();
-        ModelAndView modelAndView = new ModelAndView("exclude");
-        modelAndView.addObject("excludees", excludees);
-        return modelAndView;
-    }
     @GetMapping("/favicon.ico")
     public String favicon() {
         return "";
     }
 
-    @DeleteMapping(value = "/exclude/process", consumes = "application/json")
-    public ResponseEntity<?> delete(@RequestBody List<String> ids) {
 
-        for (String id : ids) {
-            tempoRepo.deleteById(id);
-        }
-        return ResponseEntity.ok().build();
-    }
 
 
     @GetMapping("/exclude/list")

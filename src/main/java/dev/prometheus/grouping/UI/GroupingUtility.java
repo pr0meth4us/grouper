@@ -1,11 +1,13 @@
 package dev.prometheus.grouping.UI;
-import dev.prometheus.grouping.exclude.TempoRepo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,9 +20,10 @@ public class GroupingUtility {
     private List<String> IdList;
     private ArrayList<ArrayList<String>> studentInfo;
     private static Repository repository;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public GroupingUtility(Repository repository, TempoRepo tempoRepo){
+    public GroupingUtility(Repository repository) {
         this.repository = repository;
         this.NameList = convertStudentListToNameList(repository.findAll());
         this.IdList = convertStudentListToIdList(repository.findAll());
@@ -43,7 +46,7 @@ public class GroupingUtility {
         return nameList;
     }
 
-     public ArrayList<ArrayList<String>> createStudentList() {
+    public ArrayList<ArrayList<String>> createStudentList() {
         ArrayList<ArrayList<String>> students = new ArrayList<>();
         for (int i = 0; i < NameList.size(); i++) {
             String name = NameList.get(i);
@@ -57,6 +60,12 @@ public class GroupingUtility {
         }
         return students;
     }
+
+
+
+
+
+
     public ArrayList<String> getShuffledList() {
         ArrayList<String> shuffledArrayList = new ArrayList<>(IdList);
         Collections.shuffle(shuffledArrayList);
@@ -135,9 +144,10 @@ public class GroupingUtility {
         return modifiedGroups;
     }
 
+
+
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
-        System.out.println(groups);
         for (ArrayList<String> group : groups) {
 
             boolean conflict1 = group.contains("kittie") && group.contains("dogie");
@@ -150,4 +160,17 @@ public class GroupingUtility {
 
         return reshuffle;
     }
+
+    public boolean writeIdsToJsonFile(List<String> ids) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("./src/main/resources/static/json/exclude.json"))) {
+            Gson gson = new Gson();
+            gson.toJson(ids, writer);
+            System.out.println("JSON data written to file successfully.");
+            return true;
+        } catch (IOException e) {
+            System.err.println("Error writing JSON data to file: " + e.getMessage());
+            throw e;
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ header{
     top: 0;
     width: 100%;
 }
+
 .wrapper {
     text-align: center;
     justify-content: center;
@@ -32,7 +33,10 @@ form button a{
     text-decoration: none;
 }
 
-
+button a {
+    color: white;
+    text-decoration: none;
+}
 .table {
     margin: auto;
     /*width: 50% !important;*/
@@ -74,4 +78,14 @@ form button a{
 
 + article {
     margin-top: 2rem;
+}
+ul.autocomplete-list li {
+    font-family: Kantumruy Pro, sans-serif;
+    font-size: 1.2em !important;
+    margin: .67em 0;
+    font-weight:400;
+
+}
+.multi-select-component {
+    line-height: 1.42857143 !important;
 }

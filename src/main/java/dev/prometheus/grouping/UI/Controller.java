@@ -1,12 +1,13 @@
 package dev.prometheus.grouping.UI;
 
-import dev.prometheus.grouping.encryption.Encryption;
+import dev.prometheus.grouping.exclude.Exclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,38 +18,24 @@ public class Controller {
     private final GroupingUtility groupingUtility;
     private final Repository repository;
 
-    private List<Student> students;
-
     @Autowired
     public Controller(Repository repository, GroupingUtility groupingUtility) {
         this.repository = repository;
         this.groupingUtility = groupingUtility;
-        this.students = fetchAndEncryptStudents();
     }
-
-    private List<Student> fetchAndEncryptStudents() {
-        List<Student> studentsFromRepository = repository.findAll();
-
-        for (Student student : studentsFromRepository) {
-            String encryptedId = Encryption.encrypt(student.getId());
-            student.setId(encryptedId);
-        }
-
-        return studentsFromRepository;
-    }
-
 
     @GetMapping("/")
     public ModelAndView homepage() {
         System.out.println(groupingUtility.createStudentList());
+
         return new ModelAndView("index");
     }
 
 
     @GetMapping("/list")
     public ModelAndView showList() {
+        List<Student> students = repository.findAll();
         ModelAndView modelAndView = new ModelAndView("list");
-        System.out.println(students);
         Collections.shuffle(students);
         modelAndView.addObject("students", students);
 
@@ -139,11 +126,11 @@ public class Controller {
         if (choiceInt == 1 && groupSize != null) {
             do {
                 idgroups = groupingUtility.getGroupByGroupSize(groupSize);
-            } while (GroupingUtility.reshuffle(idgroups));
+            } while (!GroupingUtility.reshuffle(idgroups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
                 idgroups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
-            } while (GroupingUtility.reshuffle(idgroups));
+            } while (!GroupingUtility.reshuffle(idgroups));
         }
         ArrayList<ArrayList<String>> groups = groupingUtility.replaceIdsWithNames(idgroups);
 
@@ -153,6 +140,25 @@ public class Controller {
         modelAndView.addObject("groupSize", groupSize);
         modelAndView.addObject("numberOfGroups", numberOfGroups);
         return modelAndView;
+    }
+
+    @GetMapping("/exclude")
+    public ModelAndView exclude() {
+        List<Student> excludees = repository.findAll();
+        ModelAndView modelAndView = new ModelAndView("exclude");
+        modelAndView.addObject("excludees", excludees);
+        return modelAndView;
+    }
+    @PostMapping(value = "/excluding", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> delete(@RequestBody List<String> ids) throws IOException {
+
+        System.out.println(ids);
+        if (groupingUtility.writeIdsToJsonFile(ids)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to write to JSON file");
+        }
+
     }
 
 }

@@ -31,8 +31,50 @@
                     <td th:text="${iterStat.count}">1</td>
                     <td th:text="${student.name}">Name</td>
                     <td>
-                        <a th:href="@{/list/edit/{id}(id=${student.id})}" class="button">Edit</a>
-                        <a th:href="@{/list/delete/{id}(id=${student.id})}" class="button">Delete</a>
+                        <button
+                                type="button"
+                                class="btn btn-outline-warning sgds btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                        >
+                            Delete
+                        </button>
+                        <div
+                                class="modal fade"
+                                id="exampleModal"
+                                tabindex="-1"
+                                aria-labelledby="exampleModalLabel"
+                                aria-hidden="true"
+                        >
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title" id="exampleModalLabel">
+                                            <i class="bi bi-exclamation-circle left me-2"></i>Modal title
+                                        </h3>
+                                        <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <div class="modal-body">You are going to delete <strong><span th:text="${student.name}"></span></strong> from the database. Sure you wanna do that?</div>
+                                    <div class="modal-footer">
+
+                                        <button class="btn btn-danger sdgs"><a th:href="@{/list/delete/{id}(id=${student.id})}">Delete</a></button>
+                                        <button
+                                                type="button"
+                                                class="btn btn-outline-dark sgds"
+                                                data-bs-dismiss="modal"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a th:href="@{/list/edit/{id}(id=${student.id})}" class="btn btn-outline-info sgds btn-sm">Edit</a>
                     </td>
                 </tr>
                 </tbody>
@@ -41,5 +83,7 @@
         </div>
     </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
 </body>
 </html>
