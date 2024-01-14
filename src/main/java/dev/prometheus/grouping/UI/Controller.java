@@ -144,8 +144,6 @@ public class Controller {
         modelAndView.addObject("excludees", excludees);
         return modelAndView;
     }
-
-    @CrossOrigin(origins = "*")
     @PostMapping(value = "/excluding", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> delete(@RequestBody List<String> ids) throws IOException {
 
