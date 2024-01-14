@@ -144,7 +144,7 @@ public class Controller {
         modelAndView.addObject("excludees", excludees);
         return modelAndView;
     }
-    @PostMapping(value = "/excluding", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/excluding", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> delete(@RequestBody List<String> ids) throws IOException {
 
         System.out.println(ids);
