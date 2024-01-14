@@ -49,6 +49,11 @@
                 console.log(selectedOptions[i].getAttribute("data-id"));
             }
         }
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("Put", "/addlist", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+
+
 
         fetch('/excluding', {
             method: 'PUT',
@@ -68,10 +73,10 @@
             .catch(error => {
                 console.error('Fetch error:', error);
             });
-        // let xhttp = new XMLHttpRequest();
-        // console.log(xhttp.onreadystatechange);
-        //
-        //     window.location.href = '/groupwithexclusion';
+        let xhttp = new XMLHttpRequest();
+        console.log(xhttp.onreadystatechange);
+
+            window.location.href = '/groupwithexclusion';
 
 
     }
