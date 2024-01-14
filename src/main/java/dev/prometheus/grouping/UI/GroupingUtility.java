@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,11 +25,27 @@ public class GroupingUtility {
 
     @Autowired
     public GroupingUtility(Repository repository) {
-        this.repository = repository;
+        GroupingUtility.repository = repository;
         this.NameList = convertStudentListToNameList(repository.findAll());
         this.IdList = convertStudentListToIdList(repository.findAll());
         this.studentInfo = createStudentList();
     }
+
+    private List<String> excludeList() throws IOException {
+        List<String> excludeList;
+        try {
+            excludeList = readIdsFromJsonFile("./src/main/resources/static/json/exclude.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e; // Handle or rethrow the exception based on your requirements
+        }
+
+        List<String> updatedIdList = new ArrayList<>(IdList);
+        assert excludeList != null;
+        updatedIdList.removeAll(excludeList);
+        return updatedIdList;
+    }
+
 
 
     private List<String> convertStudentListToIdList(List<Student> students) {
@@ -62,20 +79,21 @@ public class GroupingUtility {
     }
 
 
-
-
-
-
-    public ArrayList<String> getShuffledList() {
-        ArrayList<String> shuffledArrayList = new ArrayList<>(IdList);
+    public ArrayList<String> getShuffledList(boolean exclude) throws IOException {
+        ArrayList<String> shuffledArrayList;
+        if (exclude) {
+            shuffledArrayList = new ArrayList<>(excludeList());
+        } else {
+            shuffledArrayList = new ArrayList<>(IdList);
+        }
         Collections.shuffle(shuffledArrayList);
         return shuffledArrayList;
     }
 
 
-    public ArrayList<ArrayList<String>> getGroupsByNumberOfGroups(int numberOfGroups) {
+    public ArrayList<ArrayList<String>> getGroupsByNumberOfGroups(int numberOfGroups, boolean exclude) throws IOException {
         ArrayList<ArrayList<String>> groups = new ArrayList<>();
-        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList());
+        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList(exclude));
 
         for (int i = 0; i < numberOfGroups; i++) {
             groups.add(new ArrayList<>());
@@ -87,9 +105,9 @@ public class GroupingUtility {
         return groups;
     }
 
-    public ArrayList<ArrayList<String>> getGroupByGroupSize(int groupSize) {
+    public ArrayList<ArrayList<String>> getGroupByGroupSize(int groupSize, boolean exclude) throws IOException {
         ArrayList<ArrayList<String>> groups = new ArrayList<>();
-        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList());
+        ArrayList<String> ShuffleList = new ArrayList<>(getShuffledList(exclude));
 
         int remainder = ShuffleList.size() % groupSize;
 
@@ -149,8 +167,7 @@ public class GroupingUtility {
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
         boolean reshuffle = false;
         for (ArrayList<String> group : groups) {
-
-            boolean conflict1 = group.contains("kittie") && group.contains("dogie");
+            boolean conflict1 = group.contains("kittie") && group.contains("doge");
             boolean conflict2 = group.contains("kittie") && group.contains("noodle");
             if (conflict1 || conflict2) {
                 reshuffle = true;
@@ -172,5 +189,21 @@ public class GroupingUtility {
             throw e;
         }
     }
+    public static List<String> readIdsFromJsonFile(String filePath) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            Gson gson = new Gson();
+            String jsonString = reader.readLine();
+            if (jsonString != null && !jsonString.isEmpty()) {
+                return Arrays.asList(gson.fromJson(jsonString, String[].class));
+            } else {
+                System.out.println("JSON file is empty.");
+                return null;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading JSON data from file: " + e.getMessage());
+            throw e;
+        }
+    }
+
 
 }

@@ -1,6 +1,5 @@
 package dev.prometheus.grouping.UI;
 
-import dev.prometheus.grouping.exclude.Exclude;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,9 +77,8 @@ public class Controller {
 
     @GetMapping("/addlist/form")
     public ModelAndView addListStudentForm() {
-        ModelAndView modelAndView = new ModelAndView("addlist");
 
-        return modelAndView;
+        return new ModelAndView("addlist");
 
     }
 
@@ -115,26 +113,23 @@ public class Controller {
         return new ModelAndView("redirect:/list");
     }
 
-    @GetMapping("/group")
-    public ModelAndView generateGroups(
-            @RequestParam(name = "choice", defaultValue = "3") int choiceInt,
-            @RequestParam(name = "groupSize", required = false) Integer groupSize,
-            @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
-    ) {
+
+    private ModelAndView getModelAndView(@RequestParam(name = "choice", defaultValue = "3") int choiceInt, @RequestParam(name = "groupSize", required = false) Integer groupSize, @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups, boolean exclude) throws IOException {
         ArrayList<ArrayList<String>> idgroups = new ArrayList<>();
 
         if (choiceInt == 1 && groupSize != null) {
             do {
-                idgroups = groupingUtility.getGroupByGroupSize(groupSize);
+                idgroups = groupingUtility.getGroupByGroupSize(groupSize, exclude);
             } while (!GroupingUtility.reshuffle(idgroups));
         } else if (choiceInt == 2 && numberOfGroups != null) {
             do {
-                idgroups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups);
+                idgroups = groupingUtility.getGroupsByNumberOfGroups(numberOfGroups, exclude);
             } while (!GroupingUtility.reshuffle(idgroups));
         }
         ArrayList<ArrayList<String>> groups = groupingUtility.replaceIdsWithNames(idgroups);
 
         ModelAndView modelAndView = new ModelAndView("group");
+        modelAndView.addObject("exclude", exclude);
         modelAndView.addObject("shuffledGroups", groups);
         modelAndView.addObject("choiceInt", choiceInt);
         modelAndView.addObject("groupSize", groupSize);
@@ -159,6 +154,29 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to write to JSON file");
         }
 
+    }
+
+    @GetMapping("/group")
+    public ModelAndView generateGroups(
+            @RequestParam(name = "choice", defaultValue = "3") int choiceInt,
+            @RequestParam(name = "groupSize", required = false) Integer groupSize,
+            @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
+    ) throws IOException {
+        boolean exclude = false;
+
+        return getModelAndView(choiceInt, groupSize, numberOfGroups, exclude);
+    }
+
+
+    @GetMapping("/groupwithexclusion")
+    public ModelAndView generateGroupsz(
+            @RequestParam(name = "choice", defaultValue = "3") int choiceInt,
+            @RequestParam(name = "groupSize", required = false) Integer groupSize,
+            @RequestParam(name = "numberOfGroups", required = false) Integer numberOfGroups
+    ) throws IOException {
+        boolean exclude = true;
+
+        return getModelAndView(choiceInt, groupSize, numberOfGroups, exclude);
     }
 
 }

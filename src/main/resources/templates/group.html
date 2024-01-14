@@ -21,9 +21,33 @@
 				<h1>Group Generator</h1>
 			</div>
 		</sgds-content-header-top>
-		<sgds-content-body>
+		<sgds-content-body th:if="${exclude == false}">
 			<form class="mb-3" th:action="@{/group}" th:method="get" th:default="3">
+				<label for="placeholder"></label>
+				<input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}" style="display: none">
 
+				<label class="form-label">Select a method for group generation:</label>
+				<div class="form-check">
+					<input id="choice1" name="choice" value="1" th:checked="${choiceInt == 1}" type="radio" class="form-check-input" oninput="display()"/>
+					<label title="" for="choice1" class="form-check-label">By size of each group</label>
+				</div>
+				<div class="form-check">
+					<input id="choice2" name="choice" value="2" th:checked="${choiceInt == 2}" type="radio" class="form-check-input" onclick="display()" />
+					<label title="" for="choice2" class="form-check-label">By total number of groups</label>
+				</div>
+
+				<label class="form-label groupSize" for="groupSize">Label</label>
+				<input placeholder="Enter the number of members in each group" type="number" id="groupSize" name="groupSize" th:value="${groupSize}" class="form-control groupSize" />
+
+				<label class="form-label numberOfGroups" for="numberOfGroups">Label</label>
+				<input placeholder="Enter the number of groups" type="number" id="numberOfGroups" name="numberOfGroups" th:value="${numberOfGroups}" class="form-control numberOfGroups" />
+
+				<button type="submit" class="btn btn-secondary sgds" style="width: fit-content; margin-top: 1em">Generate</button>
+			</form>
+		</sgds-content-body>
+
+		<sgds-content-body th:if="${exclude == true}">
+			<form class="mb-3" th:action="@{/groupwithexclusion}" th:method="get" th:default="3">
 				<label for="placeholder"></label>
 				<input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}" style="display: none">
 
@@ -50,7 +74,7 @@
 		</sgds-content-body>
 
 	</section>
-	<a type="button" class="btn btn-danger text-end" style="margin-top: 1em; width: fit-content; justify-content: flex-end" th:href="@{/exclude}">Need to exclude someone?</a>
+	<a th:if="${exclude == false}" type="button" class="btn btn-danger text-end" style="margin-top: 1em; width: fit-content; justify-content: flex-end" th:href="@{/exclude}">Need to exclude someone?</a>
 
 </section>
 <section class="shadow rounded p-5 my-8 mx-md-8" th:if="${!shuffledGroups.isEmpty()}">
