@@ -165,15 +165,15 @@ public class GroupingUtility {
 
 
     public static boolean reshuffle(ArrayList<ArrayList<String>> groups) {
-        boolean reshuffle = false;
-        for (ArrayList<String> group : groups) {
-            boolean conflict1 = group.contains("kittie") && group.contains("doge");
-            boolean conflict2 = group.contains("kittie") && group.contains("noodle");
-            if (conflict1 || conflict2) {
-                reshuffle = true;
-                break;
-            }
-        }
+        boolean reshuffle = true;
+//        for (ArrayList<String> group : groups) {
+//            boolean conflict1 = group.contains("kittie") && group.contains("doge");
+//            boolean conflict2 = group.contains("kittie") && group.contains("noodle");
+//            if (conflict1 || conflict2) {
+//                reshuffle = false;
+//                break;
+//            }
+//        }
 
         return reshuffle;
     }
