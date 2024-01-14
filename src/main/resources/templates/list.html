@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>List of Students</title>
     <link th:href="@{/css/custom.css}" rel="stylesheet" media="screen">
@@ -7,34 +7,39 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@govtechsg/sgds/css/sgds.css" />
 </head>
 <body>
-<div class="container" style="margin-left: 29em;
-  margin-top: 4em;
-  margin-bottom: 1em;">
-    <h2>List of Students</h2>
-    <a th:href="@{/list/add}" type="button" class="btn btn-dark" >Add New Student</a>
-    <a th:href="@{/addlist/form}" type="button" class="btn btn-dark">Add New List</a>
-</div>
+<div class="row">
+    <div class="col-md-2 col-12">
+    </div>
+    <div class="col-md-6 col-12">
+        <div>
+            <h2>List of Students</h2>
+            <a th:href="@{/list/add}" type="button" class="btn btn-dark" >Add New Student</a>
+            <a th:href="@{/addlist/form}" type="button" class="btn btn-dark">Add New List</a>
+        </div>
 
-<div class="table-responsive">
+        <div class="table-responsive">
 
-    <table class="table table-hover   h-75">
-        <thead>
-        <tr>
-            <th>No.</th>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="student, iterStat : ${students}">
-            <td th:text="${iterStat.count}">1</td>
-            <td th:text="${student.name}">Name</td>
-            <td>
-                <a th:href="@{/list/edit/{id}(id=${student.id})}" class="button">Edit</a>
-                <a th:href="@{/list/delete/{id}(id=${student.id})}" class="button">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="student, iterStat : ${students}">
+                    <td th:text="${iterStat.count}">1</td>
+                    <td th:text="${student.name}">Name</td>
+                    <td>
+                        <a th:href="@{/list/edit/{id}(id=${student.id})}" class="button">Edit</a>
+                        <a th:href="@{/list/delete/{id}(id=${student.id})}" class="button">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    </div>
 </body>
 </html>

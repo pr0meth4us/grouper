@@ -1,61 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Grouping</title>
-    <style>
-        .num-input {
-            display: none;
-        }
+	<meta charset="UTF-8">
+	<title>Grouping</title>
+	<link th:href="@{/css/custom.css}" rel="stylesheet" media="screen">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@govtechsg/sgds/css/sgds.css" />
+	<script th:src="@{/js/group.js}"></script>
 
-        #placeholder {
-            display: block;
-            right: 10000px;
-            position: fixed;
-        }
-    </style>
 </head>
 <body>
-<a th:href="@{/exclude}">Need to exclude someone?</a>
-<h2>Groups Generator</h2>
-<form th:action="@{/group}" th:method="get" th:default="3">
-    <input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}">
-    <label>Select a method for group generation:</label>
-    <br>
-    <input type="radio" id="choice1" name="choice" value="1" th:checked="${choiceInt == 1}" onclick="toggleInput('groupSize')"> by size of each group <br>
-    <input type="number" class="num-input" id="groupSize" name="groupSize" th:value="${groupSize}">
-    <input type="radio" id="choice2" name="choice" value="2" th:checked="${choiceInt == 2}" onclick="toggleInput('numberOfGroups')"> by total number of groups <br>
-    <input type="number" class="num-input" id="numberOfGroups" name="numberOfGroups" th:value="${numberOfGroups}">
-    <button type="submit">Generate Groups</button>
-</form>
 
-<div th:if="${shuffledGroups != null}">
-    <h3>Generated Groups:</h3>
-    <ul th:each="group, groupIndex : ${shuffledGroups}">
-        <li>
-            <p th:text="${'Group ' + (groupIndex.index + 1)}"></p>
-            <ul>
-                <li th:each="studentInfo : ${group}" th:text="${studentInfo}"></li>
-            </ul>
-        </li>
-    </ul>
-</div>
-<script>
-    function toggleInput(inputId) {
-        var inputElement = document.getElementById(inputId);
-        var choice1 = document.getElementById("choice1");
-        var choice2 = document.getElementById("choice2");
-        if (choice1.checked || choice1.active) {
-            document.getElementById("groupSize").style.display = "block";
-            document.getElementById("numberOfGroups").style.display = "none";
-        } else if (choice2.checked || choice2.active) {
-            document.getElementById("numberOfGroups").style.display = "block";
-            document.getElementById("groupSize").style.display = "none";
-        } else {
-            document.getElementById("groupSize").style.display = "none";
-            document.getElementById("numberOfGroups").style.display = "none";
-        }
-    }
-</script>
+
+
+<section class="shadow rounded p-5 my-8 mx-md-8" >
+	<section class="shadow rounded p-5">
+
+		<!-- Content section -->
+		<sgds-content-header-top>
+			<div>
+				<h1>Group Generator</h1>
+			</div>
+		</sgds-content-header-top>
+		<sgds-content-body>
+			<form class="mb-3" th:action="@{/group}" th:method="get" th:default="3">
+
+				<label for="placeholder"></label>
+				<input type="radio" id="placeholder" name="choice" value="3" th:checked="${choiceInt == 3}" style="display: none">
+
+				<label class="form-label">Select a method for group generation:</label>
+				<div class="form-check">
+					<input id="choice1" name="choice" value="1" th:checked="${choiceInt == 1}" type="radio" class="form-check-input" oninput="display()"/>
+					<label title="" for="choice1" class="form-check-label">By size of each group</label>
+				</div>
+				<div class="form-check">
+					<input id="choice2" name="choice" value="2" th:checked="${choiceInt == 2}" type="radio" class="form-check-input" onclick="display()" />
+					<label title="" for="choice2" class="form-check-label">By total number of groups</label>
+				</div>
+
+				<label class="form-label groupSize" for="groupSize">Label</label>
+				<input placeholder="Enter the number of members in each group" type="number" id="groupSize" name="groupSize" th:value="${groupSize}" class="form-control groupSize" />
+
+				<label class="form-label numberOfGroups" for="numberOfGroups">Label</label>
+				<input placeholder="Enter the number of groups" type="number" id="numberOfGroups" name="numberOfGroups" th:value="${numberOfGroups}" class="form-control numberOfGroups" />
+
+				<button type="submit" class="btn btn-secondary sgds" style="width: fit-content; margin-top: 1em" onclick="result()">Generate</button>
+			</form>
+
+
+		</sgds-content-body>
+
+	</section>
+	<a type="button" class="btn btn-danger text-end" style="margin-top: 1em; width: fit-content; justify-content: flex-end" th:href="@{/exclude}">Need to exclude someone?</a>
+
+</section>
+<section class="shadow rounded p-5 my-8 mx-md-8" th:if="${shuffledGroups != null}" style="display: none">
+	<div  class="page-component-item-wrapper" >
+	<div class="card sgds" th:each="group, groupIndex : ${shuffledGroups}">
+		<div class="card-body">
+			<h4 class="card-title"><p th:text="${'Group ' + (groupIndex.index + 1)}"></p></h4>
+			<ul>
+				<li th:each="studentInfo : ${group}" th:text="${studentInfo}"></li>
+			</ul>
+		</div>
+	</div>
+
+	</div>
+</section>
 </body>
 </html>

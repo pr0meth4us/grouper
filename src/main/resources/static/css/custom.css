@@ -4,12 +4,22 @@
     box-sizing: border-box;
     font-family: Kantumruy Pro, sans-serif;
 }
+body{
+    height:100vh;
+}
+header{
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
 .wrapper {
     text-align: center;
-    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    display: block;
     position: absolute;
-    top: 45%;
-    left: 45%;
+    /*top: 45%;*/
+    /*left: 45%;*/
 }
 
 .wrapper button a{
@@ -17,10 +27,15 @@
     text-decoration: none;
 }
 
+form button a{
+    color: white;
+    text-decoration: none;
+}
+
 
 .table {
     margin: auto;
-    width: 50% !important;
+    /*width: 50% !important;*/
 }
 
 .page-component-item-wrapper {
