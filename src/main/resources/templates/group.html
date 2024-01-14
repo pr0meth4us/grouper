@@ -13,10 +13,9 @@
 
 
 
-<section class="shadow rounded p-5 my-8 mx-md-8" >
+<section class="shadow rounded p-5 my-8 mx-md-8" th:if="${shuffledGroups.isEmpty()}">
 	<section class="shadow rounded p-5">
 
-		<!-- Content section -->
 		<sgds-content-header-top>
 			<div>
 				<h1>Group Generator</h1>
@@ -44,7 +43,7 @@
 				<label class="form-label numberOfGroups" for="numberOfGroups">Label</label>
 				<input placeholder="Enter the number of groups" type="number" id="numberOfGroups" name="numberOfGroups" th:value="${numberOfGroups}" class="form-control numberOfGroups" />
 
-				<button type="submit" class="btn btn-secondary sgds" style="width: fit-content; margin-top: 1em" onclick="result()">Generate</button>
+				<button type="submit" class="btn btn-secondary sgds" style="width: fit-content; margin-top: 1em">Generate</button>
 			</form>
 
 
@@ -54,18 +53,18 @@
 	<a type="button" class="btn btn-danger text-end" style="margin-top: 1em; width: fit-content; justify-content: flex-end" th:href="@{/exclude}">Need to exclude someone?</a>
 
 </section>
-<section class="shadow rounded p-5 my-8 mx-md-8" th:if="${shuffledGroups != null}" style="display: none">
-	<div  class="page-component-item-wrapper" >
-	<div class="card sgds" th:each="group, groupIndex : ${shuffledGroups}">
-		<div class="card-body">
-			<h4 class="card-title"><p th:text="${'Group ' + (groupIndex.index + 1)}"></p></h4>
-			<ul>
-				<li th:each="studentInfo : ${group}" th:text="${studentInfo}"></li>
-			</ul>
+<section class="shadow rounded p-5 my-8 mx-md-8" th:if="${!shuffledGroups.isEmpty()}">
+	<div th:if="${shuffledGroups != null}" class="page-component-item-wrapper" >
+		<div class="card sgds" th:each="group, groupIndex : ${shuffledGroups}">
+			<div class="card-body">
+				<h4 class="card-title"><p th:text="${'Group ' + (groupIndex.index + 1)}"></p></h4>
+				<ul>
+					<li th:each="studentInfo : ${group}" th:text="${studentInfo}"></li>
+				</ul>
+			</div>
 		</div>
 	</div>
-
-	</div>
+	<a type="button" class="btn btn-dark text-end" style="margin-top: 1em; width: fit-content; justify-content: flex-end" th:href="@{/group}">Regenerate?</a>
 </section>
 </body>
 </html>
