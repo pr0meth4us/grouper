@@ -46,7 +46,6 @@
         for (let i = 0; i < selectedOptions.length; i++) {
             if (selectedOptions[i].selected) {
                 excludees.push(selectedOptions[i].getAttribute("data-id"));
-                console.log(selectedOptions[i].getAttribute("data-id"));
             }
         }
 
@@ -61,15 +60,12 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                console.log("Request completed successfully.");
                 window.location.href = '/groupwithexclusion';
 
             })
             .catch(error => {
-                console.error('Fetch error:', error);
             });
         let xhttp = new XMLHttpRequest();
-        console.log(xhttp.onreadystatechange);
 
             window.location.href = '/groupwithexclusion';
 

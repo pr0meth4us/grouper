@@ -20,7 +20,6 @@ function display() {
         showHideElements(elements2, elements1);
     }
 
-    console.log("triggered");
 
     function showHideElements(toShow, toHide) {
         for(let el of toShow) el.style.display = "block";
