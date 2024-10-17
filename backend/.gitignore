@@ -1,0 +1,4 @@
+.env
+target
+/src/main/resources/application.properties
+.idea

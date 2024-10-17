@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Add A List of Students</title>
+    <link th:href="@{/css/custom.css}" rel="stylesheet" media="screen">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@govtechsg/sgds/css/sgds.css" />
+</head>
+<body>
+<section class="my-8 mx-md-8">
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <h1>Add A Whole List</h1>
+        </div>
+    </div>
+</section>
+<section class="shadow rounded p-5 my-8 mx-md-8">
+
+<form th:object="${NewStudents}" onsubmit="return addStudent()" method="post">
+    <div class="form-group">
+        <label class="form-label" for="list">List goes here</label>
+        <textarea class="form-control" cols="50" rows="5" id="list" placeholder="Enter names (one per line)" name="name"></textarea>
+    </div>
+    <button style="margin-top: 10px" type="submit" class="btn btn-primary">Submit</button>
+</form>
+</section>
+<script>
+    function addStudent() {
+        var namesInput = document.getElementById("name").value;
+        var students = namesInput.split(/\r?\n/);
+
+        students = students.filter(function (student) {
+            return student.trim() !== "";
+        });
+
+        students = students.map(function (student) {
+            var parts = student.split(/\s+/);
+            parts = parts.map(function (part) {
+                return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+            });
+            return parts.join(" ");
+        });
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("Delete", "/addlist", true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState === 4) {
+                if (xhttp.status === 200) {
+                    window.location.href = '/list';
+                }
+            }
+        };
+
+        xhttp.send(JSON.stringify(students));
+        return false;
+    }
+</script>
+</body>
+</html>
