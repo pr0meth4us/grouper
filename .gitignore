@@ -1,0 +1,16 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.class
+*.log
+*.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
