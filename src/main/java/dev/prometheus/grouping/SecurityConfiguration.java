@@ -7,8 +7,10 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,44 +34,45 @@ public class SecurityConfiguration {
     private String devUsername;
     @Value("${DEV_PASSWORD}")
     private String devPassword;
-    @Value("${client.origin}")
+    @Value("${client.origin:http://localhost:3000}")  // Default value provided
     private String clientOrigin;
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        UserDetails user = org.springframework.security.core.userdetails.User.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .roles("USER")
                 .build();
-        UserDetails guest = User.withDefaultPasswordEncoder()
+        UserDetails guest = org.springframework.security.core.userdetails.User.builder()
                 .username(guestUsername)
-                .password(guestPassword)
+                .password(passwordEncoder.encode(guestPassword))
                 .roles("GUEST")
                 .build();
-        UserDetails dev = User.withDefaultPasswordEncoder()
+        UserDetails dev = org.springframework.security.core.userdetails.User.builder()
                 .username(devUsername)
-                .password(devPassword)
+                .password(passwordEncoder.encode(devPassword))
                 .roles("DEV")
                 .build();
         return new InMemoryUserDetailsManager(user, guest, dev);
-
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(httpSecurityCorsConfigurer ->
-                        httpSecurityCorsConfigurer.configurationSource(request ->
-                                new CorsConfiguration().applyPermitDefaultValues()))
-//                .exceptionHandling(exceptions -> exceptions
-//                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/list/**", "/exclude/**").hasRole("USER")
-                        .requestMatchers("/list/").hasRole("GUEST")
-                        .requestMatchers("/list/**","/exclude/**", "/admin/**").hasRole("DEV")
+                        .requestMatchers("/list/**", "/exclude/**").hasAnyRole("USER", "DEV")
+                        .requestMatchers("/list/").hasAnyRole("GUEST", "USER", "DEV")
+                        .requestMatchers("/admin/**").hasRole("DEV")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
@@ -86,7 +89,4 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
-
 }
