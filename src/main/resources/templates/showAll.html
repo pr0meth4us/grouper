@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show All Students</title>
+</head>
+<body>
+<h1>All Students</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="student : ${students}">
+        <td th:text="${student.id}"></td>
+        <td th:text="${student.name}"></td>
+        <td>
+            <form th:action="@{'/admin/update/' + ${student.id}}" method="get">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+        <!-- Add more columns if needed -->
+    </tr>
+</table>
+</body>
+</html>
