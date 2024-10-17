@@ -1,0 +1,24 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Maven
+backend/target/
+backend/mvnw
+backend/mvnw.cmd
+backend/.mvn/
+
+# Node
+frontend/node_modules/
+frontend/build/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Misc
+.DS_Store
+*.log
+*.tmp
+*.temp
