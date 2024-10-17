@@ -2,7 +2,7 @@ function init(element) {
     // Create div that wroaps all the elements inside (select, elements selected, search div) to put select inside
     const wrapper = document.createElement("div");
     wrapper.addEventListener("click", clickOnWrapper);
-    wrapper.classList.add("multi-select-component");
+    wrapper.classList.add("multi-select-components");
     wrapper.classList.add("form-control");
 
 
