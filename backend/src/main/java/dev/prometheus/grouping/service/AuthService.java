@@ -1,5 +1,6 @@
 package dev.prometheus.grouping.service;
 
+import dev.prometheus.grouping.dto.ApiResponse;
 import dev.prometheus.grouping.model.User;
 import dev.prometheus.grouping.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,21 @@ public class AuthService {
         return otpCode;
     }
 
-    public Optional<User> register(String email, String password, String otpCode) {
-        if (otpService.verifyOTP( email, otpCode)) {
-            User user = new User();
-            user.setEmail(email);
-            user.setPassword(password);
-            return Optional.of(userRepository.save(user));
+    public ApiResponse register(String email, String password, String otpCode) {
+        User existingUser = userRepository.findByEmail(email);
+        if (existingUser != null) {
+            return new ApiResponse(false, "Email is already registered.", null);
         }
-        return Optional.empty();
+        if (!otpService.verifyOTP(email, otpCode)) {
+            return new ApiResponse(false, "Invalid OTP code.", null);
+        }
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        userRepository.save(user);
+
+        return new ApiResponse(true, "Registration successful.", user);
     }
+
 }

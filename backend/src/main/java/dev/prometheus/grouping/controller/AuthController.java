@@ -2,9 +2,9 @@ package dev.prometheus.grouping.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.prometheus.grouping.dto.ApiResponse;
 import dev.prometheus.grouping.model.User;
 import dev.prometheus.grouping.service.AuthService;
-import dev.prometheus.grouping.service.OTPService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +16,10 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
-    private final OTPService otpService;
 
     @Autowired
-    public AuthController(AuthService authService, OTPService otpService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.otpService = otpService;
     }
 
     @SneakyThrows
@@ -33,19 +31,17 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody JsonNode req) {
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody JsonNode req) {
         String email = req.get("email").asText();
-        String otpCode = req.get("otp").asText();  // renamed for clarity
+        String otpCode = req.get("otp").asText();
         String password = req.get("password").asText();
 
-        System.out.println("Registration request for email: " + email);
-        System.out.println("With OTP code: " + otpCode);
+        ApiResponse response = authService.register(email, password, otpCode);
 
-
-        Optional<User> registeredUser = authService.register(email, password, otpCode);
-        if (registeredUser.isPresent()) {
-            return ResponseEntity.ok().build();
+        if (!response.isSuccess()) {
+            return ResponseEntity.badRequest().body(response);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(response);
     }
+
 }
