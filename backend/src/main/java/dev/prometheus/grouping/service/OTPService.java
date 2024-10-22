@@ -1,9 +1,7 @@
 package dev.prometheus.grouping.service;
 
-import lombok.Getter;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-
 import java.io.Serial;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;

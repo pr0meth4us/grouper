@@ -31,7 +31,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
         }
 
-        // Try to get token from cookie first
         String token = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -43,7 +42,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
         }
 
-        // If no token in cookie, try Authorization header
         if (token == null) {
             String authHeader = request.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -51,7 +49,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             }
         }
 
-        // If no token found anywhere, return unauthorized
         if (token == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;

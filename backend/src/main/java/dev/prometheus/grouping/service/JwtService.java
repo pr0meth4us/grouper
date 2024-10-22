@@ -2,7 +2,6 @@ package dev.prometheus.grouping.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,14 +18,13 @@ public class JwtService {
 
     private SecretKey key;
 
-    private static final long EXPIRATION_TIME = 86400000; // 24 hours in milliseconds
+    private static final long EXPIRATION_TIME = 86400000;
 
     @PostConstruct
     public void init() {
         if (!StringUtils.hasText(secretKey)) {
             throw new IllegalStateException("JWT secret key is not configured");
         }
-        // Convert the secret string to a secure key
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 

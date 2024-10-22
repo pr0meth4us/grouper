@@ -2,13 +2,10 @@ package dev.prometheus.grouping.service;
 
 import dev.prometheus.grouping.dto.ListRequest;
 import dev.prometheus.grouping.model.User;
-
 import dev.prometheus.grouping.exception.*;
-import dev.prometheus.grouping.model.User;
 import dev.prometheus.grouping.dto.UserList;
 import dev.prometheus.grouping.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +69,6 @@ public class ListService {
         userRepository.save(user);
     }
 
-    // Helper methods
     private User getUserOrThrow(String userEmail) {
         User user = userRepository.findByEmail(userEmail);
         if (user == null) {

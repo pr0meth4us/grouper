@@ -6,7 +6,6 @@ import dev.prometheus.grouping.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ public class AuthService {
     private final MailService mailService;
     private final JwtService jwtService;
 
-    private static final int COOKIE_MAX_AGE = 86400; // 24 hours in seconds
+    private static final int COOKIE_MAX_AGE = 86400;
 
     public AuthService(UserRepository userRepository, OTPService otpService,
                        MailService mailService, JwtService jwtService) {
@@ -27,11 +26,10 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public String sendOtp(String email) {
+    public void sendOtp(String email) {
         String otpCode = otpService.generateOTP();
         otpService.storeOTPAndSendToUser(email, otpCode);
         mailService.SendEmail(email, otpCode);
-        return otpCode;
     }
 
     public ApiResponse register(String email, String password, String otpCode) {
@@ -56,18 +54,12 @@ public class AuthService {
         if (user == null || !user.verifyPassword(password)) {
             return new ApiResponse(false, "Invalid Credentials", null);
         }
-
-        // Generate JWT token
         String token = jwtService.generateToken(email);
-
-        // Create JWT cookie
         Cookie jwtCookie = new Cookie("jwt_token", token);
-        jwtCookie.setHttpOnly(true); // Makes the cookie inaccessible to JavaScript
-        jwtCookie.setSecure(true); // Only sends the cookie over HTTPS
-        jwtCookie.setPath("/"); // Makes the cookie available for all paths
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
         jwtCookie.setMaxAge(COOKIE_MAX_AGE);
-
-        // Add SameSite attribute for additional security
         String sameSiteAttribute = "SameSite=Strict";
         response.setHeader("Set-Cookie",
                 String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; Secure; %s",
@@ -76,21 +68,18 @@ public class AuthService {
                         jwtCookie.getMaxAge(),
                         sameSiteAttribute));
 
-        // Create response with user data
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("user", user);
-        responseData.put("token", token); // Optionally include token in response
-
+        responseData.put("token", token);
         return new ApiResponse(true, "Login successful", responseData);
     }
 
     public void logout(HttpServletResponse response) {
-        // Clear the JWT cookie
         Cookie jwtCookie = new Cookie("jwt_token", null);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0); // Expires immediately
+        jwtCookie.setMaxAge(0);
         response.addCookie(jwtCookie);
     }
 }
