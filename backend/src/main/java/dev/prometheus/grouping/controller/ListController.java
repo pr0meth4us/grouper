@@ -89,6 +89,25 @@ public class ListController {
     }
 
     @RequireAuth
+    @GetMapping("/{listId}/group")
+    public ResponseEntity<ApiResponse> groupListBySize(
+            @PathVariable String listId,
+            @RequestParam int size,
+            HttpServletRequest request) {
+        try {
+            String userEmail = (String) request.getAttribute("userEmail");
+            List<List<String>> groupedLists = listService.createGroupBySize(userEmail, listId, size);
+            return ResponseEntity.ok(new ApiResponse(true, "List grouped successfully", groupedLists));
+        } catch (UserNotFoundException | ListNotFoundException e) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse(false, e.getMessage(), null));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(false, "Error grouping list: " + e.getMessage(), null));
+        }
+    }
+
+    @RequireAuth
     @DeleteMapping("/{listId}")
     public ResponseEntity<ApiResponse> deleteList(
             @PathVariable String listId,

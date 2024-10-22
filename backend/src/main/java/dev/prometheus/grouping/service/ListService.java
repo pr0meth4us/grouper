@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class ListService {
     private final UserRepository userRepository;
+    private final GroupingService groupingService;
 
-    public ListService(UserRepository userRepository) {
+    public ListService(UserRepository userRepository, GroupingService groupingService) {
         this.userRepository = userRepository;
+        this.groupingService = groupingService;
     }
 
     public UserList addList(String userEmail, ListRequest request) {
@@ -45,6 +47,20 @@ public class ListService {
     public UserList getList(String userEmail, String listId) {
         User user = getUserOrThrow(userEmail);
         return findListOrThrow(user, listId);
+    }
+
+    public List<List<String>> createGroupBySize(String userEmail, String listId, int size) {
+        UserList userList = getList(userEmail, listId);
+        List<String> items = userList.getItems();
+
+        userList.shuffleItems();
+
+        List<List<String>> groups = new ArrayList<>();
+        for (int i = 0; i < items.size(); i += size) {
+            groups.add(items.subList(i, Math.min(i + size, items.size())));
+        }
+
+        return groups;
     }
 
     public UserList updateList(String userEmail, String listId, ListRequest request) {

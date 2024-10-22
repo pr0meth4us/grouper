@@ -3,6 +3,7 @@ package dev.prometheus.grouping.dto;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,5 +18,9 @@ public class UserList {
         this.listId = UUID.randomUUID().toString();
         this.items = new ArrayList<>();
         this.createdAt = LocalDateTime.now();
+    }
+
+    public void shuffleItems() {
+        Collections.shuffle(this.items);
     }
 }
