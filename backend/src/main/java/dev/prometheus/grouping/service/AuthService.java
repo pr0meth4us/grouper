@@ -26,7 +26,7 @@ public class AuthService {
     }
 
     public Optional<User> register(String email, String password, String otpCode) {
-        if (otpService.verifyOTP(otpCode, email)) {
+        if (otpService.verifyOTP( email, otpCode)) {
             User user = new User();
             user.setEmail(email);
             user.setPassword(password);
