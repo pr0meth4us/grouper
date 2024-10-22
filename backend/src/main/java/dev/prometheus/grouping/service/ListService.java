@@ -63,6 +63,33 @@ public class ListService {
         return groups;
     }
 
+    public List<List<String>> createGroupByNumber(String userEmail, String listId, int number) {
+        UserList userList = getList(userEmail, listId);
+        List<String> items = userList.getItems();
+
+        userList.shuffleItems();
+
+        List<List<String>> groups = new ArrayList<>();
+        int totalItems = items.size();
+
+        if (number <= 0 || totalItems == 0) {
+            return groups;
+        }
+
+        int groupSize = totalItems / number;
+        int remaining = totalItems % number;
+
+        int startIndex = 0;
+        for (int i = 0; i < number; i++) {
+            int endIndex = startIndex + groupSize + (remaining > 0 ? 1 : 0);
+            groups.add(items.subList(startIndex, Math.min(endIndex, totalItems)));
+            startIndex = endIndex;
+            remaining--;
+        }
+
+        return groups;
+    }
+
     public UserList updateList(String userEmail, String listId, ListRequest request) {
         User user = getUserOrThrow(userEmail);
         UserList listToUpdate = findListOrThrow(user, listId);

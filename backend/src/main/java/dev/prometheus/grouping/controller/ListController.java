@@ -90,13 +90,24 @@ public class ListController {
 
     @RequireAuth
     @GetMapping("/{listId}/group")
-    public ResponseEntity<ApiResponse> groupListBySize(
+    public ResponseEntity<ApiResponse> groupList(
             @PathVariable String listId,
-            @RequestParam int size,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer number,
             HttpServletRequest request) {
         try {
             String userEmail = (String) request.getAttribute("userEmail");
-            List<List<String>> groupedLists = listService.createGroupBySize(userEmail, listId, size);
+            List<List<String>> groupedLists;
+
+            if (size != null) {
+                groupedLists = listService.createGroupBySize(userEmail, listId, size);
+            } else if (number != null) {
+                groupedLists = listService.createGroupByNumber(userEmail, listId, number);
+            } else {
+                return ResponseEntity.badRequest()
+                        .body(new ApiResponse(false, "Either 'size' or 'number' parameter must be provided", null));
+            }
+
             return ResponseEntity.ok(new ApiResponse(true, "List grouped successfully", groupedLists));
         } catch (UserNotFoundException | ListNotFoundException e) {
             return ResponseEntity.badRequest()
