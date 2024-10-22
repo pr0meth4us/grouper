@@ -3,14 +3,15 @@ package dev.prometheus.grouping.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.prometheus.grouping.dto.ApiResponse;
-import dev.prometheus.grouping.model.User;
+import dev.prometheus.grouping.dto.LoginRequest;
 import dev.prometheus.grouping.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -45,14 +46,20 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(@RequestBody JsonNode req) {
-        String email = req.get("email").asText();
-        String password = req.get("password").asText();
-        ApiResponse response = authService.login(email, password);
-        if (!response.isSuccess()) {
-            return ResponseEntity.badRequest().body(response);
-        }
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse> login(
+            @RequestBody LoginRequest loginRequest,
+            HttpServletResponse response) {
+        ApiResponse apiResponse = authService.login(
+                loginRequest.getEmail(),
+                loginRequest.getPassword(),
+                response
+        );
+        return ResponseEntity.ok(apiResponse);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        authService.logout(response);
+        return ResponseEntity.ok().body(Map.of("message", "Logged out successfully"));
+    }
 }

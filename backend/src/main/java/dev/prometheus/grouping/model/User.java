@@ -1,11 +1,14 @@
 package dev.prometheus.grouping.model;
 
+import dev.prometheus.grouping.dto.UserList;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Document(collection = "users")
@@ -14,7 +17,7 @@ public class User {
     private String id;
     private String email;
     private String password;
-    private String[] list;
+    private List<UserList> lists = new ArrayList<>();
     public void setPassword(String password) {
         this.password = encryptSHA256(password);
     }
@@ -34,3 +37,4 @@ public class User {
         return this.password.equals(encryptedInput);
     }
 }
+
