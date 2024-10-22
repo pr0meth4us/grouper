@@ -5,8 +5,6 @@ import dev.prometheus.grouping.model.User;
 import dev.prometheus.grouping.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class AuthService {
     private final UserRepository userRepository;
@@ -41,6 +39,14 @@ public class AuthService {
         userRepository.save(user);
 
         return new ApiResponse(true, "Registration successful.", user);
+    }
+
+    public ApiResponse login(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        if (user == null || !user.verifyPassword(password)) {
+            return new ApiResponse(false, "Invalid Credentials", null);
+        }
+        return new ApiResponse(true, "Login successful.", user);
     }
 
 }

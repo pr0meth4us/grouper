@@ -44,4 +44,15 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody JsonNode req) {
+        String email = req.get("email").asText();
+        String password = req.get("password").asText();
+        ApiResponse response = authService.login(email, password);
+        if (!response.isSuccess()) {
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
+
 }
