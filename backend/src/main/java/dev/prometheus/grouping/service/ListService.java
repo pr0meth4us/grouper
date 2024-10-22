@@ -49,26 +49,21 @@ public class ListService {
         return findListOrThrow(user, listId);
     }
 
-    public List<List<String>> createGroupBySize(String userEmail, String listId, int size) {
+    public List<String> getItems(String userEmail, String listId) {
         UserList userList = getList(userEmail, listId);
-        List<String> items = userList.getItems();
-
         userList.shuffleItems();
+       return userList.getItems();
+    }
 
+    public List<List<String>> groupBySize (List<String> items, int size) {
         List<List<String>> groups = new ArrayList<>();
         for (int i = 0; i < items.size(); i += size) {
             groups.add(items.subList(i, Math.min(i + size, items.size())));
         }
-
         return groups;
     }
 
-    public List<List<String>> createGroupByNumber(String userEmail, String listId, int number) {
-        UserList userList = getList(userEmail, listId);
-        List<String> items = userList.getItems();
-
-        userList.shuffleItems();
-
+    public List<List<String>> groupByNumber (List<String> items, int number) {
         List<List<String>> groups = new ArrayList<>();
         int totalItems = items.size();
 
@@ -88,6 +83,16 @@ public class ListService {
         }
 
         return groups;
+    }
+
+    public List<List<String>> createGroupBySize(String userEmail, String listId, int size) {
+        List<String> items = getItems(userEmail, listId);
+        return groupBySize(items, size);
+    }
+
+    public List<List<String>> createGroupByNumber(String userEmail, String listId, int number) {
+        List<String> items = getItems(userEmail, listId);
+        return groupByNumber(items, number);
     }
 
     public UserList updateList(String userEmail, String listId, ListRequest request) {
