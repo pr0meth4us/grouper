@@ -21,10 +21,9 @@ public class ListService {
     }
 
     public UserList addList(String userEmail, ListRequest request) {
-        User user = getUserOrThrow(userEmail);
+        User user = userRepository.findByEmail(userEmail);
 
         List<String> items = processListContent(request.getContent());
-        validateItems(items);
 
         UserList newList = new UserList();
         newList.setName(request.getName());
@@ -40,12 +39,12 @@ public class ListService {
     }
 
     public List<UserList> getAllLists(String userEmail) {
-        User user = getUserOrThrow(userEmail);
+        User user = userRepository.findByEmail(userEmail);
         return user.getLists() != null ? user.getLists() : new ArrayList<>();
     }
 
     public UserList getList(String userEmail, String listId) {
-        User user = getUserOrThrow(userEmail);
+        User user = userRepository.findByEmail(userEmail);
         return findListOrThrow(user, listId);
     }
 
@@ -96,11 +95,10 @@ public class ListService {
     }
 
     public UserList updateList(String userEmail, String listId, ListRequest request) {
-        User user = getUserOrThrow(userEmail);
+        User user = userRepository.findByEmail(userEmail);
         UserList listToUpdate = findListOrThrow(user, listId);
 
         List<String> items = processListContent(request.getContent());
-        validateItems(items);
 
         listToUpdate.setName(request.getName());
         listToUpdate.setItems(items);
@@ -110,19 +108,11 @@ public class ListService {
     }
 
     public void deleteList(String userEmail, String listId) {
-        User user = getUserOrThrow(userEmail);
+        User user = userRepository.findByEmail(userEmail);
         UserList list = findListOrThrow(user, listId);
 
         user.getLists().remove(list);
         userRepository.save(user);
-    }
-
-    private User getUserOrThrow(String userEmail) {
-        User user = userRepository.findByEmail(userEmail);
-        if (user == null) {
-            throw new UserNotFoundException("User not found");
-        }
-        return user;
     }
 
     private UserList findListOrThrow(User user, String listId) {
@@ -143,10 +133,5 @@ public class ListService {
                 .collect(Collectors.toList());
     }
 
-    private void validateItems(List<String> items) {
-        if (items.isEmpty()) {
-            throw new EmptyListException("List cannot be empty");
-        }
-    }
 }
 
