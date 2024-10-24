@@ -13,11 +13,9 @@ import java.util.stream.Collectors;
 @Service
 public class ListService {
     private final UserRepository userRepository;
-    private final GroupingService groupingService;
 
-    public ListService(UserRepository userRepository, GroupingService groupingService) {
+    public ListService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.groupingService = groupingService;
     }
 
     public UserList addList(String userEmail, ListRequest request) {
