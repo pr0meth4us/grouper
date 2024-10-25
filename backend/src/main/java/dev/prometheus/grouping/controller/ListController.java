@@ -12,10 +12,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
-@RequestMapping("/api/lists")
+@RequestMapping("/auth/lists")
 public class ListController {
     private final ListService listService;
 
@@ -94,22 +96,25 @@ public class ListController {
             @PathVariable String listId,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) Integer number,
+            @RequestParam(required = false) List<String> exclude,
             HttpServletRequest request) {
         try {
             String userEmail = (String) request.getAttribute("userEmail");
             List<List<String>> groupedLists;
 
+            Set<String> exclusions = exclude != null ? new HashSet<>(exclude) : null;
+
             if (size != null) {
-                groupedLists = listService.createGroupBySize(userEmail, listId, size);
+                groupedLists = listService.createGroupBySize(userEmail, listId, size, exclusions);
             } else if (number != null) {
-                groupedLists = listService.createGroupByNumber(userEmail, listId, number);
+                groupedLists = listService.createGroupByNumber(userEmail, listId, number, exclusions);
             } else {
                 return ResponseEntity.badRequest()
                         .body(new ApiResponse(false, "Either 'size' or 'number' parameter must be provided", null));
             }
 
             return ResponseEntity.ok(new ApiResponse(true, "List grouped successfully", groupedLists));
-        } catch (UserNotFoundException | ListNotFoundException e) {
+        } catch (UserNotFoundException | ListNotFoundException | EmptyListException e) {
             return ResponseEntity.badRequest()
                     .body(new ApiResponse(false, e.getMessage(), null));
         } catch (Exception e) {

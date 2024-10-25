@@ -1,89 +1,41 @@
 package dev.prometheus.grouping.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.prometheus.grouping.model.Student;
-import dev.prometheus.grouping.repository.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class GroupingService {
-    private final StudentRepository studentRepository;
-    private final ObjectMapper objectMapper;
-    private static final Path EXCLUDE_FILE_PATH = Paths.get("./src/main/resources/static/json/exclude.json");
 
-    @Autowired
-    public GroupingService(StudentRepository studentRepository, ObjectMapper objectMapper) {
-        this.studentRepository = studentRepository;
-        this.objectMapper = objectMapper;
-    }
-
-    public List<List<String>> createGroups(int groupSize, boolean exclude) throws IOException {
-        List<String> shuffledIds = getShuffledList(exclude);
-        return partitionList(shuffledIds, groupSize);
-    }
-
-    public List<List<String>> createGroupsByNumber(int numberOfGroups, boolean exclude) throws IOException {
-        List<String> shuffledIds = getShuffledList(exclude);
-        return partitionListByNumber(shuffledIds, numberOfGroups);
-    }
-
-    private List<String> getShuffledList(boolean exclude) throws IOException {
-        List<String> ids = studentRepository.findAll().stream().map(Student::getId).collect(Collectors.toList());
-        if (exclude) {
-            List<String> excludeList = readExcludeList();
-            ids.removeAll(excludeList);
+    public List<List<String>> groupBySize(List<String> items, int size) {
+        List<List<String>> groups = new ArrayList<>();
+        for (int i = 0; i < items.size(); i += size) {
+            groups.add(items.subList(i, Math.min(i + size, items.size())));
         }
-        Collections.shuffle(ids);
-        return ids;
+        return groups;
     }
 
-    private List<List<String>> partitionList(List<String> list, int partitionSize) {
-        return new ArrayList<>(list.stream()
-                .collect(Collectors.groupingBy(i -> list.indexOf(i) / partitionSize))
-                .values());
-    }
+    public List<List<String>> groupByNumber(List<String> items, int number) {
+        List<List<String>> groups = new ArrayList<>();
+        int totalItems = items.size();
 
-    private List<List<String>> partitionListByNumber(List<String> list, int numberOfGroups) {
-        int size = list.size();
-        int partitionSize = size / numberOfGroups;
-        int remainder = size % numberOfGroups;
-
-        List<List<String>> result = new ArrayList<>(numberOfGroups);
-        int start = 0;
-        for (int i = 0; i < numberOfGroups; i++) {
-            int end = start + partitionSize + (i < remainder ? 1 : 0);
-            result.add(new ArrayList<>(list.subList(start, end)));
-            start = end;
+        if (number <= 0 || totalItems == 0) {
+            return groups;
         }
-        return result;
-    }
 
-    public void writeExcludeList(List<String> ids) throws IOException {
-        objectMapper.writeValue(EXCLUDE_FILE_PATH.toFile(), ids);
-    }
+        int groupSize = totalItems / number;
+        int remaining = totalItems % number;
 
-    public List<String> readExcludeList() throws IOException {
-        if (Files.exists(EXCLUDE_FILE_PATH)) {
-            return objectMapper.readValue(EXCLUDE_FILE_PATH.toFile(), List.class);
+        int startIndex = 0;
+        for (int i = 0; i < number; i++) {
+            int endIndex = startIndex + groupSize + (remaining > 0 ? 1 : 0);
+            groups.add(items.subList(startIndex, Math.min(endIndex, totalItems)));
+            startIndex = endIndex;
+            remaining--;
         }
-        return Collections.emptyList();
+
+        return groups;
     }
 
-    public List<List<String>> replaceIdsWithNames(List<List<String>> groups) {
-        Map<String, String> idToNameMap = studentRepository.findAll().stream()
-                .collect(Collectors.toMap(Student::getId, Student::getName));
-
-        return groups.stream()
-                .map(group -> group.stream()
-                        .map(id -> idToNameMap.getOrDefault(id, id))
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList());
-    }
 }
