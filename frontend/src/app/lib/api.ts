@@ -10,9 +10,6 @@ interface ApiResponse<T> {
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 const api = {
-    /**
-     * Process a list of items
-     */
     async processList(content: string) {
         const response = await fetch(`${BASE_URL}/guest/get-list`, {
             method: 'POST',
@@ -27,10 +24,6 @@ const api = {
 
         return response.json();
     },
-
-    /**
-     * Generate groups from the processed list
-     */
     async generateGroups({
                              size,
                              number,
