@@ -1,7 +1,7 @@
 import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import { Card } from "@nextui-org/card";
-import { SparklesIcon, ArrowRightIcon, LogInIcon } from "lucide-react"; // Add LogInIcon
+import { SparklesIcon, ArrowRightIcon } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
@@ -45,21 +45,6 @@ export default function Home() {
               variant="bordered"
             >
               Try as Guest
-            </Button>
-          </div>
-
-          {/* New Login Button */}
-          <div className="flex justify-center mt-4">
-            <Button
-              as={Link}
-              className="w-full sm:w-auto"
-              endContent={<LogInIcon className="h-4 w-4" />}
-              href="/login" // Assuming your login page is at /login
-              radius="full"
-              size="lg"
-              variant="flat"
-            >
-              Login
             </Button>
           </div>
 

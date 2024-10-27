@@ -13,12 +13,16 @@ import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import NextLink from "next/link";
 import Image from "next/image";
+import { LogInIcon } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
+import { getToken } from "@/app/api/auth";
 
 export const Navbar = () => {
+  const auth = getToken();
+
   return (
     <NextUINavbar
       className="bg-background/60 backdrop-blur-lg border-b border-default-100"
@@ -44,15 +48,29 @@ export const Navbar = () => {
 
       <NavbarContent className="hidden sm:flex basis-1/2 gap-4" justify="end">
         <NavbarItem>
-          <Button
-            as={Link}
-            className="text-sm font-medium"
-            color="primary"
-            href="/dashboard"
-            variant="flat"
-          >
-            Dashboard
-          </Button>
+          {auth ? (
+            <Button
+              as={Link}
+              className="text-sm font-medium"
+              color="primary"
+              href="/dashboard"
+              variant="flat"
+            >
+              Dashboard
+            </Button>
+          ) : (
+            <Button
+              as={Link}
+              className="w-full sm:w-auto"
+              endContent={<LogInIcon className="h-4 w-4" />}
+              href="/login"
+              radius="full"
+              size="lg"
+              variant="flat"
+            >
+              Login
+            </Button>
+          )}
         </NavbarItem>
         <NavbarItem>
           <Link

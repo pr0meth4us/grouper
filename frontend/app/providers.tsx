@@ -1,11 +1,14 @@
+// app/providers.tsx
 "use client";
+import type { ThemeProviderProps } from "next-themes/dist/types";
+import type { User } from "@/app/types/auth";
 
 import * as React from "react";
 import { NextUIProvider } from "@nextui-org/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ThemeProviderProps } from "next-themes/dist/types";
 
+import { getToken } from "./api/auth";
 import { loginUser, logoutUser, sendOTP, registerUser } from "./api/auth";
 
 export interface ProvidersProps {
@@ -13,20 +16,12 @@ export interface ProvidersProps {
   themeProps?: ThemeProviderProps;
 }
 
-interface ListItem {
-  listId: string;
-  name: string;
-  items: string[];
-  createdAt: Date;
-}
-
 interface AuthContextProps {
-  user: string | null;
+  user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
-  sendOTP: (email: string) => Promise<void>;
-  register: (email: string, otp: string, password: string) => Promise<void>;
-  lists: ListItem[]; // Update type to reflect the actual structure
+  sendOTP: (email: string) => Promise<boolean>;
+  register: (email: string, otp: string, password: string) => Promise<boolean>;
 }
 
 const AuthContext = React.createContext<AuthContextProps | undefined>(
@@ -36,28 +31,43 @@ const AuthContext = React.createContext<AuthContextProps | undefined>(
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = React.useState<string | null>(null);
-  const [lists, setLists] = React.useState<ListItem[]>([]); // Update state type
+  const [user, setUser] = React.useState<User | null>(null);
+  const router = useRouter();
+
+  // Check for existing token on mount
+  React.useEffect(() => {
+    const token = getToken();
+
+    // If no token, user is not logged in
+    if (!token && window.location.pathname !== "/login") {
+      router.push("/login");
+    }
+  }, []);
 
   const login = async (email: string, password: string) => {
     const response = await loginUser(email, password);
 
-    if (response.success) {
-      setUser(response.data.user.email);
-      setLists(response.data.user.lists);
+    if (response.success && response.data?.user) {
+      setUser(response.data.user);
+      router.push("/dashboard"); // Redirect to dashboard after successful login
+
+      return true;
     }
 
-    return response.success;
+    return false;
   };
 
-  const logout = async () => {
-    await logoutUser();
-    setUser(null);
-    setLists([]);
+  const handleLogout = async () => {
+    const success = await logoutUser();
+
+    if (success) {
+      setUser(null);
+      router.push("/login");
+    }
   };
 
   const sendOTPHandler = async (email: string) => {
-    await sendOTP(email);
+    return await sendOTP(email);
   };
 
   const registerHandler = async (
@@ -67,9 +77,14 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   ) => {
     const response = await registerUser(email, otp, password);
 
-    if (response.success) {
-      setUser(response.data.user.email);
+    if (response.success && response.data?.user) {
+      setUser(response.data.user);
+      router.push("/dashboard"); // Redirect to dashboard after successful registration
+
+      return true;
     }
+
+    return false;
   };
 
   return (
@@ -77,10 +92,9 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         user,
         login,
-        logout,
+        logout: handleLogout,
         sendOTP: sendOTPHandler,
         register: registerHandler,
-        lists,
       }}
     >
       {children}

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
@@ -8,7 +7,6 @@ import { Link } from "@nextui-org/link";
 
 import { useAuth } from "@/app/providers";
 export default function LoginPage() {
-  const router = useRouter();
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +18,6 @@ export default function LoginPage() {
 
     setLoading(false);
     if (result) {
-      router.push("/dashboard");
     } else {
       alert("Login failed. Please check your credentials.");
     }
