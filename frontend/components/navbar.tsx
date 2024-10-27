@@ -13,14 +13,12 @@ import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import NextLink from "next/link";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
 
 export const Navbar = () => {
-  const { data: session } = useSession();
 
   return (
     <NextUINavbar
@@ -46,19 +44,17 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex basis-1/2 gap-4" justify="end">
-        {session && (
-          <NavbarItem>
-            <Button
-              as={Link}
-              className="text-sm font-medium"
-              color="primary"
-              href="/dashboard"
-              variant="flat"
-            >
-              Dashboard
-            </Button>
-          </NavbarItem>
-        )}
+        <NavbarItem>
+          <Button
+            as={Link}
+            className="text-sm font-medium"
+            color="primary"
+            href="/dashboard"
+            variant="flat"
+          >
+            Dashboard
+          </Button>
+        </NavbarItem>
         <NavbarItem>
           <Link
             isExternal
