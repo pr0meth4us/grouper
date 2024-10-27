@@ -1,56 +1,59 @@
 import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
+import { Button } from "@nextui-org/button";
+import { Card } from "@nextui-org/card";
+import { SparklesIcon, ArrowRightIcon } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { title } from "@/components/primitives";
 
 export default function Home() {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-        <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
-        <div className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
+    <section className="flex flex-col items-center justify-center min-h-[80vh] px-6">
+      <Card className="w-full max-w-lg p-8  from-transparent to-violet-50/20">
+        <div className="space-y-8">
+          <div className="space-y-4 text-center">
+            <h1 className="inline-block text-center">
+              <span className={title({ size: "lg" })}>One Click to </span>
+              <span className={title({ color: "violet", size: "lg" })}>
+                Group
+              </span>
+              <span className={title({ size: "lg" })}> &apos;Em All!</span>
+            </h1>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              as={Link}
+              className="w-full sm:w-auto"
+              color="primary"
+              endContent={<SparklesIcon className="h-4 w-4" />}
+              href={siteConfig.links.docs}
+              radius="full"
+              size="lg"
+              variant="shadow"
+            >
+              Get Started
+            </Button>
+
+            <Button
+              as={Link}
+              className="w-full sm:w-auto"
+              endContent={<ArrowRightIcon className="h-4 w-4" />}
+              href={siteConfig.links.github}
+              radius="full"
+              size="lg"
+              variant="bordered"
+            >
+              Try as Guest
+            </Button>
+          </div>
+          <div className="flex justify-center">
+            <p className="text-sm py-2 px-4 rounded-full bg-violet-50/30  font-medium">
+              ✨ Don&apos;t worry - both options are free forever! ✨
+            </p>
+          </div>
         </div>
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div>
+      </Card>
     </section>
   );
 }
