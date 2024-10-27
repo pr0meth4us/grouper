@@ -12,27 +12,42 @@ export interface ProvidersProps {
   themeProps?: ThemeProviderProps;
 }
 
+interface ListItem {
+  listId: string;
+  name: string;
+  items: string[];
+  createdAt: Date;
+}
+
 interface AuthContextProps {
   user: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   sendOTP: (email: string) => Promise<void>;
   register: (email: string, otp: string, password: string) => Promise<void>;
+  lists: ListItem[]; // Update type to reflect the actual structure
 }
+
 
 const AuthContext = React.createContext<AuthContextProps | undefined>(undefined);
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<string | null>(null);
+  const [lists, setLists] = React.useState<ListItem[]>([]); // Update state type
 
   const login = async (email: string, password: string) => {
     const response = await loginUser(email, password);
-    if (response.success) setUser(response.user.email);
+    if (response.success) {
+      setUser(response.data.user.email);
+      setLists(response.data.user.lists)
+    }
+    return response.success;
   };
 
   const logout = async () => {
     await logoutUser();
     setUser(null);
+    setLists([]);
   };
 
   const sendOTPHandler = async (email: string) => {
@@ -41,11 +56,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
   const registerHandler = async (email: string, otp: string, password: string) => {
     const response = await registerUser(email, otp, password);
-    if (response.success) setUser(response.user.email);
+    if (response.success) {
+      setUser(response.data.user.email);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, sendOTP: sendOTPHandler, register: registerHandler }}>
+    <AuthContext.Provider value={{ user, login, logout, sendOTP: sendOTPHandler, register: registerHandler, lists }}>
       {children}
     </AuthContext.Provider>
   );
