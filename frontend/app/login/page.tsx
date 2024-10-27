@@ -1,11 +1,12 @@
-"use client"
-import React, { useState } from 'react';
-import {useRouter} from "next/navigation";
-import {Card} from "@nextui-org/card";
-import {Input} from "@nextui-org/input";
-import {Button} from "@nextui-org/button";
-import {Link} from "@nextui-org/link";
-import {useAuth} from "@/app/providers";
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card } from "@nextui-org/card";
+import { Input } from "@nextui-org/input";
+import { Button } from "@nextui-org/button";
+import { Link } from "@nextui-org/link";
+
+import { useAuth } from "@/app/providers";
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
@@ -16,6 +17,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     const result = await login(email, password);
+
     setLoading(false);
     if (result) {
       router.push("/dashboard");
@@ -23,6 +25,7 @@ export default function LoginPage() {
       alert("Login failed. Please check your credentials.");
     }
   };
+
   return (
     <section className="flex flex-col items-center justify-center min-h-[80vh] px-6">
       <Card className="w-full max-w-md p-8 from-transparent to-gray-50/20">

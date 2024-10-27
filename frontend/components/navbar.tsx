@@ -19,7 +19,6 @@ import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
 
 export const Navbar = () => {
-
   return (
     <NextUINavbar
       className="bg-background/60 backdrop-blur-lg border-b border-default-100"
