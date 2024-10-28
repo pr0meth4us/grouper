@@ -13,14 +13,16 @@ import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import NextLink from "next/link";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { LogInIcon, LogOutIcon } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
+import {useAuth} from "@/app/hooks/useAuth";
 
 export const Navbar = () => {
-  const { data: session } = useSession();
+  const {isAuthenticated, logout} = useAuth();
+  const isDashboard = typeof window !== 'undefined' && window.location.pathname === '/dashboard';
 
   return (
     <NextUINavbar
@@ -46,19 +48,42 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex basis-1/2 gap-4" justify="end">
-        {session && (
-          <NavbarItem>
+        <NavbarItem>
+          {isAuthenticated ? (
+            <div className="flex gap-2">
+              {!isDashboard?(<Button
+                as={Link}
+                className="text-sm font-medium"
+                color="primary"
+                href="/dashboard"
+                variant="flat"
+              >
+                Dashboard
+              </Button>):""}
+              <Button
+                className="text-sm font-medium"
+                color="danger"
+                variant="ghost"
+                startContent={<LogOutIcon className="h-4 w-4" />}
+                onClick={logout}
+              >
+                Logout
+              </Button>
+            </div>
+          ) : (
             <Button
               as={Link}
-              className="text-sm font-medium"
-              color="primary"
-              href="/dashboard"
+              className="w-full sm:w-auto"
+              endContent={<LogInIcon className="h-4 w-4" />}
+              href="/login"
+              radius="full"
+              size="lg"
               variant="flat"
             >
-              Dashboard
+              Login
             </Button>
-          </NavbarItem>
-        )}
+          )}
+        </NavbarItem>
         <NavbarItem>
           <Link
             isExternal
