@@ -1,6 +1,7 @@
 // app/api/auth.ts
+"use client";
 
-import { AuthResponse } from "@/app/types/auth";
+import type { AuthResponse } from "@/app/types/auth";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
@@ -8,17 +9,26 @@ const API_BASE_URL =
 const TOKEN_KEY = "auth_token";
 
 const setToken = (token: string) => {
-  localStorage.setItem(TOKEN_KEY, token);
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(TOKEN_KEY, token);
+  }
 };
 
 export const getToken = () => {
-  return localStorage.getItem(TOKEN_KEY);
+  if (typeof window !== "undefined") {
+    return window.localStorage.getItem(TOKEN_KEY);
+  }
+
+  return null;
 };
 
 const removeToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(TOKEN_KEY);
+  }
 };
 
+// Helper to get auth headers
 const getAuthHeaders = () => {
   const token = getToken();
 
@@ -61,7 +71,8 @@ export const registerUser = async (
 
     return data;
   } catch (error) {
-    return { success: false };
+    // @ts-ignore
+    return { success: false, error: "Registration failed" };
   }
 };
 
@@ -84,7 +95,8 @@ export const loginUser = async (
 
     return data;
   } catch (error) {
-    return { success: false };
+    // @ts-ignore
+    return { success: false, error: "Login failed" };
   }
 };
 

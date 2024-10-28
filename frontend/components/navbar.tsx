@@ -18,10 +18,9 @@ import { LogInIcon } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
-import { getToken } from "@/app/api/auth";
 
 export const Navbar = () => {
-  const auth = getToken();
+  const auth = window.localStorage.getItem('auth_token');
 
   return (
     <NextUINavbar
