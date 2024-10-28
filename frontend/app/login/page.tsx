@@ -4,20 +4,23 @@ import { Card } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
+import { useRouter } from "next/navigation";
 
-import { useAuth } from "@/app/providers";
+import { authApi } from "@/app/api/auth";
+
 export default function LoginPage() {
-  const { login } = useAuth();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const result = await login(email, password);
+    const response = await authApi.login({ email, password });
 
     setLoading(false);
-    if (result) {
+    if (response.success) {
+      router.push("/dashboard");
     } else {
       alert("Login failed. Please check your credentials.");
     }

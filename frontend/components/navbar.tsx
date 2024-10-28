@@ -18,9 +18,10 @@ import { LogInIcon } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
+import { useAuth } from "@/app/hooks/useAuth";
 
 export const Navbar = () => {
-  const auth = window.localStorage.getItem('auth_token');
+  const { isAuthenticated } = useAuth();
 
   return (
     <NextUINavbar
@@ -47,7 +48,7 @@ export const Navbar = () => {
 
       <NavbarContent className="hidden sm:flex basis-1/2 gap-4" justify="end">
         <NavbarItem>
-          {auth ? (
+          {isAuthenticated ? (
             <Button
               as={Link}
               className="text-sm font-medium"

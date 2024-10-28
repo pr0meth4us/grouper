@@ -1,121 +1,65 @@
-// app/api/auth.ts
-"use client";
+const API_BASE_URL = '/auth';
 
-import type { AuthResponse } from "@/app/types/auth";
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data: T | null;
+}
 
-const TOKEN_KEY = "auth_token";
-
-const setToken = (token: string) => {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(TOKEN_KEY, token);
-  }
-};
-
-export const getToken = () => {
-  if (typeof window !== "undefined") {
-    return window.localStorage.getItem(TOKEN_KEY);
-  }
-
-  return null;
-};
-
-const removeToken = () => {
-  if (typeof window !== "undefined") {
-    window.localStorage.removeItem(TOKEN_KEY);
-  }
-};
-
-// Helper to get auth headers
-const getAuthHeaders = () => {
-  const token = getToken();
-
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-};
-
-export const sendOTP = async (email: string): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+export const authApi = {
+  sendOtp: async (email: string) => {
+    const response = await fetch(`${API_BASE_URL}/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
+    return response.text();
+  },
 
-    return response.ok;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const registerUser = async (
-  email: string,
-  otp: string,
-  password: string,
-): Promise<AuthResponse> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, otp, password }),
+  register: async (email: string, password: string, otp: string) => {
+    const response = await fetch(`${API_BASE_URL}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, otp }),
     });
-    const data = await response.json();
+    return response.json() as Promise<ApiResponse>;
+  },
 
-    if (data.success && data.data?.token) {
-      setToken(data.data.token);
-    }
-
-    return data;
-  } catch (error) {
-    // @ts-ignore
-    return { success: false, error: "Registration failed" };
-  }
-};
-
-export const loginUser = async (
-  email: string,
-  password: string,
-): Promise<AuthResponse> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-      credentials: "include",
+  login: async (credentials: LoginRequest) => {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
     });
-    const data = await response.json();
+    console.log(response)
+    return response.json() as Promise<ApiResponse>;
+  },
 
-    if (data.success && data.data?.token) {
-      setToken(data.data.token);
-    }
+  logout: async () => {
+    const response = await fetch(`${API_BASE_URL}/logout`, {
+      method: 'POST',
+    });
+    return response.json();
+  },
 
-    return data;
-  } catch (error) {
-    // @ts-ignore
-    return { success: false, error: "Login failed" };
-  }
-};
-
-export const logoutUser = async (): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/logout`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      credentials: "include",
+  checkAuth: async () => {
+    const response = await fetch('/auth/verify', {
+      method: 'GET',
+      credentials: 'include', // Important for sending cookies
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
-    if (response.ok) {
-      removeToken();
+    if (!response.ok) {
+      throw new Error('Authentication check failed');
     }
 
-    return response.ok;
-  } catch (error) {
-    removeToken();
-
-    return false;
-  }
+    return await response.json() as ApiResponse;
+  },
 };
