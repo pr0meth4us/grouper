@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, MoreVertical, Edit, Trash2, Group, Hash, ChevronDown } from "lucide-react";
+import { AlertCircle, MoreVertical, Edit, Trash2, Group, Hash } from "lucide-react";
 import { listApi, ListItem } from "@/app/api/list";
 
 // Add this CSS to your globals.css file:
