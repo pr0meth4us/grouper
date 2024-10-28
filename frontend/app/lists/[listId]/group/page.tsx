@@ -1,7 +1,7 @@
 "use client";
 
 import { Key, useEffect, useState } from "react";
-import { RefreshCcw, Users } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import { useParams } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,17 +9,22 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { listApi } from "@/app/api/list";
 import { Group, ListItem } from "@/app/types/list";
+import CurrentList from "@/app/lists/[listId]/group/component";
 
 export default function GroupGenerator() {
   const [groupMethod, setGroupMethod] = useState<"size" | "number">("size");
   const [groupSize, setGroupSize] = useState<string>("");
   const [numberOfGroups, setNumberOfGroups] = useState<string>("");
   const [shuffledGroups, setShuffledGroups] = useState<Group[]>([]);
-  const [lists, setLists] = useState<ListItem | null>(null);
+  const [list, setList] = useState<ListItem>({
+    listId: "",
+    name: "",
+    items: [],
+    createdAt: "",
+  });
+
   const [loading] = useState(false);
   const params = useParams();
   const listId = params.listId as string;
@@ -29,7 +34,7 @@ export default function GroupGenerator() {
       try {
         const response = await listApi.getListById(listId);
 
-        setLists(response);
+        setList(response);
       } catch (error) {}
     };
 
@@ -38,29 +43,7 @@ export default function GroupGenerator() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <Card className="max-w-2xl mx-auto mb-8">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl font-bold">Current List</CardTitle>
-          <Badge variant="secondary">
-            <Users className="h-4 w-4 mr-1" />
-            {lists?.items?.length || 0} members
-          </Badge>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[200px] w-full rounded-md border p-4">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {lists?.items?.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-2 p-2 rounded-md bg-secondary/20"
-                >
-                  <span className="text-sm font-medium">{item}</span>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
+      <CurrentList list={list} />
 
       {shuffledGroups.length === 0 ? (
         <Card className="max-w-2xl mx-auto">
@@ -95,7 +78,7 @@ export default function GroupGenerator() {
                     <Label htmlFor="groupSize">Group Size</Label>
                     <Input
                       id="groupSize"
-                      max={lists?.items?.length || 1}
+                      max={list?.items?.length || 1}
                       min={1}
                       placeholder="Enter the number of members in each group"
                       type="number"
@@ -106,7 +89,7 @@ export default function GroupGenerator() {
                       <p className="text-sm text-muted-foreground">
                         This will create
                         {Math.ceil(
-                          (lists?.items?.length || 0) / Number(groupSize),
+                          (list?.items?.length || 0) / Number(groupSize),
                         )}{" "}
                         groups
                       </p>
@@ -119,7 +102,7 @@ export default function GroupGenerator() {
                     <Label htmlFor="numberOfGroups">Number of Groups</Label>
                     <Input
                       id="numberOfGroups"
-                      max={lists?.items?.length || 1}
+                      max={list?.items?.length || 1}
                       min={1}
                       placeholder="Enter the number of groups"
                       type="number"
@@ -131,7 +114,7 @@ export default function GroupGenerator() {
                         Each group will have approximately approximately{" "}
                         approximately{" "}
                         {Math.ceil(
-                          (lists?.items?.length || 0) / Number(numberOfGroups),
+                          (list?.items?.length || 0) / Number(numberOfGroups),
                         )}{" "}
                         members
                       </p>
@@ -143,7 +126,7 @@ export default function GroupGenerator() {
               <div className="flex justify-between items-center pt-4">
                 <Button
                   className="bg-primary"
-                  disabled={loading || (lists?.items?.length || 0) === 0}
+                  disabled={loading || (list?.items?.length || 0) === 0}
                   type="submit"
                 >
                   {loading ? "Generating..." : "Generate Groups"}

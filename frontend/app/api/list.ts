@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { ListItem } from "@/app/types/auth";
+import { ListItem } from "@/app/types/list";
 
 const API_BASE_URL = "/auth";
 
@@ -25,7 +25,6 @@ export const listApi = {
 
   getListById: async (id: string): Promise<ListItem> => {
     const response = await axios.get(`${API_BASE_URL}/lists/${id}`);
-    console.log(response.data, "response data", response.data.data, "data date", response, "res");
 
     return response.data.data;
   },
