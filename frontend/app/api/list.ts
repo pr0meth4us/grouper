@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { ListItem } from "@/app/types/list";
+import { Group, ListItem } from "@/app/types/list";
 
 const API_BASE_URL = "/auth";
 
@@ -13,14 +13,15 @@ export const listApi = {
 
   group: async (
     listId: string,
-    size: number,
-    number: number,
-  ): Promise<ListItem[]> => {
+    size: string,
+    number: string,
+    exclusions: string,
+  ): Promise<Group[]> => {
     const response = await axios.get(
-      `${API_BASE_URL}/lists/${listId}/group?size=${size}&number${number}`,
+      `${API_BASE_URL}/lists/${listId}/group?size=${size}&number${number}&$exclusions=${exclusions}`,
     );
 
-    return response.data;
+    return response.data.data;
   },
 
   getListById: async (id: string): Promise<ListItem> => {

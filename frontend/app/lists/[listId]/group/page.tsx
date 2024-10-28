@@ -1,6 +1,6 @@
 "use client";
 
-import { Key, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RefreshCcw } from "lucide-react";
 import { useParams } from "next/navigation";
 
@@ -17,7 +17,8 @@ export default function GroupGenerator() {
   const [groupMethod, setGroupMethod] = useState<"size" | "number">("size");
   const [groupSize, setGroupSize] = useState<string>("");
   const [numberOfGroups, setNumberOfGroups] = useState<string>("");
-  const [shuffledGroups, setShuffledGroups] = useState<Group[]>([]);
+  const [excludedMembers, setExcludedMembers] = useState<string[]>([]);
+  const [shuffledGroups, setShuffledGroups] = useState<Group>([]);
   const [list, setList] = useState<ListItem>({
     listId: "",
     name: "",
@@ -25,25 +26,44 @@ export default function GroupGenerator() {
     createdAt: "",
   });
 
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const listId = params.listId as string;
 
   useEffect(() => {
     const fetchList = async () => {
-      try {
-        const response = await listApi.getListById(listId);
+      const response = await listApi.getListById(listId);
 
-        setList(response);
-      } catch (error) {}
+      setList(response);
     };
 
     fetchList();
   }, [listId]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const exclusions = excludedMembers.join(",");
+    const response = await listApi.group(
+      listId,
+      groupSize,
+      numberOfGroups,
+      exclusions,
+    );
+
+    // @ts-ignore
+    setShuffledGroups(response);
+    setLoading(false);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
-      <CurrentList list={list} />
+      <CurrentList
+        excludedMembers={excludedMembers}
+        list={list}
+        setExcludedMembers={setExcludedMembers}
+      />
 
       {shuffledGroups.length === 0 ? (
         <Card className="max-w-2xl mx-auto">
@@ -51,7 +71,7 @@ export default function GroupGenerator() {
             <CardTitle className="text-2xl">Group Generator</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <Label>Select a method for group generation:</Label>
                 <RadioGroup
@@ -111,8 +131,7 @@ export default function GroupGenerator() {
                     />
                     {numberOfGroups && (
                       <p className="text-sm text-muted-foreground">
-                        Each group will have approximately approximately{" "}
-                        approximately{" "}
+                        Each group will have approximately{" "}
                         {Math.ceil(
                           (list?.items?.length || 0) / Number(numberOfGroups),
                         )}{" "}
@@ -146,11 +165,8 @@ export default function GroupGenerator() {
                   </CardHeader>
                   <CardContent>
                     <ul className="list-disc pl-6 space-y-2">
-                      {group.members.map(
-                        (member: string, memberIndex: Key | null) => (
-                          <li key={memberIndex}>{member}</li>
-                        ),
-                      )}
+                      <li>{group.join(", ")}</li>{" "}
+                      {/* Join members in the inner array */}
                     </ul>
                   </CardContent>
                 </Card>

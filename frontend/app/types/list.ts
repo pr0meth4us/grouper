@@ -4,6 +4,4 @@ export interface ListItem {
   items: string[];
   createdAt: string;
 }
-export interface Group {
-  members: string[];
-}
+export type Group = string[][]; // A two-dimensional array of strings

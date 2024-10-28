@@ -9,11 +9,16 @@ import { ListItem } from "@/app/types/list";
 
 interface CurrentListProps {
   list: ListItem;
+  excludedMembers: string[];
+  setExcludedMembers: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const CurrentList: React.FC<CurrentListProps> = ({ list }) => {
+const CurrentList: React.FC<CurrentListProps> = ({
+  list,
+  excludedMembers,
+  setExcludedMembers,
+}) => {
   const [isExcluding, setIsExcluding] = useState<boolean>(false);
-  const [excludedMembers, setExcludedMembers] = useState<string[]>([]);
   const [tempExcludedMembers, setTempExcludedMembers] = useState<string[]>([]);
 
   const toggleMemberExclusion = (member: string): void => {
