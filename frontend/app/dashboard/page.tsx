@@ -41,10 +41,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { listApi, ListItem } from "@/app/api/list";
+import {useRouter} from "next/navigation";
 
 type GroupingType = "none" | "size" | "number";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [lists, setLists] = useState<ListItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,9 +57,9 @@ export default function DashboardPage() {
     e.stopPropagation();
   };
 
-  const handleGroupBySize = (e: React.MouseEvent, listId: string) => {
+  const handleGroup = (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
-    setGrouping((prev) => ({ ...prev, [listId]: "size" }));
+    router.push(`/lists/${listId}/group`);
   };
 
   const handleGroupByNumber = (e: React.MouseEvent, listId: string) => {
@@ -177,13 +179,13 @@ export default function DashboardPage() {
                             Edit List
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={(e) => handleGroupBySize(e, list.listId)}
+                            onClick={(e) => handleGroup(e, list.listId)}
                           >
                             <Group className="h-4 w-4 mr-2" />
                             Group by Size
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={(e) => handleGroupByNumber(e, list.listId)}
+                            onClick={(e) => handleGroup(e, list.listId)}
                           >
                             <Hash className="h-4 w-4 mr-2" />
                             Group by Number
