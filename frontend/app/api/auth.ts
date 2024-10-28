@@ -50,7 +50,7 @@ export const authApi = {
   checkAuth: async () => {
     const response = await fetch('/auth/verify', {
       method: 'GET',
-      credentials: 'include', // Important for sending cookies
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },

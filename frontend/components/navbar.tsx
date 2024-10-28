@@ -13,15 +13,16 @@ import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import NextLink from "next/link";
 import Image from "next/image";
-import { LogInIcon } from "lucide-react";
+import { LogInIcon, LogOutIcon } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
-import { useAuth } from "@/app/hooks/useAuth";
+import {useAuth} from "@/app/hooks/useAuth";
 
 export const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const {isAuthenticated, logout} = useAuth();
+  const isDashboard = typeof window !== 'undefined' && window.location.pathname === '/dashboard';
 
   return (
     <NextUINavbar
@@ -49,15 +50,26 @@ export const Navbar = () => {
       <NavbarContent className="hidden sm:flex basis-1/2 gap-4" justify="end">
         <NavbarItem>
           {isAuthenticated ? (
-            <Button
-              as={Link}
-              className="text-sm font-medium"
-              color="primary"
-              href="/dashboard"
-              variant="flat"
-            >
-              Dashboard
-            </Button>
+            <div className="flex gap-2">
+              {!isDashboard?(<Button
+                as={Link}
+                className="text-sm font-medium"
+                color="primary"
+                href="/dashboard"
+                variant="flat"
+              >
+                Dashboard
+              </Button>):""}
+              <Button
+                className="text-sm font-medium"
+                color="danger"
+                variant="ghost"
+                startContent={<LogOutIcon className="h-4 w-4" />}
+                onClick={logout}
+              >
+                Logout
+              </Button>
+            </div>
           ) : (
             <Button
               as={Link}
