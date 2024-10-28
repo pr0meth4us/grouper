@@ -1,13 +1,22 @@
 "use client";
 
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React from "react";
+import { useState, useEffect } from "react";
+import {
+  AlertCircle,
+  MoreVertical,
+  Edit,
+  Trash2,
+  Group,
+  Hash,
+} from "lucide-react";
+
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription
+  CardDescription,
 } from "@/components/ui/card";
 import {
   Accordion,
@@ -21,7 +30,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -31,46 +40,34 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, MoreVertical, Edit, Trash2, Group, Hash } from "lucide-react";
 import { listApi, ListItem } from "@/app/api/list";
 
-// Add this CSS to your globals.css file:
-// .accordion-trigger::before,
-// .accordion-trigger::after {
-//   display: none !important;
-// }
-
-type GroupingType = 'none' | 'size' | 'number';
+type GroupingType = "none" | "size" | "number";
 
 export default function DashboardPage() {
   const [lists, setLists] = useState<ListItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [grouping, setGrouping] = useState<{ [key: string]: GroupingType }>({});
-  const [openItems, setOpenItems] = useState<{ [key: string]: boolean }>({});
+  const [, setGrouping] = useState<{ [key: string]: GroupingType }>({});
+  const [, setOpenItems] = useState<{ [key: string]: boolean }>({});
 
   const handleEditList = (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
-    console.log('Edit list:', listId);
   };
 
   const handleGroupBySize = (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
-    setGrouping(prev => ({ ...prev, [listId]: 'size' }));
+    setGrouping((prev) => ({ ...prev, [listId]: "size" }));
   };
 
   const handleGroupByNumber = (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
-    setGrouping(prev => ({ ...prev, [listId]: 'number' }));
+    setGrouping((prev) => ({ ...prev, [listId]: "number" }));
   };
 
-  const handleEditItem = (listId: string, itemIndex: number) => {
-    console.log('Edit item:', listId, itemIndex);
-  };
+  const handleEditItem = (listId: string, itemIndex: number) => {};
 
-  const handleDeleteItem = (listId: string, itemIndex: number) => {
-    console.log('Delete item:', listId, itemIndex);
-  };
+  const handleDeleteItem = (listId: string, itemIndex: number) => {};
 
   const handleDropdownClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -82,6 +79,7 @@ export default function DashboardPage() {
       setError(null);
       try {
         const data = await listApi.getList();
+
         setLists(data);
       } catch (err) {
         setError("Failed to fetch lists");
@@ -89,6 +87,7 @@ export default function DashboardPage() {
         setIsLoading(false);
       }
     };
+
     fetchLists();
   }, []);
 
@@ -136,38 +135,56 @@ export default function DashboardPage() {
           </div>
         ) : (
           <Accordion
-            type="single"
             collapsible
             className="w-full"
+            type="single"
             onValueChange={(value) => {
-              setOpenItems(prev => ({
+              setOpenItems((prev) => ({
                 ...prev,
-                [value as string]: !prev[value as string]
+                [value as string]: !prev[value as string],
               }));
             }}
           >
             {lists.map((list) => (
-              <AccordionItem key={list.listId} value={list.listId} className="border rounded-lg mb-2">
+              <AccordionItem
+                key={list.listId}
+                className="border rounded-lg mb-2"
+                value={list.listId}
+              >
                 <AccordionTrigger className=" w-full px-4 py-3">
                   <div className="flex items-center justify-between w-full">
                     <span className="font-medium">{list.name}</span>
-                    <div className="flex items-center" onClick={handleDropdownClick}>
+                    {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */}
+                    <div
+                      className="flex items-center"
+                      onClick={handleDropdownClick}
+                    >
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Button
+                            className="h-8 w-8 p-0"
+                            size="sm"
+                            variant="ghost"
+                          >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={(e) => handleEditList(e, list.listId)}>
+                          <DropdownMenuItem
+                            onClick={(e) => handleEditList(e, list.listId)}
+                          >
                             <Edit className="h-4 w-4 mr-2" />
                             Edit List
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleGroupBySize(e, list.listId)}>
+                          <DropdownMenuItem
+                            onClick={(e) => handleGroupBySize(e, list.listId)}
+                          >
                             <Group className="h-4 w-4 mr-2" />
                             Group by Size
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleGroupByNumber(e, list.listId)}>
+                          <DropdownMenuItem
+                            onClick={(e) => handleGroupByNumber(e, list.listId)}
+                          >
                             <Hash className="h-4 w-4 mr-2" />
                             Group by Number
                           </DropdownMenuItem>
@@ -198,18 +215,22 @@ export default function DashboardPage() {
                               <TableCell>
                                 <div className="flex gap-1">
                                   <Button
-                                    variant="ghost"
-                                    size="sm"
                                     className="h-8 w-8 p-0"
-                                    onClick={() => handleEditItem(list.listId, index)}
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() =>
+                                      handleEditItem(list.listId, index)
+                                    }
                                   >
                                     <Edit className="h-4 w-4" />
                                   </Button>
                                   <Button
-                                    variant="ghost"
-                                    size="sm"
                                     className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
-                                    onClick={() => handleDeleteItem(list.listId, index)}
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() =>
+                                      handleDeleteItem(list.listId, index)
+                                    }
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </Button>
@@ -220,8 +241,8 @@ export default function DashboardPage() {
                         ) : (
                           <TableRow>
                             <TableCell
-                              colSpan={3}
                               className="text-center text-gray-500"
+                              colSpan={3}
                             >
                               No items available
                             </TableCell>
