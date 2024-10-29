@@ -1,5 +1,6 @@
-import { Actions } from "./actions";
+import { useState } from "react";
 
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -8,14 +9,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ListTableProps } from "@/app/dashboard/types";
-
+import { Actions } from "@/app/dashboard/components/items/actions";
+import { ItemTableProps } from "@/app/dashboard/types";
 export function ItemTable({
   items,
   listId,
   onEditItem,
   onDeleteItem,
-}: ListTableProps) {
+}: ItemTableProps) {
+  const [editingIndex, setEditingIndex] = useState(-1);
+  const [editValue, setEditValue] = useState("");
+
+  // @ts-ignore
+  const handleEdit = (index) => {
+    setEditingIndex(index);
+    setEditValue(items[index]);
+  };
+
+  // @ts-ignore
+  const handleSave = (index) => {
+    onEditItem(listId, index, editValue);
+    setEditingIndex(-1);
+    setEditValue("");
+  };
+
+  const handleCancel = () => {
+    setEditingIndex(-1);
+    setEditValue("");
+  };
+
   return (
     <Table>
       <TableHeader>
@@ -30,13 +52,29 @@ export function ItemTable({
           items.map((item, index) => (
             <TableRow key={index}>
               <TableCell className="font-medium">{index + 1}</TableCell>
-              <TableCell>{item}</TableCell>
+              <TableCell>
+                {editingIndex === index ? (
+                  <Input
+                    autoFocus
+                    className="max-w-md"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleSave(index);
+                      if (e.key === "Escape") handleCancel();
+                    }}
+                  />
+                ) : (
+                  item
+                )}
+              </TableCell>
               <TableCell>
                 <Actions
-                  itemIndex={index}
-                  listId={listId}
-                  onDelete={onDeleteItem}
-                  onEdit={onEditItem}
+                  isEditing={editingIndex === index}
+                  onCancel={handleCancel}
+                  onDelete={() => onDeleteItem(listId, index)}
+                  onEdit={() => handleEdit(index)}
+                  onSave={() => handleSave(index)}
                 />
               </TableCell>
             </TableRow>
@@ -52,3 +90,5 @@ export function ItemTable({
     </Table>
   );
 }
+
+export default ItemTable;

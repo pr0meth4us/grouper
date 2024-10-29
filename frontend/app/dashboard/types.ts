@@ -29,19 +29,21 @@ export interface DeleteListDialogProps {
   onConfirm: (e: React.MouseEvent) => void;
 }
 
-export interface ListItemActionsProps {
-  listId: string;
-  itemIndex: number;
-  onEdit: (listId: string, itemIndex: number) => void;
-  onDelete: (listId: string, itemIndex: number) => void;
+export interface ActionsProps {
+  isEditing: boolean;
+  onEdit: () => void;
+  onSave: () => void;
+  onCancel: () => void;
+  onDelete: () => void;
 }
 
-export interface ListTableProps {
+export interface ItemTableProps {
   items: string[];
   listId: string;
-  onEditItem: (listId: string, itemIndex: number) => void;
-  onDeleteItem: (listId: string, itemIndex: number) => void;
+  onEditItem: (listId: string, index: number, newValue: string) => void;
+  onDeleteItem: (listId: string, index: number) => void;
 }
+
 
 export interface DeleteDialogState {
   isOpen: boolean;
