@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { ListItem, listApi } from "@/app/api/list";
-import { toast } from "@/hooks/use-toast";
 import { DeleteDialogState } from "@/app/dashboard/types";
 
 export function useDashboard() {
@@ -20,20 +19,10 @@ export function useDashboard() {
   const fetchLists = async () => {
     setIsLoading(true);
     setError(null);
-    try {
-      const data = await listApi.getList();
+    const data = await listApi.getList();
 
-      setLists(data);
-    } catch (err) {
-      setError("Failed to fetch lists");
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch lists. Please try again later.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    setLists(data);
+    setIsLoading(false);
   };
 
   const handleGroup = async (e: React.MouseEvent, listId: string) => {
@@ -43,20 +32,8 @@ export function useDashboard() {
 
   const handleDeleteList = async (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
-    try {
-      await listApi.deleteList(listId);
-      await fetchLists();
-      toast({
-        title: "Success",
-        description: "List deleted successfully",
-      });
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete list. Please try again.",
-      });
-    }
+    await listApi.deleteList(listId);
+    await fetchLists();
   };
 
   const handleDeleteItem = (listId: string, itemIndex: number) => {
@@ -64,28 +41,19 @@ export function useDashboard() {
   };
 
   const handleDeleteItemConfirm = async () => {
-    try {
-      const { listId, itemIndex } = deleteItemDialog;
+    const { listId, itemIndex } = deleteItemDialog;
 
-      await listApi.deleteItem(listId, itemIndex);
-      await fetchLists();
-      toast({
-        title: "Success",
-        description: "Item deleted successfully",
-      });
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete item. Please try again.",
-      });
-    } finally {
-      setDeleteItemDialog({ isOpen: false, listId: "", itemIndex: -1 });
-    }
+    await listApi.deleteItem(listId, itemIndex);
+    await fetchLists();
   };
 
-  const handleEditItem = (listId: string, itemIndex: number) => {
-    router.push(`/lists/${listId}/items/${itemIndex}/edit`);
+  const handleEditItem = async (
+    listId: string,
+    itemIndex: number,
+    editValue: string,
+  ) => {
+    await listApi.editItem(listId, itemIndex, editValue);
+    await fetchLists();
   };
 
   const handleDeleteDialogChange = (isOpen: boolean) => {
