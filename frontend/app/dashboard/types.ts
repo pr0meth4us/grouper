@@ -44,7 +44,6 @@ export interface ItemTableProps {
   onDeleteItem: (listId: string, index: number) => void;
 }
 
-
 export interface DeleteDialogState {
   isOpen: boolean;
   listId: string;
