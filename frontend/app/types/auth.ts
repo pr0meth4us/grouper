@@ -1,20 +1,10 @@
-export interface User {
+export interface LoginRequest {
   email: string;
-  lists: ListItem[];
+  password: string;
 }
 
-export interface ListItem {
-  listId: string;
-  name: string;
-  items: string[];
-  createdAt: Date;
-}
-
-export interface AuthResponse {
+export interface ApiResponse<T = any> {
   success: boolean;
-  message?: string;
-  data?: {
-    user: User;
-    token?: string;
-  };
+  message: string;
+  data: T | null;
 }

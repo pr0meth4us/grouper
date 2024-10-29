@@ -18,11 +18,12 @@ import { LogInIcon, LogOutIcon } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
-import {useAuth} from "@/app/hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 
 export const Navbar = () => {
-  const {isAuthenticated, logout} = useAuth();
-  const isDashboard = typeof window !== 'undefined' && window.location.pathname === '/dashboard';
+  const { isAuthenticated, logout } = useAuth();
+  const isDashboard =
+    typeof window !== "undefined" && window.location.pathname === "/dashboard";
 
   return (
     <NextUINavbar
@@ -51,20 +52,24 @@ export const Navbar = () => {
         <NavbarItem>
           {isAuthenticated ? (
             <div className="flex gap-2">
-              {!isDashboard?(<Button
-                as={Link}
-                className="text-sm font-medium"
-                color="primary"
-                href="/dashboard"
-                variant="flat"
-              >
-                Dashboard
-              </Button>):""}
+              {!isDashboard ? (
+                <Button
+                  as={Link}
+                  className="text-sm font-medium"
+                  color="primary"
+                  href="/dashboard"
+                  variant="flat"
+                >
+                  Dashboard
+                </Button>
+              ) : (
+                ""
+              )}
               <Button
                 className="text-sm font-medium"
                 color="danger"
-                variant="ghost"
                 startContent={<LogOutIcon className="h-4 w-4" />}
+                variant="ghost"
                 onClick={logout}
               >
                 Logout
