@@ -1,15 +1,16 @@
-import React from 'react';
+import React from "react";
 import { Edit, Trash2, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {ActionsProps} from "@/app/dashboard/types";
 
-export const Actions: React.FC<ActionsProps>  = ({
-                   isEditing,
-                   onEdit,
-                   onSave,
-                   onCancel,
-                   onDelete,
-                 }) => {
+import { Button } from "@/components/ui/button";
+import { ActionsProps } from "@/app/dashboard/types";
+
+export const Actions: React.FC<ActionsProps> = ({
+  isEditing,
+  onEdit,
+  onSave,
+  onCancel,
+  onDelete,
+}) => {
   if (isEditing) {
     return (
       <div className="flex gap-1">
