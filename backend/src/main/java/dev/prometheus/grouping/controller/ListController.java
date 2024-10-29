@@ -9,7 +9,6 @@ import dev.prometheus.grouping.exception.ListNotFoundException;
 import dev.prometheus.grouping.exception.UserNotFoundException;
 import dev.prometheus.grouping.service.ListService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
