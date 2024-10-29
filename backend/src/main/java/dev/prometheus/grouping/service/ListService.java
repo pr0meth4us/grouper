@@ -1,6 +1,9 @@
 package dev.prometheus.grouping.service;
 
 import dev.prometheus.grouping.dto.ListRequest;
+import dev.prometheus.grouping.exception.EmptyListException;
+import dev.prometheus.grouping.exception.ListNotFoundException;
+import dev.prometheus.grouping.exception.UserNotFoundException;
 import dev.prometheus.grouping.model.User;
 import dev.prometheus.grouping.dto.UserList;
 import dev.prometheus.grouping.repository.UserRepository;
@@ -78,4 +81,35 @@ public class ListService {
         user.getLists().remove(list);
         userRepository.save(user);
     }
+
+    public UserList editItem(String userEmail, String listId, int itemIndex, String newItem)
+            throws UserNotFoundException, ListNotFoundException, EmptyListException {
+        UserList userList = getList(userEmail, listId);
+
+        if (itemIndex < 0 || itemIndex >= userList.getItems().size()) {
+            throw new IndexOutOfBoundsException("Invalid item index");
+        }
+
+        userList.getItems().set(itemIndex, newItem);
+
+        User user = userRepository.findByEmail(userEmail);
+        listManagementService.updateList(userList, new ListRequest());
+        userRepository.save(user);
+
+        return userList;
+    }
+
+    public UserList deleteItem(String userEmail, String listId, int itemIndex
+    ) throws UserNotFoundException, ListNotFoundException, EmptyListException {
+        UserList userList = getList(userEmail, listId);
+        if (itemIndex < 0 || itemIndex >= userList.getItems().size()) {
+            throw new IndexOutOfBoundsException("Invalid item index");
+        }
+        userList.getItems().remove(itemIndex);
+        User user = userRepository.findByEmail(userEmail);
+        listManagementService.updateList(userList, new ListRequest());
+        userRepository.save(user);
+        return userList;
+    }
+
 }

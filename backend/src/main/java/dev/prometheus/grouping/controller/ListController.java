@@ -137,4 +137,28 @@ public class ListController {
                     .body(new ApiResponse(false, e.getMessage(), null));
         }
     }
+
+    @RequireAuth
+    @PutMapping("/{listId}/items/{itemIndex}/edit")
+    public ResponseEntity<ApiResponse> editItem(
+            @PathVariable String listId,
+            @PathVariable int itemIndex,
+            @RequestBody String newItem,
+            HttpServletRequest httpRequest) {
+            String userEmail = (String) httpRequest.getAttribute("userEmail");
+            UserList updatedList = listService.editItem(userEmail, listId, itemIndex, newItem);
+            return ResponseEntity.ok(new ApiResponse(true, "Item updated successfully", updatedList));
+    }
+
+    @RequireAuth
+    @DeleteMapping("/{listId}/items/{itemIndex}/delete")
+    public ResponseEntity<ApiResponse> deleteItem(
+            @PathVariable String listId,
+            @PathVariable int itemIndex,
+            HttpServletRequest httpRequest) {
+        String userEmail = (String) httpRequest.getAttribute("userEmail");
+        UserList deletedItem = listService.deleteItem(userEmail, listId, itemIndex);
+        return ResponseEntity.ok(new ApiResponse(true, "Item deleted successfully", deletedItem));
+    }
+
 }
