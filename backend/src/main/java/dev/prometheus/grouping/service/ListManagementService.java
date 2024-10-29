@@ -48,9 +48,13 @@ public class ListManagementService {
     }
 
     public void updateList(UserList list, ListRequest request) {
-        List<String> items = processListContent(request.getContent());
-        list.setName(request.getName());
-        list.setItems(items);
+        if (request.getContent() != null) {
+            List<String> items = processListContent(request.getContent());
+            list.setItems(items);
+        }
+        if (request.getName() != null) {
+            list.setName(request.getName());
+        }
     }
 
     public UserList findListOrThrow(User user, String listId) {

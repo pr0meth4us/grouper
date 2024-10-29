@@ -90,15 +90,19 @@ public class ListService {
             throw new IndexOutOfBoundsException("Invalid item index");
         }
 
-        userList.getItems().set(itemIndex, newItem);
+        List<String> items = new ArrayList<>(userList.getItems());
+        items.set(itemIndex, newItem);
+
+        ListRequest listRequest = new ListRequest();
+        listRequest.setName(userList.getName());
+        listRequest.setContent(String.join("\n", items));
 
         User user = userRepository.findByEmail(userEmail);
-        listManagementService.updateList(userList, new ListRequest());
+        listManagementService.updateList(userList, listRequest);
         userRepository.save(user);
 
         return userList;
     }
-
     public UserList deleteItem(String userEmail, String listId, int itemIndex
     ) throws UserNotFoundException, ListNotFoundException, EmptyListException {
         UserList userList = getList(userEmail, listId);
