@@ -123,4 +123,20 @@ public class ListService {
         return updatedList;
     }
 
+
+    public UserList addItem(String userEmail, String listId, String newItem)
+            throws UserNotFoundException, ListNotFoundException {
+        UserList userList = getList(userEmail, listId);
+
+        List<String> items = new ArrayList<>(userList.getItems());
+        items.add(newItem);
+        ListRequest listRequest = new ListRequest();
+        listRequest.setName(userList.getName());
+        listRequest.setContent(String.join("\n", items));
+        User user = userRepository.findByEmail(userEmail);
+        listManagementService.updateList(userList, listRequest);
+        UserList updatedList = user.updateListItem(userList);
+        userRepository.save(user);
+        return updatedList;
+    }
 }
