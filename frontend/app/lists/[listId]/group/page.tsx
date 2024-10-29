@@ -180,7 +180,7 @@ export default function GroupGenerator() {
                 variant="outline"
                 onClick={() => setShuffledGroups([])}
               >
-                <RefreshCcw className="h-4 w-4"/>
+                <RefreshCcw className="h-4 w-4" />
                 Regenerate?
               </Button>
             </div>

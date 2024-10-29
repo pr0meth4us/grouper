@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { Group, ListItem } from "@/app/types/list";
+import { ApiResponse } from "@/app/types/auth";
 
 const API_BASE_URL = "/auth";
 
@@ -29,6 +30,37 @@ export const listApi = {
 
     return response.data.data;
   },
-};
-export { ListItem };
 
+  deleteList: async (id: string): Promise<ApiResponse> => {
+    const response = await axios.delete(`${API_BASE_URL}/lists/${id}`);
+
+    return response.data;
+  },
+
+  deleteItem: async (id: string, itemIndex: number): Promise<ApiResponse> => {
+    return await axios.delete(
+      `${API_BASE_URL}/lists/${id}/items/${itemIndex}/delete`,
+    );
+  },
+
+  editItem: async (
+    id: string,
+    itemIndex: number,
+    editValue: string,
+  ): Promise<ApiResponse> => {
+    const response: ApiResponse = await axios.put(
+      `${API_BASE_URL}/lists/${id}/items/${itemIndex}/edit`,
+      `"${editValue}"`,
+      {
+        headers: {
+          "Content-Type": "text/plain",
+        },
+      },
+    );
+    console.log(response)
+
+    return response;
+  },
+};
+
+export type { ListItem };
