@@ -51,7 +51,7 @@ const CurrentList: React.FC<CurrentListProps> = ({
   return (
     <Card className="max-w-2xl mx-auto mb-8">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xl font-bold">Current List</CardTitle>
+        <CardTitle className="text-xl font-bold">Current List: {list.name}</CardTitle>
         <div className="flex items-center gap-2">
           {isExcluding ? (
             <>

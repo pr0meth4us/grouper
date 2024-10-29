@@ -165,8 +165,9 @@ export default function GroupGenerator() {
                   </CardHeader>
                   <CardContent>
                     <ul className="list-disc pl-6 space-y-2">
-                      <li>{group.join(", ")}</li>{" "}
-                      {/* Join members in the inner array */}
+                      {group.map((member, i) => (
+                        <li key={i}>{member}</li>
+                      ))}
                     </ul>
                   </CardContent>
                 </Card>
@@ -179,7 +180,7 @@ export default function GroupGenerator() {
                 variant="outline"
                 onClick={() => setShuffledGroups([])}
               >
-                <RefreshCcw className="h-4 w-4" />
+                <RefreshCcw className="h-4 w-4"/>
                 Regenerate?
               </Button>
             </div>
