@@ -12,6 +12,33 @@ export const listApi = {
     return response.data.data;
   },
 
+  addList: async (req: {
+    name: string;
+    content?: string;
+  }): Promise<ApiResponse> => {
+    const response = await axios.post(`${API_BASE_URL}/lists/add`, {
+      name: req.name,
+      content: req.content || "",
+    });
+
+    return response.data;
+  },
+
+  editList: async (
+    listId: string,
+    req: {
+      name: string;
+      content?: string;
+    },
+  ): Promise<ApiResponse> => {
+    const response = await axios.put(`${API_BASE_URL}/lists/${listId}`, {
+      name: req.name,
+      content: req.content,
+    });
+
+    return response.data;
+  },
+
   group: async (
     listId: string,
     size: string,
@@ -48,7 +75,7 @@ export const listApi = {
     itemIndex: number,
     editValue: string,
   ): Promise<ApiResponse> => {
-    const response: ApiResponse = await axios.put(
+    return await axios.put(
       `${API_BASE_URL}/lists/${id}/items/${itemIndex}/edit`,
       `"${editValue}"`,
       {
@@ -57,9 +84,18 @@ export const listApi = {
         },
       },
     );
-    console.log(response)
+  },
 
-    return response;
+  addItem: async (id: string, newValue: string): Promise<ApiResponse> => {
+    return await axios.post(
+      `${API_BASE_URL}/lists/${id}/items/add`,
+      `"${newValue}"`,
+      {
+        headers: {
+          "Content-Type": "text/plain",
+        },
+      },
+    );
   },
 };
 

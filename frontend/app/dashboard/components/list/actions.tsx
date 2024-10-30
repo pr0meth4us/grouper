@@ -9,6 +9,9 @@ export function Actions({
   listName,
   onDelete,
   onGroup,
+  onEdit,
+  onAdd,
+  isEditingList,
 }: ListActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -33,10 +36,23 @@ export function Actions({
     }
   };
 
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onEdit(e, listId);
+  };
+
+  const handleAddClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onAdd(e, listId);
+  };
+
   return (
     <>
       <ActionButtons
+        isEditingList={isEditingList}
+        onAddClick={handleAddClick}
         onDeleteClick={handleDeleteClick}
+        onEditClick={handleEdit}
         onGroupClick={handleGroupClick}
       />
 

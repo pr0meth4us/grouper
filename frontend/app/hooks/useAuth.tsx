@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
+
 import { LoginRequest, authApi } from "../api/auth";
 
-// Create a global event for auth state changes
-const AUTH_STATE_CHANGED = 'authStateChanged';
+const AUTH_STATE_CHANGED = "authStateChanged";
 const emitAuthStateChange = () => {
   window.dispatchEvent(new Event(AUTH_STATE_CHANGED));
 };
@@ -16,8 +16,9 @@ export function useAuth() {
     setLoading(true);
     try {
       const response = await authApi.checkAuth();
+
       setIsAuthenticated(response.success);
-      console.log(response, "check auth")
+
       if (response.success && response.data) {
         setUser(response.data);
       }
@@ -33,10 +34,12 @@ export function useAuth() {
   const login = async (credentials: LoginRequest) => {
     try {
       const response = await authApi.login(credentials);
+
       if (response.success) {
         await checkAuth();
         emitAuthStateChange();
       }
+
       return response;
     } catch (error) {
       throw error;
@@ -47,15 +50,17 @@ export function useAuth() {
   const logout = async () => {
     try {
       const response = await authApi.logout();
+
       if (response.success) {
         setIsAuthenticated(false);
         setUser(null);
         emitAuthStateChange();
-        localStorage.removeItem('user');
+        localStorage.removeItem("user");
         sessionStorage.clear();
 
         window.location.reload();
       }
+
       return response;
     } catch (error) {
       throw error;
@@ -63,14 +68,21 @@ export function useAuth() {
   };
 
   // Function to handle registration
-  const register = async (userData: { email: any; password: any; otp: any; }) => {
+  const register = async (userData: {
+    email: any;
+    password: any;
+    otp: any;
+  }) => {
     const { email, password, otp } = userData;
+
     try {
       const response = await authApi.register(email, password, otp);
+
       if (response.success) {
         await checkAuth();
         emitAuthStateChange();
       }
+
       return response;
     } catch (error) {
       throw error;
@@ -87,30 +99,30 @@ export function useAuth() {
     const handleOnline = () => checkAuth();
     const handleStorage = (e: StorageEvent) => {
       // Check if the storage event is related to auth (e.g., token)
-      if (e.key && e.key.includes('auth')) {
+      if (e.key && e.key.includes("auth")) {
         checkAuth();
       }
     };
 
     // Add all event listeners
     window.addEventListener(AUTH_STATE_CHANGED, handleAuthStateChange);
-    window.addEventListener('focus', handleFocus);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('storage', handleStorage);
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("storage", handleStorage);
 
     // Handle page reload
-    if (document.readyState === 'complete') {
+    if (document.readyState === "complete") {
       checkAuth();
     }
-    window.addEventListener('load', checkAuth);
+    window.addEventListener("load", checkAuth);
 
     // Clean up event listeners
     return () => {
       window.removeEventListener(AUTH_STATE_CHANGED, handleAuthStateChange);
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('load', checkAuth);
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("load", checkAuth);
     };
   }, [checkAuth]);
 
