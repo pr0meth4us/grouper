@@ -37,6 +37,7 @@
     "no-unused-vars": "off",
     "unused-imports/no-unused-vars": "off",
     "unused-imports/no-unused-imports": "warn",
+    "jsx-a11y/heading-has-content": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
       {
