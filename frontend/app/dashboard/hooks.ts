@@ -15,6 +15,7 @@ export function useDashboard() {
     listId: "",
     itemIndex: -1,
   });
+  const [isAddingItem, setIsAddingItem] = useState(false);
 
   const fetchLists = async () => {
     setIsLoading(true);
@@ -30,6 +31,22 @@ export function useDashboard() {
     router.push(`/lists/${listId}/group`);
   };
 
+  const handleEditList = async (e: React.MouseEvent, listId: string) => {
+    e.stopPropagation();
+    await listApi.editList(listId);
+  }
+
+  const handleAddItem = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsAddingItem(true);
+  }
+
+  const handleAddItemConfirm = async (listId: string,  newValue: string) => {
+    await listApi.addItem(listId, newValue)
+    setIsAddingItem(false)
+    await fetchLists();
+  }
+
   const handleDeleteList = async (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
     await listApi.deleteList(listId);
@@ -42,7 +59,6 @@ export function useDashboard() {
 
   const handleDeleteItemConfirm = async () => {
     const { listId, itemIndex } = deleteItemDialog;
-
     await listApi.deleteItem(listId, itemIndex);
     await fetchLists();
   };
@@ -65,6 +81,8 @@ export function useDashboard() {
     error,
     isLoading,
     deleteItemDialog,
+    isAddingItem,
+    handleAddItem,
     fetchLists,
     handleGroup,
     handleDeleteList,
@@ -72,5 +90,7 @@ export function useDashboard() {
     handleDeleteItemConfirm,
     handleEditItem,
     handleDeleteDialogChange,
+    handleEditList,
+    handleAddItemConfirm
   };
 }

@@ -30,7 +30,11 @@ export default function DashboardPage() {
     handleDeleteItem,
     handleDeleteItemConfirm,
     handleEditItem,
+    handleEditList,
     handleDeleteDialogChange,
+    handleAddItem,
+    handleAddItemConfirm,
+    isAddingItem
   } = useDashboard();
 
   useEffect(() => {
@@ -65,6 +69,8 @@ export default function DashboardPage() {
                         listName={list.name}
                         onDelete={handleDeleteList}
                         onGroup={handleGroup}
+                        onEdit={handleEditList}
+                        onAdd={handleAddItem}
                       />
                     </div>
                   </AccordionTrigger>
@@ -76,6 +82,8 @@ export default function DashboardPage() {
                         listId={list.listId}
                         onDeleteItem={handleDeleteItem}
                         onEditItem={handleEditItem}
+                        onAddItem={handleAddItemConfirm}
+                        isAddingItem={isAddingItem}
                       />
                     </div>
                   </AccordionContent>

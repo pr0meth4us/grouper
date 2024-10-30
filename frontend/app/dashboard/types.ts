@@ -5,6 +5,8 @@ export interface ListActionsProps {
   listName: string;
   onDelete: (e: React.MouseEvent, listId: string) => void;
   onGroup: (e: React.MouseEvent, listId: string) => void;
+  onEdit: (e: React.MouseEvent, listId: string) => void;
+  onAdd: (e: React.MouseEvent,  listId: string) => void;
 }
 
 export interface DeleteDialogProps {
@@ -20,6 +22,8 @@ export interface ErrorStateProps {
 export interface ActionButtonsProps {
   onGroupClick: (e: React.MouseEvent) => void;
   onDeleteClick: (e: React.MouseEvent) => void;
+  onEditClick: (e: React.MouseEvent) => void;
+  onAddClick: (e: React.MouseEvent) => void;
 }
 
 export interface DeleteListDialogProps {
@@ -31,10 +35,10 @@ export interface DeleteListDialogProps {
 
 export interface ActionsProps {
   isEditing: boolean;
-  onEdit: () => void;
+  onEdit?: () => void;
   onSave: () => void;
   onCancel: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 export interface ItemTableProps {
@@ -42,6 +46,8 @@ export interface ItemTableProps {
   listId: string;
   onEditItem: (listId: string, index: number, newValue: string) => void;
   onDeleteItem: (listId: string, index: number) => void;
+  isAddingItem: boolean;
+  onAddItem: (listId: string, newValue: string) => void;
 }
 
 export interface DeleteDialogState {
