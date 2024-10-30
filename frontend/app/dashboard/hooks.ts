@@ -18,12 +18,10 @@ export function useDashboard() {
   const [isAddingItem, setIsAddingItem] = useState(false);
 
   const fetchLists = async () => {
-    setIsLoading(true);
     setError(null);
     const data = await listApi.getList();
 
     setLists(data);
-    setIsLoading(false);
   };
 
   const handleGroup = async (e: React.MouseEvent, listId: string) => {
@@ -79,7 +77,6 @@ export function useDashboard() {
   return {
     lists,
     error,
-    isLoading,
     deleteItemDialog,
     isAddingItem,
     handleAddItem,

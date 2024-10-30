@@ -22,7 +22,6 @@ export default function DashboardPage() {
   const {
     lists,
     error,
-    isLoading,
     deleteItemDialog,
     fetchLists,
     handleGroup,
@@ -41,7 +40,6 @@ export default function DashboardPage() {
     fetchLists();
   }, []);
 
-  if (isLoading) return <LoadingState />;
   if (error) return <Error error={error} />;
 
   return (
@@ -61,7 +59,7 @@ export default function DashboardPage() {
                   className="border rounded-lg mb-2"
                   value={list.listId}
                 >
-                  <AccordionTrigger className="px-4 py-3">
+                  <AccordionTrigger className="px-4 py-3 no-underline hover:no-underline">
                     <div className="flex items-center justify-between w-full">
                       <span className="font-medium">{list.name}</span>
                       <Actions

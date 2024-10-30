@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
-import { Group, Trash2, Edit, Plus } from "lucide-react";
+import {Group, Trash2, Edit, Plus, MoreVertical} from "lucide-react";
 import { ActionButtonsProps } from "@/app/dashboard/types";
 
 export function ActionButtons({
@@ -22,8 +22,8 @@ export function ActionButtons({
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="h-8" size="sm" variant="ghost">
-            Actions
+          <Button className="h-8 p-2" size="sm" variant="ghost" aria-label="Actions">
+            <MoreVertical />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
