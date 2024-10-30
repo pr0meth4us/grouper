@@ -62,7 +62,7 @@ export function ItemTable({
   };
 
   const handleAddRow = () => {
-    setEditableItems([...editableItems, ""]);
+    setEditableItems(["", ...editableItems]);
   };
 
   const handleDeleteRow = (index: number) => {
