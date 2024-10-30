@@ -1,14 +1,20 @@
+import { Group, Trash2, Edit, Plus, MoreVertical } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
-import {Group, Trash2, Edit, Plus, MoreVertical} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ActionButtonsProps } from "@/app/dashboard/types";
 
 export function ActionButtons({
-                                onGroupClick,
-                                onDeleteClick,
-                                onEditClick,
-                                onAddClick,
-                              }: ActionButtonsProps) {
+  onGroupClick,
+  onDeleteClick,
+  onEditClick,
+  onAddClick,
+}: ActionButtonsProps) {
   return (
     <div className="flex items-center gap-2">
       <Button
@@ -22,7 +28,12 @@ export function ActionButtons({
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="h-8 p-2" size="sm" variant="ghost" aria-label="Actions">
+          <Button
+            aria-label="Actions"
+            className="h-8 p-2"
+            size="sm"
+            variant="ghost"
+          >
             <MoreVertical />
           </Button>
         </DropdownMenuTrigger>

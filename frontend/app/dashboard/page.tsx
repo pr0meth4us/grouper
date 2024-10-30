@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDashboard } from "@/app/dashboard/hooks";
-import { LoadingState } from "@/app/dashboard/components/states/loading";
 import { Error } from "@/app/dashboard/components/states/error";
 import { Header } from "@/app/dashboard/components/list/header";
 import { Actions } from "@/app/dashboard/components/list/actions";
@@ -33,7 +32,7 @@ export default function DashboardPage() {
     handleDeleteDialogChange,
     handleAddItem,
     handleAddItemConfirm,
-    isAddingItem
+    isAddingItem,
   } = useDashboard();
 
   useEffect(() => {
@@ -65,10 +64,10 @@ export default function DashboardPage() {
                       <Actions
                         listId={list.listId}
                         listName={list.name}
-                        onDelete={handleDeleteList}
-                        onGroup={handleGroup}
-                        onEdit={handleEditList}
                         onAdd={handleAddItem}
+                        onDelete={handleDeleteList}
+                        onEdit={handleEditList}
+                        onGroup={handleGroup}
                       />
                     </div>
                   </AccordionTrigger>
@@ -76,12 +75,12 @@ export default function DashboardPage() {
                   <AccordionContent>
                     <div className="px-4 py-4">
                       <ItemTable
+                        isAddingItem={isAddingItem}
                         items={list.items}
                         listId={list.listId}
+                        onAddItem={handleAddItemConfirm}
                         onDeleteItem={handleDeleteItem}
                         onEditItem={handleEditItem}
-                        onAddItem={handleAddItemConfirm}
-                        isAddingItem={isAddingItem}
                       />
                     </div>
                   </AccordionContent>
