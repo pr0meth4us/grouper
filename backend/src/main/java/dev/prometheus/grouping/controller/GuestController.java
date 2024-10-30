@@ -8,9 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/guest")
@@ -37,12 +35,12 @@ public class GuestController {
     }
 
 
-    @PostMapping("/grouping")
+    @GetMapping("/grouping")
     public ResponseEntity<ApiResponse> grouping(
             HttpServletRequest request,
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) Integer number,
-            @RequestParam(required = false) List<String> exclusions
+            @RequestParam(required = false) List<String> exclude
     ){
         Object sessionList = request.getSession().getAttribute("list");
 
@@ -52,9 +50,11 @@ public class GuestController {
 
         @SuppressWarnings("unchecked")
         List<String> content = (List<String>) sessionList;
+        List<String> shuffled = new ArrayList<>(content);
+        Collections.shuffle(shuffled);
 
-        Set<String> exclude = exclusions != null ? new HashSet<>(exclusions) : null;
-        List<String> itemsToGroup = listManagementService.ridItemsOfExclusions(content, exclude);
+        Set<String> exclusion = exclude != null ? new HashSet<>(exclude) : null;
+        List<String> itemsToGroup = listManagementService.ridItemsOfExclusions(shuffled, exclusion);
         List<List<String>> groupedLists;
         if (size != null) {
             groupedLists =  groupingService.groupBySize(itemsToGroup, size);
