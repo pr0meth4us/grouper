@@ -49,8 +49,6 @@ public class ListService {
 
     public UserList getList(String userEmail, String listId) {
         User user = userRepository.findByEmail(userEmail);
-        UserList list = listManagementService.findListOrThrow(user, listId);
-        System.out.println(list);
         return listManagementService.findListOrThrow(user, listId);
     }
 

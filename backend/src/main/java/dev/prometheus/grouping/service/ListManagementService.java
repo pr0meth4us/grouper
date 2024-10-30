@@ -65,7 +65,8 @@ public class ListManagementService {
         return user.getLists().stream()
                 .filter(list -> list.getListId().equals(listId))
                 .findFirst()
-                .orElseThrow(() -> new ListNotFoundException("List not found NOT FOUND"));
+                .map(UserList::shuffleItems)
+                .orElseThrow(() -> new ListNotFoundException("List not found"));
     }
 
     public List<String> processListContent(String content) {
