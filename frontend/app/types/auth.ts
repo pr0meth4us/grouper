@@ -8,3 +8,8 @@ export interface ApiResponse<T = any> {
   message: string;
   data: T | null;
 }
+
+export interface LoginFormData {
+  email: string;
+  password: string;
+}

@@ -5,13 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { ListItem } from "@/app/types/list";
-
-interface CurrentListProps {
-  list: ListItem;
-  excludedMembers: string[];
-  setExcludedMembers: React.Dispatch<React.SetStateAction<string[]>>;
-}
+import { CurrentListProps } from "@/app/types/list";
+import { isListItem } from "@/app/components/hooks";
 
 const CurrentList: React.FC<CurrentListProps> = ({
   list,
@@ -20,7 +15,6 @@ const CurrentList: React.FC<CurrentListProps> = ({
 }) => {
   const [isExcluding, setIsExcluding] = useState<boolean>(false);
   const [tempExcludedMembers, setTempExcludedMembers] = useState<string[]>([]);
-
   const toggleMemberExclusion = (member: string): void => {
     setTempExcludedMembers((prev) =>
       prev.includes(member)
@@ -44,15 +38,15 @@ const CurrentList: React.FC<CurrentListProps> = ({
     setIsExcluding(true);
   };
 
-  const filteredMembers = list.items.filter(
-    (member) => !excludedMembers.includes(member),
-  );
+  const filteredMembers = isListItem(list)
+    ? list.items.filter((member) => !excludedMembers.includes(member))
+    : list.filter((member) => !excludedMembers.includes(member));
 
   return (
     <Card className="max-w-2xl mx-auto mb-8">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-xl font-bold">
-          Current List: {list.name}
+          <h2>Current List: {isListItem(list) ? list.name : "Guest List"}</h2>
         </CardTitle>
         <div className="flex items-center gap-2">
           {isExcluding ? (
@@ -99,7 +93,7 @@ const CurrentList: React.FC<CurrentListProps> = ({
       <CardContent>
         <ScrollArea className="h-[200px] w-full rounded-md border p-4">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2" role="list">
-            {list.items.map((item) => (
+            {(isListItem(list) ? list.items : list).map((item: string) => (
               <button
                 key={item}
                 aria-label={`${isExcluding ? "Toggle exclusion for" : ""} ${item}`}
@@ -115,11 +109,7 @@ const CurrentList: React.FC<CurrentListProps> = ({
                   <span
                     aria-hidden="true"
                     className={`w-4 h-4 rounded border flex items-center justify-center
-                      ${
-                        tempExcludedMembers.includes(item)
-                          ? "bg-primary border-primary"
-                          : "border-gray-400"
-                      }`}
+                      ${tempExcludedMembers.includes(item) ? "bg-primary border-primary" : "border-gray-400"}`}
                   >
                     {tempExcludedMembers.includes(item) && (
                       <Check className="h-3 w-3 text-white" />

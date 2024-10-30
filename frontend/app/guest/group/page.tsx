@@ -1,38 +1,29 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-import { listApi } from "@/app/api/list";
-import { Group, ListItem } from "@/app/types/list";
 import CurrentList from "@/app/components/CurrentList";
+import { guestApi } from "@/app/api/guest";
 import GroupGenerator from "@/app/components/GroupGenerator";
 import GroupDisplayer from "@/app/components/GroupDisplayer";
+import { Group } from "@/app/types/list";
 
-const GroupProcess: React.FC = () => {
-  const [list, setList] = useState<ListItem>({
-    listId: "",
-    name: "",
-    items: [],
-    createdAt: "",
-  });
-  const [shuffledGroups, setShuffledGroups] = useState<Group[]>([]);
+export default function GuestGroup() {
+  const [list, setList] = useState<string[]>([]);
   const [excludedMembers, setExcludedMembers] = useState<string[]>([]);
-  const params = useParams();
-  const listId = params.listId as string;
+  const [shuffledGroups, setShuffledGroups] = useState<Group[]>([]);
 
   useEffect(() => {
     const fetchList = async () => {
-      const response = await listApi.getListById(listId);
+      const list = await guestApi.getSessionList();
 
-      setList(response);
+      setList(list);
     };
 
     fetchList();
-  }, [listId]);
+  }, []);
 
   const generateGroups = async (groupSize: string, numberOfGroups: string) => {
-    const response = await listApi.group(
-      listId,
+    const response = await guestApi.group(
       groupSize,
       numberOfGroups,
       excludedMembers.join(","),
@@ -57,6 +48,4 @@ const GroupProcess: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default GroupProcess;
+}
