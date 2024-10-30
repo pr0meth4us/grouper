@@ -49,6 +49,8 @@ public class ListService {
 
     public UserList getList(String userEmail, String listId) {
         User user = userRepository.findByEmail(userEmail);
+        UserList list = listManagementService.findListOrThrow(user, listId);
+        System.out.println(list);
         return listManagementService.findListOrThrow(user, listId);
     }
 
@@ -92,28 +94,49 @@ public class ListService {
 
         List<String> items = new ArrayList<>(userList.getItems());
         items.set(itemIndex, newItem);
-
         ListRequest listRequest = new ListRequest();
         listRequest.setName(userList.getName());
         listRequest.setContent(String.join("\n", items));
-
         User user = userRepository.findByEmail(userEmail);
         listManagementService.updateList(userList, listRequest);
+        UserList updatedList = user.updateListItem(userList);
         userRepository.save(user);
-
-        return userList;
+        return updatedList;
     }
-    public UserList deleteItem(String userEmail, String listId, int itemIndex
-    ) throws UserNotFoundException, ListNotFoundException, EmptyListException {
+    public UserList deleteItem(String userEmail, String listId, int itemIndex)
+            throws UserNotFoundException, ListNotFoundException, EmptyListException {
         UserList userList = getList(userEmail, listId);
+
         if (itemIndex < 0 || itemIndex >= userList.getItems().size()) {
             throw new IndexOutOfBoundsException("Invalid item index");
         }
-        userList.getItems().remove(itemIndex);
+
+        List<String> items = new ArrayList<>(userList.getItems());
+        items.remove(itemIndex);
+        ListRequest listRequest = new ListRequest();
+        listRequest.setName(userList.getName());
+        listRequest.setContent(String.join("\n", items));
         User user = userRepository.findByEmail(userEmail);
-        listManagementService.updateList(userList, new ListRequest());
+        listManagementService.updateList(userList, listRequest);
+        UserList updatedList = user.updateListItem(userList);
         userRepository.save(user);
-        return userList;
+        return updatedList;
     }
 
+
+    public UserList addItem(String userEmail, String listId, String newItem)
+            throws UserNotFoundException, ListNotFoundException {
+        UserList userList = getList(userEmail, listId);
+
+        List<String> items = new ArrayList<>(userList.getItems());
+        items.add(newItem);
+        ListRequest listRequest = new ListRequest();
+        listRequest.setName(userList.getName());
+        listRequest.setContent(String.join("\n", items));
+        User user = userRepository.findByEmail(userEmail);
+        listManagementService.updateList(userList, listRequest);
+        UserList updatedList = user.updateListItem(userList);
+        userRepository.save(user);
+        return updatedList;
+    }
 }

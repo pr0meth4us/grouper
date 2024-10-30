@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Document(collection = "users")
@@ -20,6 +21,20 @@ public class User {
     private List<UserList> lists = new ArrayList<>();
     public void setPassword(String password) {
         this.password = encryptSHA256(password);
+    }
+
+    public UserList updateListItem(UserList updatedList) {
+        String id = updatedList.getListId();
+
+        UserList existingList = lists.stream()
+                .filter(list -> list.getListId().equals(id))
+                .findFirst()
+                .get();
+
+        existingList.setName(updatedList.getName());
+        existingList.setItems(new ArrayList<>(updatedList.getItems()));
+
+        return existingList;
     }
 
     public static String encryptSHA256(String password) {

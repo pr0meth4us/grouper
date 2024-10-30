@@ -9,10 +9,10 @@ import dev.prometheus.grouping.exception.ListNotFoundException;
 import dev.prometheus.grouping.exception.UserNotFoundException;
 import dev.prometheus.grouping.service.ListService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -163,6 +163,18 @@ public class ListController {
         String userEmail = (String) httpRequest.getAttribute("userEmail");
         UserList deletedItem = listService.deleteItem(userEmail, listId, itemIndex);
         return ResponseEntity.ok(new ApiResponse(true, "Item deleted successfully", deletedItem));
+    }
+
+    @RequireAuth
+    @PostMapping("/{listId}/items/add")
+    public ResponseEntity<ApiResponse> addItem(
+            @PathVariable String listId,
+            @RequestBody String newItem,
+            HttpServletRequest httpRequest) {
+        newItem = newItem.trim().replace("\"", "");
+        String userEmail = (String) httpRequest.getAttribute("userEmail");
+        UserList updatedList = listService.addItem(userEmail, listId, newItem);
+        return ResponseEntity.ok(new ApiResponse(true, "Item added successfully", updatedList));
     }
 
 }

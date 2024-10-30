@@ -59,13 +59,13 @@ public class ListManagementService {
 
     public UserList findListOrThrow(User user, String listId) {
         if (user.getLists() == null) {
-            throw new ListNotFoundException("List not found");
+            throw new ListNotFoundException("User dont have list");
         }
 
         return user.getLists().stream()
                 .filter(list -> list.getListId().equals(listId))
                 .findFirst()
-                .orElseThrow(() -> new ListNotFoundException("List not found"));
+                .orElseThrow(() -> new ListNotFoundException("List not found NOT FOUND"));
     }
 
     public List<String> processListContent(String content) {
