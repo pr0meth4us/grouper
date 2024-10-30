@@ -3,85 +3,47 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
 
-import DashboardHeader from "@/app/dashboard/components/header";
+import DashboardHeader from "./components/header";
+import { useDashboard } from "./hooks/use-dashboard";
+import { useListEditing } from "./hooks/use-list-editing";
+import { useListFiltering } from "./hooks/use-list-filtering";
+import { Error } from "./components/states/error";
+import { Actions } from "./components/list/actions";
+import { DeleteDialog } from "./components/items/delete-dialog";
+import { ItemTable } from "./components/items/table";
+import { QuickAddModal } from "./components/list/quick-add-modal";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useDashboard } from "@/app/dashboard/hooks";
-import { Error } from "@/app/dashboard/components/states/error";
-import { Actions } from "@/app/dashboard/components/list/actions";
-import { DeleteDialog } from "@/app/dashboard/components/items/delete-dialog";
-import { ItemTable } from "@/app/dashboard/components/items/table";
-import { QuickAddModal } from "@/app/dashboard/components/list/quick-add-modal";
-import { Input } from "@/components/ui/input";
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
-  const [editingListId, setEditingListId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState("");
-  const [editingContent, setEditingContent] = useState("");
 
+  const dashboard = useDashboard();
   const {
-    lists,
-    error,
-    deleteItemDialog,
-    fetchLists,
-    handleGroup,
-    handleDeleteList,
-    handleDeleteItem,
-    handleDeleteItemConfirm,
-    handleDeleteDialogChange,
-    handleAddItem,
-    handleAddItemConfirm,
-    handleQuickCreate,
-    isAddingItem,
-    handleEditList,
-    handleEditItem,
-  } = useDashboard();
+    editingListId,
+    editingName,
+    startEditing,
+    stopEditing,
+    handleChangeListName,
+  } = useListEditing(dashboard.handleEditList);
+  const { filterLists } = useListFiltering();
 
   useEffect(() => {
-    fetchLists();
+    dashboard.fetchLists();
   }, []);
 
-  const startEditing = (
-    listId: string,
-    currentName: string,
-    currentItems: string[],
-  ) => {
-    setEditingListId(listId);
-    setEditingName(currentName);
-    // Convert items to a newline-separated string
-    setEditingContent(currentItems.join("\n"));
-  };
+  const filteredLists = filterLists(dashboard.lists, searchQuery);
 
-  const stopEditing = (e: React.SyntheticEvent) => {
-    if (editingListId && editingName.trim()) {
-      handleEditList(e, editingListId, editingName, editingContent);
-    }
-    setEditingListId(null);
-    setEditingName("");
-    setEditingContent("");
-  };
-
-  const handleChangeListName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditingName(e.target.value);
-  };
-
-  const filteredLists = lists.filter(
-    (list) =>
-      list.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      list.items.some((item) =>
-        item.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
-  );
-
-  if (error) return <Error error={error} />;
+  if (dashboard.error) return <Error error={dashboard.error} />;
 
   return (
     <div className="min-h-screen bg-background">
@@ -143,9 +105,7 @@ export default function DashboardPage() {
                                     stopEditing(e);
                                   }
                                   if (e.key === "Escape") {
-                                    setEditingListId(null);
-                                    setEditingName("");
-                                    setEditingContent("");
+                                    stopEditing(e);
                                   }
                                 }}
                               />
@@ -160,12 +120,12 @@ export default function DashboardPage() {
                         <Actions
                           listId={list.listId}
                           listName={list.name}
-                          onAdd={handleAddItem}
-                          onDelete={handleDeleteList}
+                          onAdd={dashboard.handleAddItem}
+                          onDelete={dashboard.handleDeleteList}
                           onEdit={() =>
                             startEditing(list.listId, list.name, list.items)
                           }
-                          onGroup={handleGroup}
+                          onGroup={dashboard.handleGroup}
                         />
                       </div>
                     </AccordionTrigger>
@@ -173,21 +133,21 @@ export default function DashboardPage() {
                     <AccordionContent>
                       <div className="px-4 py-4 bg-background">
                         <ItemTable
-                          isAddingItem={isAddingItem}
+                          isAddingItem={dashboard.isAddingItem}
                           isEditingList={editingListId === list.listId}
                           items={list.items}
                           listId={list.listId}
-                          onAddItem={handleAddItemConfirm}
-                          onDeleteItem={handleDeleteItem}
-                          onEditItem={handleEditItem}
+                          onAddItem={dashboard.handleAddItemConfirm}
+                          onDeleteItem={dashboard.handleDeleteItem}
+                          onEditItem={dashboard.handleEditItem}
                           onSubmitList={(e, content) => {
-                            handleEditList(
+                            dashboard.handleEditList(
                               e,
                               list.listId,
                               editingName,
                               content,
                             );
-                            setEditingListId(null);
+                            stopEditing(e);
                           }}
                         />
                       </div>
@@ -199,16 +159,17 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
       <QuickAddModal
         isOpen={isQuickAddOpen}
         onClose={() => setIsQuickAddOpen(false)}
-        onCreateList={handleQuickCreate}
+        onCreateList={dashboard.handleQuickCreate}
       />
 
       <DeleteDialog
-        isOpen={deleteItemDialog.isOpen}
-        onConfirm={handleDeleteItemConfirm}
-        onOpenChange={handleDeleteDialogChange}
+        isOpen={dashboard.deleteItemDialog.isOpen}
+        onConfirm={dashboard.handleDeleteItemConfirm}
+        onOpenChange={dashboard.handleDeleteDialogChange}
       />
     </div>
   );

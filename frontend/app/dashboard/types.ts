@@ -9,12 +9,6 @@ export interface ListActionsProps {
   onAdd: (e: React.MouseEvent, listId: string) => void;
 }
 
-export interface DeleteDialogProps {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
-  onConfirm: () => void;
-}
-
 export interface ErrorStateProps {
   error: string;
 }
@@ -24,13 +18,6 @@ export interface ActionButtonsProps {
   onDeleteClick: (e: React.MouseEvent) => void;
   onEditClick: (e: React.MouseEvent) => void;
   onAddClick: (e: React.MouseEvent) => void;
-}
-
-export interface DeleteListDialogProps {
-  isOpen: boolean;
-  listName: string;
-  onOpenChange: (open: boolean) => void;
-  onConfirm: (e: React.MouseEvent) => void;
 }
 
 export interface ActionsProps {
@@ -63,4 +50,16 @@ export interface QuickAddModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateList: (name: string) => Promise<void>;
+}
+
+export interface DeleteDialogState {
+  isOpen: boolean;
+  listId: string;
+  itemIndex: number;
+}
+
+export interface DeleteDialogProps {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onOpenChange: (isOpen: boolean) => void;
 }
