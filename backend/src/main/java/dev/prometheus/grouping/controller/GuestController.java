@@ -30,6 +30,13 @@ public class GuestController {
         return processedList;
     }
 
+    @GetMapping("/get-session-list")
+    public List<String> getSessionList(HttpServletRequest request) {
+        Object sessionList = request.getSession().getAttribute("list");
+        return (List<String>) sessionList;
+    }
+
+
     @PostMapping("/grouping")
     public ResponseEntity<ApiResponse> grouping(
             HttpServletRequest request,

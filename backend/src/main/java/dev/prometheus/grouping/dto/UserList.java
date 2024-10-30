@@ -20,7 +20,8 @@ public class UserList {
         this.createdAt = LocalDateTime.now();
     }
 
-    public void shuffleItems() {
+    public UserList shuffleItems() {
         Collections.shuffle(this.items);
+        return this;
     }
 }

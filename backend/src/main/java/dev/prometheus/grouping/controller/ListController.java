@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,17 +30,9 @@ public class ListController {
     public ResponseEntity<ApiResponse> addList(
             @RequestBody ListRequest request,
             HttpServletRequest httpRequest) {
-        try {
-            String userEmail = (String) httpRequest.getAttribute("userEmail");
-            UserList newList = listService.addList(userEmail, request);
-            return ResponseEntity.ok(new ApiResponse(true, "List added successfully", newList));
-        } catch (UserNotFoundException | EmptyListException e) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, e.getMessage(), null));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body(new ApiResponse(false, "Error adding list: " + e.getMessage(), null));
-        }
+        String userEmail = (String) httpRequest.getAttribute("userEmail");
+        UserList newList = listService.addList(userEmail, request);
+        return ResponseEntity.ok(new ApiResponse(true, "List added successfully", newList));
     }
 
     @RequireAuth
@@ -129,14 +120,9 @@ public class ListController {
     public ResponseEntity<ApiResponse> deleteList(
             @PathVariable String listId,
             HttpServletRequest request) {
-        try {
-            String userEmail = (String) request.getAttribute("userEmail");
-            listService.deleteList(userEmail, listId);
-            return ResponseEntity.ok(new ApiResponse(true, "List deleted successfully", null));
-        } catch (UserNotFoundException | ListNotFoundException e) {
-            return ResponseEntity.badRequest()
-                    .body(new ApiResponse(false, e.getMessage(), null));
-        }
+        String userEmail = (String) request.getAttribute("userEmail");
+        listService.deleteList(userEmail, listId);
+        return ResponseEntity.ok(new ApiResponse(true, "List deleted successfully", null));
     }
 
     @RequireAuth
