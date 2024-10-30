@@ -40,7 +40,7 @@ export function QuickAddModal({
 
   const handleDetailedCreate = () => {
     onClose();
-    router.push("/lists/new");
+    router.push("/lists/add");
   };
 
   return (
