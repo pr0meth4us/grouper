@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import {Group, ListItem} from "@/app/types/list";
-import {ApiResponse} from "@/app/types/auth";
+import { Group, ListItem } from "@/app/types/list";
+import { ApiResponse } from "@/app/types/auth";
 
 const API_BASE_URL = "/auth";
 
@@ -10,6 +10,18 @@ export const listApi = {
     const response = await axios.get(`${API_BASE_URL}/lists`);
 
     return response.data.data;
+  },
+
+  addList: async (req: {
+    name: string;
+    content?: string;
+  }): Promise<ApiResponse> => {
+    const response = await axios.post(`${API_BASE_URL}/lists/add`, {
+      name: req.name,
+      content: req.content || "",
+    });
+
+    return response.data;
   },
 
   group: async (
@@ -59,21 +71,17 @@ export const listApi = {
     );
   },
 
-  addItem: async (
-    id: string,
-    newValue: string,
-  ):
-  Promise<ApiResponse> => {
+  addItem: async (id: string, newValue: string): Promise<ApiResponse> => {
     return await axios.post(
       `${API_BASE_URL}/lists/${id}/items/add`,
       `"${newValue}"`,
       {
         headers: {
           "Content-Type": "text/plain",
-        }
-      }
-    )
-  }
+        },
+      },
+    );
+  },
 };
 
 export type { ListItem };

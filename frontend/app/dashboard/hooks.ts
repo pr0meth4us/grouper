@@ -74,6 +74,11 @@ export function useDashboard() {
     setDeleteItemDialog({ isOpen, listId: "", itemIndex: -1 });
   };
 
+  const handleQuickCreate = async (name: string) => {
+    await listApi.addList({ name });
+    await fetchLists();
+  };
+
   return {
     lists,
     error,
@@ -88,6 +93,7 @@ export function useDashboard() {
     handleEditItem,
     handleDeleteDialogChange,
     handleEditList,
-    handleAddItemConfirm
+    handleAddItemConfirm,
+    handleQuickCreate
   };
 }

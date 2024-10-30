@@ -55,3 +55,9 @@ export interface DeleteDialogState {
   listId: string;
   itemIndex: number;
 }
+
+export interface QuickAddModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreateList: (name: string) => Promise<void>;
+}
