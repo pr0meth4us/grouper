@@ -45,9 +45,11 @@ export const listApi = {
     number: string,
     exclusions: string,
   ): Promise<Group[]> => {
-    const response = await axios.get(
-      `${API_BASE_URL}/lists/${listId}/group?size=${size}&number${number}&$exclusions=${exclusions}`,
-    );
+    const url = `${API_BASE_URL}/lists/${listId}/group?${
+      size ? `size=${size}` : `number=${number}`
+    }&exclude=${encodeURIComponent(exclusions)}`;
+
+    const response = await axios.get(url);
 
     return response.data.data;
   },

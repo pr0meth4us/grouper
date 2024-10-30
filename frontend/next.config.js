@@ -8,6 +8,10 @@ module.exports = {
                 source: '/auth/:path*',
                 destination: 'http://localhost:8080/auth/:path*',
             },
+            {
+                source: '/guest/:path*',
+                destination: 'http://localhost:8080/guest/:path*',
+            },
         ];
     },
 };

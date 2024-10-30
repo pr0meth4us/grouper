@@ -8,11 +8,7 @@ import { Link } from "@nextui-org/link";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/app/hooks/useAuth";
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
+import { LoginFormData } from "@/app/types/auth";
 
 export default function LoginPage() {
   const router = useRouter();

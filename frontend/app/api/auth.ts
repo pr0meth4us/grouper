@@ -58,4 +58,4 @@ export const authApi = {
   },
 };
 
-export { LoginRequest };
+export type { LoginRequest };
