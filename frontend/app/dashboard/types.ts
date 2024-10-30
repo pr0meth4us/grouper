@@ -63,3 +63,16 @@ export interface DeleteDialogProps {
   onConfirm: () => void;
   onOpenChange: (isOpen: boolean) => void;
 }
+
+export interface DeleteListDialogProps {
+  isOpen: boolean;
+  listName: string;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (e: React.MouseEvent) => void;
+}
+
+export interface HeaderProps {
+  setIsQuickAddOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+}

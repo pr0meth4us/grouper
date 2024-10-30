@@ -11,12 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { HeaderProps } from "@/app/dashboard/types";
 
-interface HeaderProps {
-  setIsQuickAddOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  searchQuery: string;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-}
 export default function DashboardHeader({
   setIsQuickAddOpen,
   searchQuery,
