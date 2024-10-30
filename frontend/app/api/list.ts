@@ -24,6 +24,21 @@ export const listApi = {
     return response.data;
   },
 
+  editList: async (
+    listId: string,
+    req: {
+      name: string;
+      content?: string;
+    },
+  ): Promise<ApiResponse> => {
+    const response = await axios.put(`${API_BASE_URL}/lists/${listId}`, {
+      name: req.name,
+      content: req.content,
+    });
+
+    return response.data;
+  },
+
   group: async (
     listId: string,
     size: string,

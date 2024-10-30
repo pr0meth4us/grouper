@@ -9,7 +9,6 @@ export function useDashboard() {
   const router = useRouter();
   const [lists, setLists] = useState<ListItem[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [deleteItemDialog, setDeleteItemDialog] = useState<DeleteDialogState>({
     isOpen: false,
     listId: "",
@@ -29,21 +28,27 @@ export function useDashboard() {
     router.push(`/lists/${listId}/group`);
   };
 
-  const handleEditList = async (e: React.MouseEvent, listId: string) => {
-    e.stopPropagation();
-    await listApi.editList(listId);
-  }
-
   const handleAddItem = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsAddingItem(true);
-  }
+  };
 
-  const handleAddItemConfirm = async (listId: string,  newValue: string) => {
-    await listApi.addItem(listId, newValue)
-    setIsAddingItem(false)
+  const handleEditList = async (
+    e: React.SyntheticEvent,
+    listId: string,
+    newName: string,
+    content: string,
+  ) => {
+    e.stopPropagation();
+    await listApi.editList(listId, { name: newName, content: content });
     await fetchLists();
-  }
+  };
+
+  const handleAddItemConfirm = async (listId: string, newValue: string) => {
+    await listApi.addItem(listId, newValue);
+    setIsAddingItem(false);
+    await fetchLists();
+  };
 
   const handleDeleteList = async (e: React.MouseEvent, listId: string) => {
     e.stopPropagation();
@@ -57,6 +62,7 @@ export function useDashboard() {
 
   const handleDeleteItemConfirm = async () => {
     const { listId, itemIndex } = deleteItemDialog;
+
     await listApi.deleteItem(listId, itemIndex);
     await fetchLists();
   };
@@ -92,8 +98,8 @@ export function useDashboard() {
     handleDeleteItemConfirm,
     handleEditItem,
     handleDeleteDialogChange,
-    handleEditList,
     handleAddItemConfirm,
-    handleQuickCreate
+    handleQuickCreate,
+    handleEditList,
   };
 }

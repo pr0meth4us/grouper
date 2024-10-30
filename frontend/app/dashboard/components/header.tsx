@@ -17,7 +17,7 @@ interface HeaderProps {
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
-export default function Header({
+export default function DashboardHeader({
   setIsQuickAddOpen,
   searchQuery,
   setSearchQuery,

@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
 
-import Header from "@/app/dashboard/components/header";
-const DashboardHeader = Header;
-
+import DashboardHeader from "@/app/dashboard/components/header";
 import {
   Accordion,
   AccordionContent,
@@ -20,10 +18,15 @@ import { Actions } from "@/app/dashboard/components/list/actions";
 import { DeleteDialog } from "@/app/dashboard/components/items/delete-dialog";
 import { ItemTable } from "@/app/dashboard/components/items/table";
 import { QuickAddModal } from "@/app/dashboard/components/list/quick-add-modal";
+import { Input } from "@/components/ui/input";
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+  const [editingListId, setEditingListId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [editingContent, setEditingContent] = useState("");
+
   const {
     lists,
     error,
@@ -33,18 +36,42 @@ export default function DashboardPage() {
     handleDeleteList,
     handleDeleteItem,
     handleDeleteItemConfirm,
-    handleEditItem,
-    handleEditList,
     handleDeleteDialogChange,
     handleAddItem,
     handleAddItemConfirm,
     handleQuickCreate,
     isAddingItem,
+    handleEditList,
+    handleEditItem,
   } = useDashboard();
 
   useEffect(() => {
     fetchLists();
   }, []);
+
+  const startEditing = (
+    listId: string,
+    currentName: string,
+    currentItems: string[],
+  ) => {
+    setEditingListId(listId);
+    setEditingName(currentName);
+    // Convert items to a newline-separated string
+    setEditingContent(currentItems.join("\n"));
+  };
+
+  const stopEditing = (e: React.SyntheticEvent) => {
+    if (editingListId && editingName.trim()) {
+      handleEditList(e, editingListId, editingName, editingContent);
+    }
+    setEditingListId(null);
+    setEditingName("");
+    setEditingContent("");
+  };
+
+  const handleChangeListName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditingName(e.target.value);
+  };
 
   const filteredLists = lists.filter(
     (list) =>
@@ -87,7 +114,7 @@ export default function DashboardPage() {
                     : "Create your first list to get started"}
                 </p>
                 {!searchQuery && (
-                  <Button>
+                  <Button onClick={() => setIsQuickAddOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create New List
                   </Button>
@@ -105,7 +132,26 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between w-full">
                         <div className="flex items-center gap-3">
                           <span className="font-medium text-foreground">
-                            {list.name}
+                            {editingListId === list.listId ? (
+                              <Input
+                                className="max-w-md"
+                                value={editingName}
+                                onBlur={stopEditing}
+                                onChange={handleChangeListName}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    stopEditing(e);
+                                  }
+                                  if (e.key === "Escape") {
+                                    setEditingListId(null);
+                                    setEditingName("");
+                                    setEditingContent("");
+                                  }
+                                }}
+                              />
+                            ) : (
+                              list.name
+                            )}
                           </span>
                           <span className="text-sm text-muted-foreground">
                             {list.items.length} items
@@ -116,7 +162,9 @@ export default function DashboardPage() {
                           listName={list.name}
                           onAdd={handleAddItem}
                           onDelete={handleDeleteList}
-                          onEdit={handleEditList}
+                          onEdit={() =>
+                            startEditing(list.listId, list.name, list.items)
+                          }
                           onGroup={handleGroup}
                         />
                       </div>
@@ -126,11 +174,21 @@ export default function DashboardPage() {
                       <div className="px-4 py-4 bg-background">
                         <ItemTable
                           isAddingItem={isAddingItem}
+                          isEditingList={editingListId === list.listId}
                           items={list.items}
                           listId={list.listId}
                           onAddItem={handleAddItemConfirm}
                           onDeleteItem={handleDeleteItem}
                           onEditItem={handleEditItem}
+                          onSubmitList={(e, content) => {
+                            handleEditList(
+                              e,
+                              list.listId,
+                              editingName,
+                              content,
+                            );
+                            setEditingListId(null);
+                          }}
                         />
                       </div>
                     </AccordionContent>

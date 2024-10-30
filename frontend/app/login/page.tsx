@@ -6,6 +6,7 @@ import { Input } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { useRouter } from "next/navigation";
+
 import { useAuth } from "@/app/hooks/useAuth";
 
 interface LoginFormData {
@@ -43,11 +44,12 @@ export default function LoginPage() {
       if (response.success) {
         router.push("/dashboard");
       } else {
-        setError(response.message || "Login failed. Please check your credentials.");
+        setError(
+          response.message || "Login failed. Please check your credentials.",
+        );
       }
     } catch (err) {
       setError("An error occurred during login. Please try again.");
-      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
@@ -68,24 +70,24 @@ export default function LoginPage() {
           <Input
             fullWidth
             required
+            autoComplete="email"
+            isDisabled={loading}
             label="Email"
             placeholder="Enter your email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            isDisabled={loading}
-            autoComplete="email"
           />
           <Input
             fullWidth
             required
+            autoComplete="current-password"
+            isDisabled={loading}
             label="Password"
             placeholder="Enter your password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            isDisabled={loading}
-            autoComplete="current-password"
           />
           <Button
             fullWidth
@@ -100,11 +102,11 @@ export default function LoginPage() {
 
         <div className="mt-6 text-center">
           <p className="text-sm">
-            Don't have an account?{" "}
+            Don&#39;t have an account?{" "}
             <Link
               className="text-primary cursor-pointer"
-              href="/signup"
               color="primary"
+              href="/signup"
             >
               Sign Up
             </Link>

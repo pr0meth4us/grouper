@@ -57,3 +57,5 @@ export const authApi = {
     return (await response.json()) as ApiResponse;
   },
 };
+
+export { LoginRequest };
