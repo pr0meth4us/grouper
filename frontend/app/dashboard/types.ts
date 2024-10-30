@@ -7,6 +7,7 @@ export interface ListActionsProps {
   onGroup: (e: React.MouseEvent, listId: string) => void;
   onEdit: (e: React.MouseEvent, listId: string) => void;
   onAdd: (e: React.MouseEvent, listId: string) => void;
+  isEditingList: boolean;
 }
 
 export interface ErrorStateProps {
@@ -18,6 +19,7 @@ export interface ActionButtonsProps {
   onDeleteClick: (e: React.MouseEvent) => void;
   onEditClick: (e: React.MouseEvent) => void;
   onAddClick: (e: React.MouseEvent) => void;
+  isEditingList: boolean;
 }
 
 export interface ActionsProps {

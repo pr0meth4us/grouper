@@ -118,6 +118,7 @@ export default function DashboardPage() {
                           </span>
                         </div>
                         <Actions
+                          isEditingList={editingListId === list.listId}
                           listId={list.listId}
                           listName={list.name}
                           onAdd={dashboard.handleAddItem}

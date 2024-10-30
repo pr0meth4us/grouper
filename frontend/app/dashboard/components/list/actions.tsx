@@ -11,6 +11,7 @@ export function Actions({
   onGroup,
   onEdit,
   onAdd,
+  isEditingList,
 }: ListActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -48,6 +49,7 @@ export function Actions({
   return (
     <>
       <ActionButtons
+        isEditingList={isEditingList}
         onAddClick={handleAddClick}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEdit}

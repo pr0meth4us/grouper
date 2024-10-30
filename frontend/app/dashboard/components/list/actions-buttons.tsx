@@ -14,7 +14,12 @@ export function ActionButtons({
   onDeleteClick,
   onEditClick,
   onAddClick,
+  isEditingList,
 }: ActionButtonsProps) {
+  if (isEditingList) {
+    return "";
+  }
+
   return (
     <div className="flex items-center gap-2">
       <Button
