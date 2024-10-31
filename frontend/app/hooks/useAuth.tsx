@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { LoginRequest, authApi } from "../api/auth";
 
 const AUTH_STATE_CHANGED = "authStateChanged";
+
 const emitAuthStateChange = () => {
   window.dispatchEvent(new Event(AUTH_STATE_CHANGED));
 };
@@ -13,7 +14,6 @@ export function useAuth() {
   const [user, setUser] = useState(null);
 
   const checkAuth = useCallback(async () => {
-    setLoading(true);
     try {
       const response = await authApi.checkAuth();
 
@@ -21,6 +21,8 @@ export function useAuth() {
 
       if (response.success && response.data) {
         setUser(response.data);
+      } else {
+        setUser(null);
       }
     } catch (error) {
       setIsAuthenticated(false);
@@ -30,7 +32,31 @@ export function useAuth() {
     }
   }, []);
 
-  // Function to handle login
+  useEffect(() => {
+    let mounted = true;
+
+    const initAuth = async () => {
+      if (mounted) {
+        await checkAuth();
+      }
+    };
+
+    initAuth();
+
+    const handleAuthStateChange = () => {
+      if (mounted) {
+        checkAuth();
+      }
+    };
+
+    window.addEventListener(AUTH_STATE_CHANGED, handleAuthStateChange);
+
+    return () => {
+      mounted = false;
+      window.removeEventListener(AUTH_STATE_CHANGED, handleAuthStateChange);
+    };
+  }, [checkAuth]);
+
   const login = async (credentials: LoginRequest) => {
     try {
       const response = await authApi.login(credentials);
@@ -42,41 +68,47 @@ export function useAuth() {
 
       return response;
     } catch (error) {
+      console.error("Login failed:", error);
       throw error;
     }
   };
 
-  // Function to handle logout
   const logout = async () => {
     try {
+      setLoading(true); // Set loading state before logout
       const response = await authApi.logout();
 
       if (response.success) {
+        // Immediately update local state
         setIsAuthenticated(false);
         setUser(null);
-        emitAuthStateChange();
         localStorage.removeItem("user");
         sessionStorage.clear();
 
-        window.location.reload();
+        // Emit auth state change after state updates
+        emitAuthStateChange();
       }
 
       return response;
     } catch (error) {
+      console.error("Logout failed:", error);
       throw error;
+    } finally {
+      setLoading(false); // Ensure loading is set to false regardless of outcome
     }
   };
 
-  // Function to handle registration
   const register = async (userData: {
-    email: any;
-    password: any;
-    otp: any;
+    email: string;
+    password: string;
+    otp: string;
   }) => {
-    const { email, password, otp } = userData;
-
     try {
-      const response = await authApi.register(email, password, otp);
+      const response = await authApi.register(
+        userData.email,
+        userData.password,
+        userData.otp,
+      );
 
       if (response.success) {
         await checkAuth();
@@ -85,46 +117,10 @@ export function useAuth() {
 
       return response;
     } catch (error) {
+      console.error("Registration failed:", error);
       throw error;
     }
   };
-
-  useEffect(() => {
-    // Check auth on mount
-    checkAuth();
-
-    // Add event listeners for various scenarios
-    const handleAuthStateChange = () => checkAuth();
-    const handleFocus = () => checkAuth();
-    const handleOnline = () => checkAuth();
-    const handleStorage = (e: StorageEvent) => {
-      // Check if the storage event is related to auth (e.g., token)
-      if (e.key && e.key.includes("auth")) {
-        checkAuth();
-      }
-    };
-
-    // Add all event listeners
-    window.addEventListener(AUTH_STATE_CHANGED, handleAuthStateChange);
-    window.addEventListener("focus", handleFocus);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("storage", handleStorage);
-
-    // Handle page reload
-    if (document.readyState === "complete") {
-      checkAuth();
-    }
-    window.addEventListener("load", checkAuth);
-
-    // Clean up event listeners
-    return () => {
-      window.removeEventListener(AUTH_STATE_CHANGED, handleAuthStateChange);
-      window.removeEventListener("focus", handleFocus);
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("load", checkAuth);
-    };
-  }, [checkAuth]);
 
   return {
     isAuthenticated,

@@ -7,7 +7,6 @@ import { SparklesIcon, ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
-import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
 import { useAuth } from "@/app/hooks/useAuth";
 
@@ -48,7 +47,7 @@ export default function Home() {
                   endContent={
                     <SparklesIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   }
-                  href={siteConfig.links.docs}
+                  href="/signup"
                   radius="full"
                   size="lg"
                   variant="shadow"

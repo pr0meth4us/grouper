@@ -12,6 +12,7 @@ import {
 import { Link } from "@nextui-org/link";
 import { Button } from "@nextui-org/button";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { LogInIcon, LogOutIcon } from "lucide-react";
 
@@ -21,9 +22,20 @@ import { GithubIcon } from "@/components/icons";
 import { useAuth } from "@/app/hooks/useAuth";
 
 export const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, loading } = useAuth();
+  const router = useRouter();
+
   const isDashboard =
     typeof window !== "undefined" && window.location.pathname === "/dashboard";
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <NextUINavbar
@@ -52,27 +64,27 @@ export const Navbar = () => {
         <NavbarItem>
           {isAuthenticated ? (
             <div className="flex gap-2">
-              {!isDashboard ? (
+              {!isDashboard && (
                 <Button
                   as={Link}
                   className="text-sm font-medium"
                   color="primary"
                   href="/dashboard"
                   variant="flat"
+                  isDisabled={loading}
                 >
                   Dashboard
                 </Button>
-              ) : (
-                ""
               )}
               <Button
                 className="text-sm font-medium"
                 color="danger"
                 startContent={<LogOutIcon className="h-4 w-4" />}
                 variant="ghost"
-                onClick={logout}
+                onClick={handleLogout}
+                isDisabled={loading}
               >
-                Logout
+                {loading ? "Logging out..." : "Logout"}
               </Button>
             </div>
           ) : (
@@ -84,6 +96,7 @@ export const Navbar = () => {
               radius="full"
               size="lg"
               variant="flat"
+              isDisabled={loading}
             >
               Login
             </Button>
