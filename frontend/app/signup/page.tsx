@@ -12,7 +12,7 @@ const SignUp = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
 
   const handleSendOtp = async () => {
@@ -29,9 +29,9 @@ const SignUp = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-b from-content1 to-background p-4">
-      <Card className="w-full max-w-md">
-        <CardBody className="p-6">
+    <section className="flex flex-col items-center justify-center min-h-[70vh] px-6">
+      <Card className="w-full max-w-md p-8 from-transparent to-gray-50/20">
+        <CardBody>
           <div className="text-center mb-4">
             <h1 className="text-2xl font-bold text-foreground">
               Create Account
@@ -132,7 +132,7 @@ const SignUp = () => {
           </form>
         </CardBody>
       </Card>
-    </div>
+    </section>
   );
 };
 
