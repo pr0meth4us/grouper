@@ -96,7 +96,7 @@ export default function DashboardPage() {
                       className="border border-border rounded-lg overflow-hidden"
                       value={list.listId}
                     >
-                      <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 transition-colors">
+                      <AccordionTrigger className="px-4 py-3 hover:bg-muted/50 transition-colors hover:no-underline">
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center gap-3">
                             <span className="font-medium text-foreground">
@@ -106,6 +106,7 @@ export default function DashboardPage() {
                                   value={editingName}
                                   onBlur={stopEditing}
                                   onChange={handleChangeListName}
+                                  onClick={(e) => e.stopPropagation()} // Prevents click propagation to AccordionTrigger
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                       stopEditing(e);
