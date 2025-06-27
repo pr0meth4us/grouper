@@ -6,7 +6,6 @@ const API_BASE_URL = "/guest";
 
 export const guestApi = {
   uploadList: async (content: string): Promise<ApiResponse> => {
-    // Use the configured apiClient
     const res = await apiClient.post(`${API_BASE_URL}/get-list`, {
       content: content,
     });
@@ -15,7 +14,6 @@ export const guestApi = {
   },
 
   getSessionList: async (): Promise<string[]> => {
-    // Use the configured apiClient
     const res = await apiClient.get(`${API_BASE_URL}/get-session-list`);
 
     return res.data;
@@ -30,7 +28,6 @@ export const guestApi = {
         size ? `size=${size}` : `number=${number}`
     }&exclude=${encodeURIComponent(exclusions)}`;
 
-    // Use the configured apiClient
     const response = await apiClient.get(url);
 
     return response.data.data;
