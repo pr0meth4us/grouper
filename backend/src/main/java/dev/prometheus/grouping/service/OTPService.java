@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class OTPService {
     private final RedisTemplate<String, OTPInfo> redisTemplate;
     private static final long OTP_VALID_DURATION = 5;
-    private static final String APP_NAME = "hestia";
+    private static final String APP_NAME = "grouper";
 
     public OTPService(RedisTemplate<String, OTPInfo> redisTemplate) {
         this.redisTemplate = redisTemplate;

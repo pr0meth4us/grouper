@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Hestia",
+  name: "Grouper",
   description: "One Click to Group ‘Em All!",
   navItems: [
     {

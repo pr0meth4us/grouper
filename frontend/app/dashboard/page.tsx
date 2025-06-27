@@ -12,7 +12,6 @@ import { Actions } from "./components/list/actions";
 import { DeleteDialog } from "./components/items/delete-dialog";
 import { ItemTable } from "./components/items/table";
 import { QuickAddModal } from "./components/list/quick-add-modal";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

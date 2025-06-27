@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@radix-ui/react-dropdown-menu";
 import { ActionButtonsProps } from "@/app/dashboard/types";
 
 export function ActionButtons({

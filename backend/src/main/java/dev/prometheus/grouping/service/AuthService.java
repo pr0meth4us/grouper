@@ -3,6 +3,7 @@ package dev.prometheus.grouping.service;
 import dev.prometheus.grouping.dto.ApiResponse;
 import dev.prometheus.grouping.model.User;
 import dev.prometheus.grouping.repository.UserRepository;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class AuthService {
     private final MailService mailService;
     private final JwtService jwtService;
 
-    private static final int COOKIE_MAX_AGE = 86400;
+    private static final int COOKIE_MAX_AGE = 86400; // 24 hours in seconds
 
     public AuthService(UserRepository userRepository, OTPService otpService,
                        MailService mailService, JwtService jwtService) {
@@ -29,7 +30,14 @@ public class AuthService {
     public void sendOtp(String email) {
         String otpCode = otpService.generateOTP();
         otpService.storeOTPAndSendToUser(email, otpCode);
-        mailService.SendEmail(email, otpCode);
+        // We will call the updated MailService method that sends a styled HTML email
+        try {
+            mailService.sendOtpEmail(email, otpCode);
+        } catch (MessagingException e) {
+            // Log the error and re-throw a runtime exception so the controller can handle it
+            System.err.println("Failed to send OTP email to " + email + ". Error: " + e.getMessage());
+            throw new RuntimeException("Error sending verification email. Please try again later.", e);
+        }
     }
 
     public ApiResponse register(String email, String password, String otpCode) {
@@ -55,21 +63,24 @@ public class AuthService {
             return new ApiResponse(false, "Invalid Credentials", null);
         }
         String token = jwtService.generateToken(email);
+
+        // --- THIS IS THE CORRECTED CODE ---
         Cookie jwtCookie = new Cookie("jwt_token", token);
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge(COOKIE_MAX_AGE);
-        String sameSiteAttribute = "SameSite=Strict";
-        response.setHeader("Set-Cookie",
-                String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; Secure; %s",
-                        jwtCookie.getName(),
-                        jwtCookie.getValue(),
-                        jwtCookie.getMaxAge(),
-                        sameSiteAttribute));
+        // The 'Secure' flag is removed for local HTTP development.
+        // In a production environment with HTTPS, you would re-enable this.
+        // jwtCookie.setSecure(true);
+
+        // Use the standard way to add a cookie to the response
+        response.addCookie(jwtCookie);
+        // --- END OF CORRECTION ---
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("user", user);
+        // The token is sent in the HttpOnly cookie, but we can also send it in the
+        // response body if the frontend needs to access it directly (e.g., for storing in memory).
         responseData.put("token", token);
         return new ApiResponse(true, "Login successful", responseData);
     }
@@ -77,8 +88,8 @@ public class AuthService {
     public void logout(HttpServletResponse response) {
         Cookie jwtCookie = new Cookie("jwt_token", null);
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
+        // Setting max age to 0 tells the browser to delete the cookie
         jwtCookie.setMaxAge(0);
         response.addCookie(jwtCookie);
     }

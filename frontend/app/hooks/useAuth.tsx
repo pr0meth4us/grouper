@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 
 import { LoginRequest, authApi } from "../api/auth";
+import apiClient from "@/app/api/axiosConfig";
 
 const AUTH_STATE_CHANGED = "authStateChanged";
 
@@ -75,26 +76,18 @@ export function useAuth() {
 
   const logout = async () => {
     try {
-      setLoading(true); // Set loading state before logout
-      const response = await authApi.logout();
-
-      if (response.success) {
-        // Immediately update local state
-        setIsAuthenticated(false);
-        setUser(null);
-        localStorage.removeItem("user");
-        sessionStorage.clear();
-
-        // Emit auth state change after state updates
-        emitAuthStateChange();
-      }
-
-      return response;
+      setLoading(true);
+      await authApi.logout();
+      setIsAuthenticated(false);
+      setUser(null);
+      emitAuthStateChange();
     } catch (error) {
       console.error("Logout failed:", error);
-      throw error;
+      setIsAuthenticated(false);
+      setUser(null);
+      emitAuthStateChange();
     } finally {
-      setLoading(false); // Ensure loading is set to false regardless of outcome
+      setLoading(false);
     }
   };
 
@@ -105,9 +98,9 @@ export function useAuth() {
   }) => {
     try {
       const response = await authApi.register(
-        userData.email,
-        userData.password,
-        userData.otp,
+          userData.email,
+          userData.password,
+          userData.otp,
       );
 
       if (response.success) {

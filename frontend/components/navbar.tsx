@@ -52,10 +52,10 @@ export const Navbar = () => {
                 priority
                 alt="hestia"
                 className="object-cover"
-                src="/hestia.png"
+                src="/grouper.png"
               />
             </div>
-            <p className="font-bold text-inherit text-xl">Hestia</p>
+            <p className="font-bold text-inherit text-xl">Grouper</p>
           </NextLink>
         </NavbarBrand>
       </NavbarContent>

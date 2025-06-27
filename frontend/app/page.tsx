@@ -24,7 +24,7 @@ export default function Home() {
                 alt="hestia"
                 className="object-cover"
                 height={150}
-                src="/hestia.png"
+                src="/grouper.png"
                 width={150}
               />
             </div>
