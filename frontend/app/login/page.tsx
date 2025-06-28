@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { Button } from "@nextui-org/button";
 import { Card } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
 
 import { useAuth } from "@/app/hooks/useAuth";
 import { LoginFormData } from "@/app/types/auth";
@@ -45,7 +45,7 @@ export default function LoginPage() {
         );
       }
     } catch (err) {
-      setError("An error occurred during login. Please try again.");
+      setError("An error occurred during login. Please try again.", err);
     } finally {
       setLoading(false);
     }

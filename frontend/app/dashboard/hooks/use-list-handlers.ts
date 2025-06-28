@@ -1,9 +1,9 @@
 "use client";
 
-import type { DeleteDialogState } from "../types";
-
 import { useRouter } from "next/navigation";
 import React from "react";
+
+import type { DeleteDialogState } from "../types";
 
 import { listApi } from "@/app/api/list";
 
@@ -80,15 +80,21 @@ export const useListHandlers = (
     try {
       const { listId, itemIndex } = deleteItemDialog;
 
+      // Optional: Add validation
+      if (!listId || itemIndex < 0) {
+        setError("Invalid item selection");
+        return;
+      }
+
       await listApi.deleteItem(listId, itemIndex);
       setDeleteItemDialog({ isOpen: false, listId: "", itemIndex: -1 });
       await fetchLists();
     } catch (error) {
-      setError("Failed to delete item");
+      // More specific error message
+      setError(`Failed to delete item: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setDeleteItemDialog({ isOpen: false, listId: "", itemIndex: -1 });
     }
   };
-
   const handleDeleteDialogChange = (isOpen: boolean) => {
     setDeleteItemDialog({ isOpen, listId: "", itemIndex: -1 });
   };
@@ -98,7 +104,9 @@ export const useListHandlers = (
       await listApi.addList({ name });
       await fetchLists();
     } catch (error) {
-      setError("Failed to create list");
+      setError(
+        `Failed to create list: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 

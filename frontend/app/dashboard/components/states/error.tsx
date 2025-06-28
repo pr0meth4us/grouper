@@ -1,8 +1,8 @@
 "use client";
 import { AlertCircle } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { ErrorStateProps } from "@/app/dashboard/types";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function Error({ error }: ErrorStateProps) {
   return (

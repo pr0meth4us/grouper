@@ -1,12 +1,5 @@
 import React from "react";
 
-export interface ListItem {
-  listId: string;
-  name: string;
-  items: string[];
-  createdAt: string;
-}
-
 export type Group = string[][];
 
 export interface ListUploaderProps {

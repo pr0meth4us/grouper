@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
 import { Plus, Save, X, Trash2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
 import { Actions } from "./actions";
 
+import ConfirmDialog from "@/app/dashboard/components/items/alert-dialog";
+import { ItemTableProps } from "@/app/dashboard/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,10 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ItemTableProps } from "@/app/dashboard/types";
-import ConfirmDialog from "@/app/dashboard/components/items/alert-dialog";
 
 export function ItemTable({
   items,

@@ -1,13 +1,13 @@
-import { Group, Trash2, Edit, Plus, MoreVertical } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { Group, Trash2, Edit, Plus, MoreVertical } from "lucide-react";
+
 import { ActionButtonsProps } from "@/app/dashboard/types";
+import { Button } from "@/components/ui/button";
 
 export function ActionButtons({
   onGroupClick,

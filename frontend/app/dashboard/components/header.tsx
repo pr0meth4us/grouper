@@ -1,6 +1,7 @@
 import { Plus, Search, Settings2 } from "lucide-react";
 import React from "react";
 
+import { HeaderProps } from "@/app/dashboard/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { HeaderProps } from "@/app/dashboard/types";
 
 export default function DashboardHeader({
   setIsQuickAddOpen,

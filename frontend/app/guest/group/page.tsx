@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-import CurrentList from "@/app/components/CurrentList";
 import { guestApi } from "@/app/api/guest";
-import GroupGenerator from "@/app/components/GroupGenerator";
+import CurrentList from "@/app/components/CurrentList";
 import GroupDisplayer from "@/app/components/GroupDisplayer";
+import GroupGenerator from "@/app/components/GroupGenerator";
 import { Group } from "@/app/types/list";
 
 export default function GuestGroup() {

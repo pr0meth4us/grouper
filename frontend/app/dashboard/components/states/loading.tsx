@@ -1,6 +1,6 @@
+import { Header } from "@/app/dashboard/components/list/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Header } from "@/app/dashboard/components/list/header";
 
 export function LoadingState() {
   return (

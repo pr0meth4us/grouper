@@ -1,7 +1,7 @@
 import * as React from "react";
 
 interface IconSvgProps extends React.SVGProps<SVGSVGElement> {
-  size?: number;  // Optional size prop for the logo
+  size?: number; // Optional size prop for the logo
 }
 
 export const Logo: React.FC<IconSvgProps> = ({

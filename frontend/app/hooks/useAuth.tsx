@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 
 import { LoginRequest, authApi } from "../api/auth";
-import apiClient from "@/app/api/axiosConfig";
 
 const AUTH_STATE_CHANGED = "authStateChanged";
 
@@ -26,6 +25,7 @@ export function useAuth() {
         setUser(null);
       }
     } catch (error) {
+      console.log(error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -98,9 +98,9 @@ export function useAuth() {
   }) => {
     try {
       const response = await authApi.register(
-          userData.email,
-          userData.password,
-          userData.otp,
+        userData.email,
+        userData.password,
+        userData.otp,
       );
 
       if (response.success) {
