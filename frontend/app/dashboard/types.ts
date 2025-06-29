@@ -54,12 +54,6 @@ export interface QuickAddModalProps {
   onCreateList: (name: string) => Promise<void>;
 }
 
-export interface DeleteDialogState {
-  isOpen: boolean;
-  listId: string;
-  itemIndex: number;
-}
-
 export interface DeleteDialogProps {
   isOpen: boolean;
   onConfirm: () => void;

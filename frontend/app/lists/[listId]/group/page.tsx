@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import React, { useState, useEffect } from "react";
 
 import { listApi } from "@/app/api/list";
-import { Group, ListItem } from "@/app/types/list";
 import CurrentList from "@/app/components/CurrentList";
-import GroupGenerator from "@/app/components/GroupGenerator";
 import GroupDisplayer from "@/app/components/GroupDisplayer";
+import GroupGenerator from "@/app/components/GroupGenerator";
+import { Group, ListItem } from "@/app/types/list";
 
 const GroupProcess: React.FC = () => {
   const [list, setList] = useState<ListItem>({

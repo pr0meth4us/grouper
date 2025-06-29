@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -8,18 +10,16 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
-import { Link } from "@nextui-org/link";
-import { Button } from "@nextui-org/button";
+} from "@heroui/navbar";
+import { LogInIcon, LogOutIcon } from "lucide-react";
+import Image from "next/image";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { LogInIcon, LogOutIcon } from "lucide-react";
 
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon } from "@/components/icons";
 import { useAuth } from "@/app/hooks/useAuth";
+import { GithubIcon } from "@/components/icons";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { siteConfig } from "@/config/site";
 
 export const Navbar = () => {
   const { isAuthenticated, logout, loading } = useAuth();

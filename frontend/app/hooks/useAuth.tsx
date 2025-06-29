@@ -1,9 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
 
 import { LoginRequest, authApi } from "../api/auth";
-import apiClient from "@/app/api/axiosConfig";
 
 const AUTH_STATE_CHANGED = "authStateChanged";
+
+// Define an interface for the User object
+interface User {
+  id: string;
+  email: string;
+}
 
 const emitAuthStateChange = () => {
   window.dispatchEvent(new Event(AUTH_STATE_CHANGED));
@@ -12,7 +17,8 @@ const emitAuthStateChange = () => {
 export function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  // Apply the User interface to the state
+  const [user, setUser] = useState<User | null>(null);
 
   const checkAuth = useCallback(async () => {
     try {
@@ -21,11 +27,12 @@ export function useAuth() {
       setIsAuthenticated(response.success);
 
       if (response.success && response.data) {
-        setUser(response.data);
+        setUser(response.data as User); // It's good practice to cast the response data
       } else {
         setUser(null);
       }
     } catch (error) {
+      console.log(error);
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -98,9 +105,9 @@ export function useAuth() {
   }) => {
     try {
       const response = await authApi.register(
-          userData.email,
-          userData.password,
-          userData.otp,
+        userData.email,
+        userData.password,
+        userData.otp,
       );
 
       if (response.success) {

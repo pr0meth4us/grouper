@@ -1,8 +1,8 @@
-import React from "react";
 import { Edit, Trash2, Check, X } from "lucide-react";
+import React from "react";
 
-import { Button } from "@/components/ui/button";
 import { ActionsProps } from "@/app/dashboard/types";
+import { Button } from "@/components/ui/button";
 
 export const Actions: React.FC<ActionsProps> = ({
   isEditing,

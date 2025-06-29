@@ -1,3 +1,4 @@
+import { DeleteDialogProps } from "@/app/dashboard/types";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,7 +9,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { DeleteDialogProps } from "@/app/dashboard/types";
 
 export function DeleteDialog({
   isOpen,

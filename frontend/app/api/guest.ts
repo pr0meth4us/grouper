@@ -20,12 +20,12 @@ export const guestApi = {
   },
 
   group: async (
-      size: string,
-      number: string,
-      exclusions: string,
+    size: string,
+    number: string,
+    exclusions: string,
   ): Promise<Group[]> => {
     const url = `${API_BASE_URL}/grouping?${
-        size ? `size=${size}` : `number=${number}`
+      size ? `size=${size}` : `number=${number}`
     }&exclude=${encodeURIComponent(exclusions)}`;
 
     const response = await apiClient.get(url);

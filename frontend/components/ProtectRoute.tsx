@@ -1,5 +1,5 @@
-import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, ReactNode } from "react";
 
 import { useAuth } from "@/app/hooks/useAuth";
 
@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     if (!loading && !isAuthenticated) {
       timeoutId = setTimeout(() => {

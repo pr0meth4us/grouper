@@ -1,14 +1,21 @@
 "use client";
 
-import type { DeleteDialogState } from "../types";
-
 import { useRouter } from "next/navigation";
 import React from "react";
 
+import type { DeleteDialogState } from "../types";
+
 import { listApi } from "@/app/api/list";
 
+interface UserList {
+  listId: string;
+  name: string;
+  items: string[];
+  createdAt: string;
+}
+
 export const useListHandlers = (
-  setLists: (lists: any[]) => void,
+  setLists: (lists: UserList[]) => void,
   setError: (error: string | null) => void,
   deleteItemDialog: DeleteDialogState,
   setDeleteItemDialog: (state: DeleteDialogState) => void,
@@ -20,10 +27,9 @@ export const useListHandlers = (
     setError(null);
     try {
       const data = await listApi.getList();
-
       setLists(data);
-    } catch (error) {
-      setError("Failed to fetch lists");
+    } catch (_error) {
+      setError(`Failed to fetch lists: ${_error}`);
     }
   };
 
@@ -47,8 +53,8 @@ export const useListHandlers = (
     try {
       await listApi.editList(listId, { name: newName, content });
       await fetchLists();
-    } catch (error) {
-      setError("Failed to edit list");
+    } catch (_error) {
+      setError(`Failed to edit list${_error}`);
     }
   };
 
@@ -57,8 +63,8 @@ export const useListHandlers = (
       await listApi.addItem(listId, newValue);
       setIsAddingItem(false);
       await fetchLists();
-    } catch (error) {
-      setError("Failed to add item");
+    } catch (_error) {
+      setError(`Failed to add item: ${_error}`);
     }
   };
 
@@ -67,8 +73,8 @@ export const useListHandlers = (
     try {
       await listApi.deleteList(listId);
       await fetchLists();
-    } catch (error) {
-      setError("Failed to delete list");
+    } catch (_error) {
+      setError(`Failed to delete list${_error}`);
     }
   };
 
@@ -80,11 +86,18 @@ export const useListHandlers = (
     try {
       const { listId, itemIndex } = deleteItemDialog;
 
+      if (!listId || itemIndex < 0) {
+        setError("Invalid item selection");
+        return;
+      }
+
       await listApi.deleteItem(listId, itemIndex);
       setDeleteItemDialog({ isOpen: false, listId: "", itemIndex: -1 });
       await fetchLists();
     } catch (error) {
-      setError("Failed to delete item");
+      setError(
+        `Failed to delete item: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       setDeleteItemDialog({ isOpen: false, listId: "", itemIndex: -1 });
     }
   };
@@ -98,7 +111,9 @@ export const useListHandlers = (
       await listApi.addList({ name });
       await fetchLists();
     } catch (error) {
-      setError("Failed to create list");
+      setError(
+        `Failed to create list: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 

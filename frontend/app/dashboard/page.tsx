@@ -1,27 +1,28 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 import DashboardHeader from "./components/header";
+import { DeleteDialog } from "./components/items/delete-dialog";
+import { ItemTable } from "./components/items/table";
+import { Actions } from "./components/list/actions";
+import { QuickAddModal } from "./components/list/quick-add-modal";
+import { Error } from "./components/states/error";
 import { useDashboard } from "./hooks/use-dashboard";
 import { useListEditing } from "./hooks/use-list-editing";
 import { useListFiltering } from "./hooks/use-list-filtering";
-import { Error } from "./components/states/error";
-import { Actions } from "./components/list/actions";
-import { DeleteDialog } from "./components/items/delete-dialog";
-import { ItemTable } from "./components/items/table";
-import { QuickAddModal } from "./components/list/quick-add-modal";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+
+import ProtectedRoute from "@/components/ProtectRoute";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import ProtectedRoute from "@/components/ProtectRoute";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,7 +40,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     dashboard.fetchLists();
-  }, []);
+  }, [dashboard]);
 
   const filteredLists = filterLists(dashboard.lists, searchQuery);
 

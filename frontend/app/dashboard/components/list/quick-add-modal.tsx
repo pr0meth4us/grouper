@@ -1,9 +1,11 @@
 // components/lists/quick-add-modal.tsx
-import React from "react";
-import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
 import { useForm } from "react-hook-form";
 
+import { QuickAddModalProps } from "@/app/dashboard/types";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +13,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { QuickAddModalProps } from "@/app/dashboard/types";
 
 export function QuickAddModal({
   isOpen,

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-import { ListActionsProps } from "@/app/dashboard/types";
 import { ActionButtons } from "@/app/dashboard/components/list/actions-buttons";
 import { DeleteListDialog } from "@/app/dashboard/components/list/delete-dialog";
+import { ListActionsProps } from "@/app/dashboard/types";
 
 export function Actions({
   listId,

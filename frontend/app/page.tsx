@@ -1,14 +1,14 @@
 "use client";
 
-import { Link } from "@nextui-org/link";
-import { Button } from "@nextui-org/button";
-import { Card } from "@nextui-org/card";
+import { Button } from "@heroui/button";
+import { Card } from "@heroui/card";
+import { Link } from "@heroui/link";
 import { SparklesIcon, ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
-import { title } from "@/components/primitives";
 import { useAuth } from "@/app/hooks/useAuth";
+import { title } from "@/components/primitives";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
