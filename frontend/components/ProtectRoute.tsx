@@ -8,7 +8,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     if (!loading && !isAuthenticated) {
       timeoutId = setTimeout(() => {

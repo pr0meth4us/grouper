@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Link } from "@nextui-org/link";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -10,7 +10,7 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
+} from "@heroui/navbar";
 import { LogInIcon, LogOutIcon } from "lucide-react";
 import Image from "next/image";
 import NextLink from "next/link";

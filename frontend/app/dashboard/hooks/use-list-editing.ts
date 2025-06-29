@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-export const useListEditing = (handleEditList: any) => {
+export const useListEditing = (handleEditList: unknown) => {
   const [editingListId, setEditingListId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [editingContent, setEditingContent] = useState("");

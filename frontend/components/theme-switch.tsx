@@ -1,6 +1,6 @@
 "use client";
 
-import { SwitchProps, useSwitch } from "@nextui-org/switch";
+import { SwitchProps, useSwitch } from "@heroui/switch";
 import { useIsSSR } from "@react-aria/ssr";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import clsx from "clsx";
@@ -22,6 +22,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
   const isSSR = useIsSSR();
 
   const onChange = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 

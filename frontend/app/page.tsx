@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
-import { Card } from "@nextui-org/card";
-import { Link } from "@nextui-org/link";
+import { Button } from "@heroui/button";
+import { Card } from "@heroui/card";
+import { Link } from "@heroui/link";
 import { SparklesIcon, ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";
