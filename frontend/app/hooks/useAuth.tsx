@@ -69,13 +69,18 @@ export function useAuth() {
     try {
       const response = await authApi.login(credentials);
 
-      if (response.success) {
-        await checkAuth();
+      if (response.success && response.data) {
+        setIsAuthenticated(true);
+
+        setUser((response.data as any).user);
+
         emitAuthStateChange();
       }
 
       return response;
     } catch (error) {
+      setIsAuthenticated(false);
+      setUser(null);
       console.error("Login failed:", error);
       throw error;
     }
