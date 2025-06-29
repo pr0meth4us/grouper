@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.HttpHeaders;
 
 @Service
 public class AuthService {
@@ -30,11 +32,9 @@ public class AuthService {
     public void sendOtp(String email) {
         String otpCode = otpService.generateOTP();
         otpService.storeOTPAndSendToUser(email, otpCode);
-        // We will call the updated MailService method that sends a styled HTML email
         try {
             mailService.sendOtpEmail(email, otpCode);
         } catch (MessagingException e) {
-            // Log the error and re-throw a runtime exception so the controller can handle it
             System.err.println("Failed to send OTP email to " + email + ". Error: " + e.getMessage());
             throw new RuntimeException("Error sending verification email. Please try again later.", e);
         }
@@ -64,23 +64,17 @@ public class AuthService {
         }
         String token = jwtService.generateToken(email);
 
-        // --- THIS IS THE CORRECTED CODE ---
-        Cookie jwtCookie = new Cookie("jwt_token", token);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(COOKIE_MAX_AGE);
-        // The 'Secure' flag is removed for local HTTP development.
-        // In a production environment with HTTPS, you would re-enable this.
-        // jwtCookie.setSecure(true);
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt_token", token)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(COOKIE_MAX_AGE)
+                .secure(true)
+                .sameSite("None")
+                .build();
 
-        // Use the standard way to add a cookie to the response
-        response.addCookie(jwtCookie);
-        // --- END OF CORRECTION ---
-
+        response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("user", user);
-        // The token is sent in the HttpOnly cookie, but we can also send it in the
-        // response body if the frontend needs to access it directly (e.g., for storing in memory).
         responseData.put("token", token);
         return new ApiResponse(true, "Login successful", responseData);
     }
